@@ -1,0 +1,2850 @@
+<!DOCTYPE html>
+<html lang="en" class="Internet-Draft">
+<head>
+<meta charset="utf-8">
+<meta content="Common,Latin" name="scripts">
+<meta content="initial-scale=1.0" name="viewport">
+<title>Transaction Token Authorization Grant Profile for OAuth Identity and Authorization Chaining</title>
+<meta content="George Fletcher" name="author">
+<meta content="
+       This specification defines a profile of the OAuth Identity and
+Authorization Chaining Across Domains
+  mechanism that uses a Transaction
+Token (Txn-Token)   as the subject
+token in a Token Exchange   request to obtain a JWT
+Authorization Grant for crossing a trust domain boundary.  By using a
+Txn-Token as the input credential, this profile enables workloads
+operating within a trusted domain to carry their full transaction
+context — including the original initiating principal, authorization
+scope, and request-specific parameters — into a cross-domain access
+request, without leaking internal credentials beyond the trust
+boundary. 
+    " name="description">
+<meta content="xml2rfc 3.33.0" name="generator">
+<meta content="oauth" name="keyword">
+<meta content="transaction tokens" name="keyword">
+<meta content="identity chaining" name="keyword">
+<meta content="cross-domain" name="keyword">
+<meta content="workload identity" name="keyword">
+<meta content="draft-fletcher-oauth-transaction-token-chaining-profile-00" name="ietf.draft">
+<!-- Generator version information:
+  xml2rfc 3.33.0
+    Python 3.12.13
+    ConfigArgParse 1.7
+    google-i18n-address 3.1.1
+    intervaltree 3.2.1
+    Jinja2 3.1.6
+    lxml 6.0.2
+    platformdirs 4.9.6
+    pycountry 24.6.1
+    PyYAML 6.0.3
+    requests 2.33.1
+    wcwidth 0.7.0
+-->
+<link href="draft-fletcher-transaction-token-chaining-profile.xml" rel="alternate" type="application/rfc+xml">
+<link href="#copyright" rel="license">
+<style type="text/css">@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C88, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-cyrillic.woff2') format('woff2');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-vietnamese.woff2') format('woff2');
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Lora Bold'), local('Lora-Bold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-bold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Lora';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: local('Lora SemiBold'), local('Lora-SemiBold'), url('https://martinthomson.github.io/rfc-css/fonts/lora-semibold-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Oxygen Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+}
+
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: italic;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-italic-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic-ext.woff2') format('woff2');
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-cyrillic.woff2') format('woff2');
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-greek.woff2') format('woff2');
+  unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: 'Sofia Sans Semi Condensed';
+  font-style: normal;
+  font-weight: 1 1000;
+  src: url('https://martinthomson.github.io/rfc-css/fonts/sofiasanssemicondensed-regular-latin.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+  color-scheme: light dark;
+  --background-color: #fff;
+  --text-color: #222;
+  --title-color: #191919;
+  --link-color: #2a6496;
+  --highlight-color: #f9f9f9;
+  --line-color: #eee;
+  --pilcrow-weak: #ddd;
+  --pilcrow-strong: #bbb;
+  --small-font-size: 14.5px;
+  --font-mono: 'Oxygen Mono', monospace;
+  --font-title: "Sofia Sans Semi Condensed", sans-serif;
+  scrollbar-color: #bbb #eee;
+}
+body {
+  max-width: 600px;
+  margin: 75px auto;
+  padding: 0 5px;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  font: 16px/22px "Lora", serif;
+  scroll-behavior: smooth;
+}
+
+.ears {
+  display: none;
+}
+
+/* headings */
+section {
+  clear: both;
+}
+.section-number {
+  padding-right: 0.5em;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-title);
+  font-weight: 680;
+  margin: 0.8em 0 0.3em;
+  font-size-adjust: 0.5;
+  color: var(--title-color);
+}
+h1#title {
+  font-size: 32px;
+  line-height: 40px;
+  clear: both;
+}
+h1#title, h1#rfcnum {
+  margin: 1.5em 0 0.2em;
+}
+h1#rfcnum + h1#title {
+  margin: 0.2em 0;
+}
+
+h1, h2, h3 {
+  font-size: 22px;
+  line-height: 27px;
+}
+h4, h5, h6 {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+/* general structure */
+.author {
+  padding-bottom: 0.3em;
+  vertical-align: top;
+}
+#abstract+p {
+  font-size: 18px;
+  line-height: 24px;
+}
+#abstract+p code, #abstract+p samp, #abstract+p tt {
+  font-size: 16px;
+  line-height: 0;
+}
+
+p {
+  padding: 0;
+  margin: 0.5em 0;
+  text-align: left;
+}
+div {
+  margin: 0;
+}
+.alignRight.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignRight.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignRight {
+  margin: 1em 0;
+}
+.alignRight > *:first-child {
+  border: none;
+  margin: 0;
+  float: right;
+  clear: both;
+}
+.alignRight > *:nth-child(2) {
+  clear: both;
+  display: block;
+  border: none;
+}
+svg {
+  display: block;
+}
+/* font-family isn't space-separated, but =~ will have to do */
+svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
+  font-family: var(--font-mono);
+}
+.alignCenter.art-text {
+  background-color: var(--highlight-color);
+  border: 1px solid var(--line-color);
+  border-radius: 3px;
+  padding: 0.5em 1em 0;
+  margin-bottom: 0.5em;
+}
+.alignCenter.art-text pre {
+  padding: 0;
+  width: auto;
+}
+.alignCenter {
+  margin: 1em 0;
+}
+.alignCenter > *:first-child {
+  border: none;
+  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+     support flexbox yet.
+  */
+  display: table;
+  margin: 0 auto;
+}
+
+/* lists */
+ol, ul {
+  padding: 0;
+  margin: 0 0 0.5em 2em;
+  & :is(ol, ul) {
+    margin-left: 1em;
+  }
+}
+li {
+  margin: 0 0 0.25em 0;
+}
+ul.empty, .ulEmpty {
+  list-style-type: none;
+  & li {
+    margin-top: 0.5em;
+  }
+}
+:is(ul, ol).compact, .ulCompact, .olCompact {
+  margin: 0 0 0 2em;
+  & li {
+    margin: 0;
+    & :first-child { margin-top: 0; }
+    & :last-child { margin-bottom: 0; }
+  }
+}
+
+/* definition lists */
+dl {
+  clear: left;
+  --indent: 3ch;
+  /* --indent: attr(indent ch); not supported in any browser, but we can dream */
+  &.olPercent {
+    --indent: 5ch;
+    & > dt {
+      min-width: calc(var(--indent) - 2ch);
+    }
+  }
+  &.olPercent > dt {
+    float: none;
+  }
+
+  dl > dd > & {
+    margin-top: 0.5em;
+    margin-bottom: 0;
+  }
+}
+dl:not(.dlNewline) > dt {
+  float: left;
+  margin-right: 2ch;
+  min-width: 8ch;
+}
+dl > dd {
+  margin-bottom: .8em;
+  margin-left: var(--indent) !important; /* stupid element overrides */
+  min-height: 2ex;
+}
+:is(dl.compact, .dlCompact) > dd {
+  margin-bottom: 0;
+  & > :is(:first-child, .break:first-child + *) {
+    margin-top: 0;
+  }
+  & > :is(:last-child) {
+    margin-bottom: 0;
+  }
+}
+:is(dd, span).break {
+  display: none;
+}
+
+/* links */
+a, a[href].selfRef:hover {
+  text-decoration: none;
+}
+a[href] {
+  color: var(--link-color);
+}
+a[href].selfRef, .iref + a[href].internal {
+  color: var(--text-color);
+}
+a[href]:hover {
+  text-decoration: underline;
+}
+a[href].selfRef:hover {
+  background-color: var(--highlight-color);
+}
+a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
+  white-space: nowrap;
+}
+
+/* Figures */
+tt, code, pre {
+  background-color: var(--highlight-color);
+  font: 14px/22px var(--font-mono);
+}
+tt, code {
+  /* changing the font for inline elements leads to different ascender
+     and descender heights; as we want to retain baseline alignment,
+     remove leading to avoid altering the final height of lines
+     note: this fails if these blocks take an entire line,
+     a different solution would be great */
+  line-height: 0;
+}
+:is(h1, h2, h3, h4, h5, h6) :is(tt, code) {
+  font-size: 84%;
+}
+pre {
+  border: 1px solid var(--line-color);
+  font-size: 13.5px;
+  line-height: 16px;
+  letter-spacing: -0.2px;
+  margin: 5px;
+  padding: 5px;
+}
+img {
+  max-width: 100%;
+}
+figure {
+  margin: 0.5em 0;
+  padding: 0;
+}
+figure blockquote {
+  margin: 0.8em 0.4em 0.4em;
+}
+figcaption, caption {
+  font-style: italic;
+  margin: 0.5em 1.5em;
+  text-align: left;
+  caption-side: bottom;
+}
+@media screen {
+  /* Auto-collapse boilerplate. */
+  :is(#status-of-memo, #copyright) p {
+    margin: -2px 0;
+    max-height: 0;
+    transition: max-height 2s ease, margin 0.5s ease 0.5s;
+    overflow: hidden;
+  }
+  :is(#status-of-memo, #copyright):hover p,
+  :is(#status-of-memo, #copyright) h2:target ~ p {
+    margin: 0.5em 0;
+    max-height: 500px;
+    overflow: auto;
+  }
+  pre, svg {
+    display: inline-block;
+    /* In the horizontal direction, sometimes people make over-sized figures.
+       Scrollbars for those is therefore necessary: auto adds them as necessary..
+       In the vertical direction, the line-height can combine with the font
+       asender/descender height to produce scrollbars: hidden avoids that. */
+    overflow: auto hidden;
+  }
+  pre {
+    max-width: 100%;
+    width: calc(100% - 22px - 1em);
+  }
+  svg {
+    max-width: calc(100% - 22px - 1em);
+  }
+  figure pre {
+    display: block;
+    width: calc(100% - 25px);
+  }
+  :is(pre, svg) + .pilcrow {
+    display: inline-block;
+    vertical-align: text-bottom;
+    padding-bottom: 8px;
+  }
+}
+
+/* aside, blockquote */
+aside, blockquote {
+  margin-left: 0;
+  padding: 0 2em;
+  font-style: italic;
+}
+blockquote {
+  margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
+}
+cite {
+  display: block;
+  text-align: right;
+  font-style: italic;
+}
+
+/* tables */
+table {
+  width: auto;
+  max-width: 100%;
+  margin: 0 0 1em;
+  border-collapse: collapse;
+}
+table.right {
+  margin-left: auto;
+}
+table.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+table.left {
+  margin-right: auto;
+}
+table .text-left {
+  text-align: left;
+}
+table .text-center {
+  text-align: center;
+}
+table .text-right {
+  text-align: right;
+}
+
+thead, tbody {
+  border: 1px solid var(--line-color);
+}
+th, td {
+  text-align: left;
+  vertical-align: top;
+  padding: 5px 10px;
+}
+th {
+  background-color: var(--line-color);
+}
+:is(tr:nth-child(2n), thead+tbody > tr:nth-child(2n+1)) > td {
+  background-color: var(--background-color);
+}
+:is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
+  background-color: var(--highlight-color);
+}
+table caption {
+  margin: 0;
+  padding: 3px 0 3px 1em;
+}
+table p {
+  margin: 0;
+}
+
+/* pilcrow */
+a.pilcrow {
+  margin-left: 3px;
+  opacity: 0.2;
+  user-select: none;
+  &[href] {
+    color: var(--pilcrow-weak);
+    &:hover { text-decoration: none; }
+  }
+}
+@media not print {
+  :hover > a.pilcrow, a.pilcrow:focus {
+    opacity: 1;
+  }
+  a.pilcrow[href]:hover {
+    color: var(--pilcrow-strong);
+    background-color: transparent;
+  }
+}
+@media print {
+  a.pilcrow {
+    display: none;
+  }
+}
+
+/* misc */
+hr {
+  border: 0;
+  border-top: 1px solid var(--line-color);
+}
+.bcp14 {
+  font-variant: small-caps;
+  font-weight: 600;
+  font-size: var(--small-font-size);
+}
+.role {
+  font-variant: all-small-caps;
+}
+sub, sup {
+  line-height: 1;
+  font-size: 80%;
+}
+
+/* info block */
+#identifiers {
+  margin: 0;
+  font-size: var(--small-font-size);
+  line-height: 18px;
+  --identifier-width: 15ch;
+  & dt {
+    width: var(--identifier-width);
+    min-width: var(--identifier-width);
+    clear: left;
+    float: left;
+    text-align: right;
+    margin-right: 1ch;
+  }
+  & dd {
+    margin: 0;
+    margin-left: calc(1em + var(--identifier-width)) !important;
+    min-width: 5em;
+  }
+  & .authors {
+    & .author {
+      display: inline-block;
+      margin-right: 1.5em;
+    }
+    & .org {
+      font-style: italic;
+    }
+  }
+}
+
+/* The prepared/rendered info at the very bottom of the page */
+.docInfo {
+  color: #999;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: 2em;
+}
+.docInfo .prepared {
+  float: right;
+}
+
+/* table of contents */
+#toc {
+  padding: 0.75em 0 2em 0;
+  margin-bottom: 1em;
+
+  & nav {
+    & ul {
+      margin: 0 0.5em 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    & li {
+      line-height: 1.3em;
+      margin: 2px 0;
+      padding-left: 1.2em;
+      text-indent: -1.2em;
+    }
+  }
+  & a.xref {
+    white-space: normal;
+  }
+}
+
+.references {
+  & > dt {
+    text-align: right;
+    font-weight: bold;
+    min-width: 10ch;
+    margin-right: 1.5ch;
+    &:target::before {
+      content: "⇒";
+      margin: 0 10px 0 -25px;
+    }
+  }
+  & > dd {
+    margin-left: 12ch !important;
+    overflow: visible;
+    & .refInstance {
+      margin-bottom: 0.8em;
+    }
+    & .ascii {
+      margin-bottom: 0.25em;
+    }
+  }
+}
+
+#rfc\.index\.index + ul {
+  margin-left: 0;
+}
+
+/* authors */
+address.vcard {
+  font-style: normal;
+  max-width: 20em;
+  margin: 1em auto 1em 0;
+
+  & .nameRole {
+    font-weight: 700;
+    margin-left: 0;
+  }
+  & .label {
+    margin: 0.5em 0;
+  }
+  & .type {
+    display: none;
+  }
+  & .alternative-contact {
+    margin: 0.5em 0 0.25em 0;
+  }
+  & .non-ascii {
+    margin: 0 0 0 2em;
+  }
+  & div.left {
+    text-align: left;
+  }
+  & div.right {
+    text-align: right;
+  }
+}
+
+hr.addr {
+  border-top: 1px dashed;
+  margin: 0;
+  color: #ddd;
+  max-width: calc(100% - 16px);
+}
+@media (min-width: 500px) {
+  #authors-addresses > section {
+    column-count: 2;
+    column-gap: 20px;
+  }
+  #authors-addresses > section > h2 {
+    column-span: all;
+  }
+  /* hack for break-inside: avoid-column */
+  #authors-addresses address {
+    display: inline-block;
+    break-inside: avoid-column;
+  }
+}
+
+/* Comments */
+.rfcEditorRemove p:first-of-type {
+  font-style: italic;
+}
+.cref {
+  background-color: rgba(249, 232, 105, 0.3);
+  padding: 2px 4px;
+}
+.crefSource {
+  font-style: italic;
+}
+
+@media screen {
+  #toc nav {
+    font-family: var(--font-title);
+    font-weight: 360;
+    & > ul { margin-bottom: 2em; }
+    & ul {
+      margin: 0 0 0 4px;
+      & :is(p, li) {
+        margin: 2px 0;
+      }
+    }
+  }
+  #toc a.toplink {
+    float: right;
+  }
+}
+@media not screen {
+  #toc a.toplink {
+    display: none;
+  }
+}
+
+
+/* TOC layout for smaller screens */
+@media screen and (max-width: 929px) {
+  #toc {
+    position: fixed;
+    z-index: 2;
+    top: 0;
+    right: 0;
+    padding: 1px 0 0 0;
+    margin: 0;
+    border-bottom: 1px solid #ccc;
+    opacity: 0.6;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 2px 0 2px 6px;
+    padding-right: 1em;
+    font-size: 18px;
+    line-height: 24px;
+    min-width: 190px;
+    text-align: right;
+    background-color: #444;
+    color: white;
+    cursor: pointer;
+    &::before { /* css hamburger */
+      float: right;
+      position: relative;
+      width: 1em;
+      height: 1px;
+      left: -164px;
+      margin: 8px 0 0 0;
+      background: white none repeat scroll 0 0;
+      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+      content: "";
+    }
+  }
+  #toc nav {
+    display: none;
+    background-color: var(--background-color);
+    padding: 0.5em 1em 1em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    height: calc(100vh - 48px);
+    border-left: 1px solid #ddd;
+  }
+  #toc.active {
+    opacity: 1;
+    & nav { display: block; }
+  }
+  /* Make the collapsed ToC header render white on gray also when it's a link */
+  #toc h2 a,
+  #toc h2 a:is(:link, :focus, :hover),
+  #toc a.toplink,
+  #toc a.toplink:hover {
+    color: white;
+    background-color: #444;
+    text-decoration: none;
+  }
+  #toc a.toplink {
+    margin: 2px 0.5em 0;
+  }
+}
+
+/* TOC layout for wide screens */
+@media screen and (min-width: 930px) {
+  body {
+    padding-right: 360px;
+    padding-right: calc(min(180px + 20%, 500px));
+  }
+  #toc {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    right: calc(50vw - 480px);
+    width: 312px;
+    margin: 0;
+    padding: 0;
+    z-index: 1;
+  }
+  #toc h2 {
+    margin: 0;
+    padding: 0.25em 1em 1em 0;
+  }
+  #toc nav {
+    display: block;
+    height: calc(90vh - 84px);
+    bottom: 0;
+    padding: 0.5em 0 2em;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  img { /* future proofing */
+    max-width: 100%;
+    height: auto;
+  }
+  #toc a.toplink {
+    margin: 8px 0.5em 0;
+  }
+}
+
+/* pagination */
+@media print {
+  body {
+    width: 100%;
+  }
+  p {
+    orphans: 3;
+    widows: 3;
+  }
+  #n-copyright-notice {
+    border-bottom: none;
+  }
+  #toc, #n-introduction {
+    page-break-before: always;
+  }
+  #toc {
+    border-top: none;
+    padding-top: 0;
+  }
+  figure, pre, .vcard {
+    page-break-inside: avoid;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+  }
+  :is(h2, h3, h4, h5, h6)+*, dd {
+    page-break-before: avoid;
+  }
+  pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    font-size: 10pt;
+  }
+  table {
+    border: 1px solid #ddd;
+  }
+  td {
+    border-top: 1px solid #ddd;
+  }
+}
+
+@page :first {
+  padding-top: 0;
+  @top-left {
+    content: normal;
+    border: none;
+  }
+  @top-center {
+    content: normal;
+    border: none;
+  }
+  @top-right {
+    content: normal;
+    border: none;
+  }
+}
+
+@page {
+  size: A4;
+  margin-bottom: 45mm;
+  padding-top: 20px;
+}
+
+/* Dark mode. */
+@media (prefers-color-scheme: dark) {
+:root {
+  --background-color: #121212;
+  --text-color: #f0f0f0;
+  --title-color: #fff;
+  --link-color: #4da4f0;
+  --highlight-color: #282828;
+  --line-color: #444;
+  --pilcrow-weak: #444;
+  --pilcrow-strong: #666;
+  scrollbar-color: #777 #333;
+}
+}
+
+/* SVG Trick: a prefix match works because only black and white are allowed */
+svg :is([stroke="black"], [stroke^="#000"]) {
+  stroke: var(--text-color);
+}
+svg :is([stroke="white"], [stroke^="#fff"]) {
+  stroke: var(--background-color);
+}
+svg :is([fill="black"], [fill^="#000"], :not([fill])) {
+  fill: var(--text-color);
+}
+svg :is([fill="white"], [fill^="#fff"]) {
+  fill: var(--background-color);
+}
+</style>
+
+</head>
+<body class="xml2rfc">
+<table class="ears">
+<thead><tr>
+<td class="left">Internet-Draft</td>
+<td class="center">Txn-Token Chaining Profile</td>
+<td class="right">May 2026</td>
+</tr></thead>
+<tfoot><tr>
+<td class="left">Fletcher</td>
+<td class="center">Expires 9 November 2026</td>
+<td class="right">[Page]</td>
+</tr></tfoot>
+</table>
+<div id="external-metadata" class="document-information"></div>
+<div id="internal-metadata" class="document-information">
+<dl id="identifiers">
+<dt class="label-workgroup">Workgroup:</dt>
+<dd class="workgroup">Web Authorization Protocol</dd>
+<dt class="label-internet-draft">Internet-Draft:</dt>
+<dd class="internet-draft">draft-fletcher-oauth-transaction-token-chaining-profile-00</dd>
+<dt class="label-published">Published:</dt>
+<dd class="published">
+<time datetime="2026-05-08" class="published">8 May 2026</time>
+    </dd>
+<dt class="label-intended-status">Intended Status:</dt>
+<dd class="intended-status">Standards Track</dd>
+<dt class="label-expires">Expires:</dt>
+<dd class="expires"><time datetime="2026-11-09">9 November 2026</time></dd>
+<dt class="label-authors">Author:</dt>
+<dd class="authors">
+<div class="author">
+      <div class="author-name">G. Fletcher</div>
+<div class="org">Practical Identity LLC</div>
+</div>
+</dd>
+</dl>
+</div>
+<h1 id="title">Transaction Token Authorization Grant Profile for OAuth Identity and Authorization Chaining</h1>
+<section id="section-abstract">
+      <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
+<p id="section-abstract-1">This specification defines a profile of the OAuth Identity and
+Authorization Chaining Across Domains
+<span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> mechanism that uses a Transaction
+Token (Txn-Token) <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span> as the subject
+token in a Token Exchange <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span> request to obtain a JWT
+Authorization Grant for crossing a trust domain boundary.  By using a
+Txn-Token as the input credential, this profile enables workloads
+operating within a trusted domain to carry their full transaction
+context — including the original initiating principal, authorization
+scope, and request-specific parameters — into a cross-domain access
+request, without leaking internal credentials beyond the trust
+boundary.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+</section>
+<section class="note" id="section-note.1">
+      <h2 id="name-note-to-readers">
+<a href="#name-note-to-readers" class="section-name selfRef">Note to Readers</a>
+      </h2>
+<p id="section-note.1-1"><em>RFC EDITOR: please remove this section before publication</em><a href="#section-note.1-1" class="pilcrow">¶</a></p>
+<p id="section-note.1-2">Discussion of this document takes place on the Web Authorization
+Protocol Working Group mailing list (oauth@ietf.org), which is
+archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://mailarchive.ietf.org/arch/browse/oauth/</a>.<a href="#section-note.1-2" class="pilcrow">¶</a></p>
+<p id="section-note.1-3">Source for this draft and an issue tracker can be found at
+<a href="https://github.com/george-fletcher/draft-fletcher-oauth-transaction-token-chaining-profile">https://github.com/george-fletcher/draft-fletcher-oauth-transaction-token-chaining-profile</a>.<a href="#section-note.1-3" class="pilcrow">¶</a></p>
+</section>
+<div id="status-of-memo">
+<section id="section-boilerplate.1">
+        <h2 id="name-status-of-this-memo">
+<a href="#name-status-of-this-memo" class="section-name selfRef">Status of This Memo</a>
+        </h2>
+<p id="section-boilerplate.1-1">
+        This Internet-Draft is submitted in full conformance with the
+        provisions of BCP 78 and BCP 79.<a href="#section-boilerplate.1-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-2">
+        Internet-Drafts are working documents of the Internet Engineering Task
+        Force (IETF). Note that other groups may also distribute working
+        documents as Internet-Drafts. The list of current Internet-Drafts is
+        at <span><a href="https://datatracker.ietf.org/drafts/current/">https://datatracker.ietf.org/drafts/current/</a></span>.<a href="#section-boilerplate.1-2" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-3">
+        Internet-Drafts are draft documents valid for a maximum of six months
+        and may be updated, replaced, or obsoleted by other documents at any
+        time. It is inappropriate to use Internet-Drafts as reference
+        material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.1-4">
+        This Internet-Draft will expire on 9 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="copyright">
+<section id="section-boilerplate.2">
+        <h2 id="name-copyright-notice">
+<a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
+        </h2>
+<p id="section-boilerplate.2-1">
+            Copyright (c) 2026 IETF Trust and the persons identified as the
+            document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
+<p id="section-boilerplate.2-2">
+            This document is subject to BCP 78 and the IETF Trust's Legal
+            Provisions Relating to IETF Documents
+            (<span><a href="https://trustee.ietf.org/license-info">https://trustee.ietf.org/license-info</a></span>) in effect on the date of
+            publication of this document. Please review these documents
+            carefully, as they describe your rights and restrictions with
+            respect to this document. Code Components extracted from this
+            document must include Revised BSD License text as described in
+            Section 4.e of the Trust Legal Provisions and are provided without
+            warranty as described in the Revised BSD License.<a href="#section-boilerplate.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="toc">
+<section id="section-toc.1">
+        <a href="#" onclick="scroll(0,0)" class="toplink">▲</a><h2 id="name-table-of-contents">
+<a href="#name-table-of-contents" class="section-name selfRef">Table of Contents</a>
+        </h2>
+<nav class="toc"><ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1">
+            <p id="section-toc.1-1.1.1" class="keepWithNext"><a href="#section-1" class="auto internal xref">1</a>.  <a href="#name-introduction" class="internal xref">Introduction</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.1.2.1">
+                <p id="section-toc.1-1.1.2.1.1" class="keepWithNext"><a href="#section-1.1" class="auto internal xref">1.1</a>.  <a href="#name-requirements-language" class="internal xref">Requirements Language</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2">
+            <p id="section-toc.1-1.2.1"><a href="#section-2" class="auto internal xref">2</a>.  <a href="#name-conventions-and-definitions" class="internal xref">Conventions and Definitions</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
+                <p id="section-toc.1-1.2.2.1.1" class="keepWithNext"><a href="#section-2.1" class="auto internal xref">2.1</a>.  <a href="#name-roles" class="internal xref">Roles</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-overview" class="internal xref">Overview</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4">
+            <p id="section-toc.1-1.4.1"><a href="#section-4" class="auto internal xref">4</a>.  <a href="#name-transaction-token-as-subjec" class="internal xref">Transaction Token as Subject Token</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.1">
+                <p id="section-toc.1-1.4.2.1.1"><a href="#section-4.1" class="auto internal xref">4.1</a>.  <a href="#name-subject-token-requirements" class="internal xref">Subject Token Requirements</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2">
+                <p id="section-toc.1-1.4.2.2.1"><a href="#section-4.2" class="auto internal xref">4.2</a>.  <a href="#name-token-exchange-request-para" class="internal xref">Token Exchange Request Parameters</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.1">
+                    <p id="section-toc.1-1.4.2.2.2.1.1"><a href="#section-4.2.1" class="auto internal xref">4.2.1</a>.  <a href="#name-identifying-the-target-auth" class="internal xref">Identifying the Target Authorization Server</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.2">
+                    <p id="section-toc.1-1.4.2.2.2.2.1"><a href="#section-4.2.2" class="auto internal xref">4.2.2</a>.  <a href="#name-remaining-parameters" class="internal xref">Remaining Parameters</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.3">
+                    <p id="section-toc.1-1.4.2.2.2.3.1"><a href="#section-4.2.3" class="auto internal xref">4.2.3</a>.  <a href="#name-example-token-exchange-requ" class="internal xref">Example Token Exchange Request</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.4.2.2.2.4">
+                    <p id="section-toc.1-1.4.2.2.2.4.1"><a href="#section-4.2.4" class="auto internal xref">4.2.4</a>.  <a href="#name-token-exchange-response" class="internal xref">Token Exchange Response</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5">
+            <p id="section-toc.1-1.5.1"><a href="#section-5" class="auto internal xref">5</a>.  <a href="#name-processing-rules" class="internal xref">Processing Rules</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="auto internal xref">5.1</a>.  <a href="#name-as-a-processing-rules" class="internal xref">AS-A Processing Rules</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="auto internal xref">5.2</a>.  <a href="#name-as-b-processing-rules" class="internal xref">AS-B Processing Rules</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-jwt-authorization-grant" class="internal xref">JWT Authorization Grant</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
+                <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-grant-format" class="internal xref">Grant Format</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.1">
+                    <p id="section-toc.1-1.6.2.1.2.1.1"><a href="#section-6.1.1" class="auto internal xref">6.1.1</a>.  <a href="#name-jwt-header" class="internal xref">JWT Header</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.2">
+                    <p id="section-toc.1-1.6.2.1.2.2.1"><a href="#section-6.1.2" class="auto internal xref">6.1.2</a>.  <a href="#name-jwt-body-claims" class="internal xref">JWT Body Claims</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.3">
+                    <p id="section-toc.1-1.6.2.1.2.3.1"><a href="#section-6.1.3" class="auto internal xref">6.1.3</a>.  <a href="#name-example-jwt-authorization-g" class="internal xref">Example JWT Authorization Grant</a></p>
+</li>
+                </ul>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7">
+            <p id="section-toc.1-1.7.1"><a href="#section-7" class="auto internal xref">7</a>.  <a href="#name-claims-transcription" class="internal xref">Claims Transcription</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.1">
+                <p id="section-toc.1-1.7.2.1.1"><a href="#section-7.1" class="auto internal xref">7.1</a>.  <a href="#name-mandatory-transcriptions" class="internal xref">Mandatory Transcriptions</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.2">
+                <p id="section-toc.1-1.7.2.2.1"><a href="#section-7.2" class="auto internal xref">7.2</a>.  <a href="#name-constrained-scope-transcrip" class="internal xref">Constrained Scope Transcription</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.3">
+                <p id="section-toc.1-1.7.2.3.1"><a href="#section-7.3" class="auto internal xref">7.3</a>.  <a href="#name-optional-context-claims-tra" class="internal xref">Optional Context Claims Transcription</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.7.2.4">
+                <p id="section-toc.1-1.7.2.4.1"><a href="#section-7.4" class="auto internal xref">7.4</a>.  <a href="#name-subject-identifier-formats" class="internal xref">Subject Identifier Formats</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.8">
+            <p id="section-toc.1-1.8.1"><a href="#section-8" class="auto internal xref">8</a>.  <a href="#name-authorization-server-metada" class="internal xref">Authorization Server Metadata</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9">
+            <p id="section-toc.1-1.9.1"><a href="#section-9" class="auto internal xref">9</a>.  <a href="#name-security-considerations" class="internal xref">Security Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.1">
+                <p id="section-toc.1-1.9.2.1.1"><a href="#section-9.1" class="auto internal xref">9.1</a>.  <a href="#name-client-authentication" class="internal xref">Client Authentication</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.2">
+                <p id="section-toc.1-1.9.2.2.1"><a href="#section-9.2" class="auto internal xref">9.2</a>.  <a href="#name-sender-constraining-tokens" class="internal xref">Sender Constraining Tokens</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.3">
+                <p id="section-toc.1-1.9.2.3.1"><a href="#section-9.3" class="auto internal xref">9.3</a>.  <a href="#name-txn-token-as-bearer-credent" class="internal xref">Txn-Token as Bearer Credential</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4">
+                <p id="section-toc.1-1.9.2.4.1"><a href="#section-9.4" class="auto internal xref">9.4</a>.  <a href="#name-jwt-authorization-grant-rep" class="internal xref">JWT Authorization Grant Replay</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5">
+                <p id="section-toc.1-1.9.2.5.1"><a href="#section-9.5" class="auto internal xref">9.5</a>.  <a href="#name-txn-token-cross-domain-leak" class="internal xref">Txn-Token Cross-Domain Leakage</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.6">
+                <p id="section-toc.1-1.9.2.6.1"><a href="#section-9.6" class="auto internal xref">9.6</a>.  <a href="#name-scope-boundary-enforcement" class="internal xref">Scope Boundary Enforcement</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.7">
+                <p id="section-toc.1-1.9.2.7.1"><a href="#section-9.7" class="auto internal xref">9.7</a>.  <a href="#name-trust-domain-isolation" class="internal xref">Trust Domain Isolation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.8">
+                <p id="section-toc.1-1.9.2.8.1"><a href="#section-9.8" class="auto internal xref">9.8</a>.  <a href="#name-refresh-tokens" class="internal xref">Refresh Tokens</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.10">
+            <p id="section-toc.1-1.10.1"><a href="#section-10" class="auto internal xref">10</a>. <a href="#name-privacy-considerations" class="internal xref">Privacy Considerations</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11">
+            <p id="section-toc.1-1.11.1"><a href="#section-11" class="auto internal xref">11</a>. <a href="#name-iana-considerations" class="internal xref">IANA Considerations</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.1">
+                <p id="section-toc.1-1.11.2.1.1"><a href="#section-11.1" class="auto internal xref">11.1</a>.  <a href="#name-oauth-uri-registry" class="internal xref">OAuth URI Registry</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.2">
+                <p id="section-toc.1-1.11.2.2.1"><a href="#section-11.2" class="auto internal xref">11.2</a>.  <a href="#name-jwt-typ-registration" class="internal xref">JWT Typ Registration</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.11.2.3">
+                <p id="section-toc.1-1.11.2.3.1"><a href="#section-11.3" class="auto internal xref">11.3</a>.  <a href="#name-jwt-claims-registry" class="internal xref">JWT Claims Registry</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12">
+            <p id="section-toc.1-1.12.1"><a href="#section-12" class="auto internal xref">12</a>. <a href="#name-references" class="internal xref">References</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.1">
+                <p id="section-toc.1-1.12.2.1.1"><a href="#section-12.1" class="auto internal xref">12.1</a>.  <a href="#name-normative-references" class="internal xref">Normative References</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.12.2.2">
+                <p id="section-toc.1-1.12.2.2.1"><a href="#section-12.2" class="auto internal xref">12.2</a>.  <a href="#name-informative-references" class="internal xref">Informative References</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13">
+            <p id="section-toc.1-1.13.1"><a href="#appendix-A" class="auto internal xref">Appendix A</a>.  <a href="#name-use-cases" class="internal xref">Use Cases</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.1">
+                <p id="section-toc.1-1.13.2.1.1"><a href="#appendix-A.1" class="auto internal xref">A.1</a>.  <a href="#name-workload-to-workload-cross-" class="internal xref">Workload-to-Workload Cross-Domain API Access</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.2">
+                <p id="section-toc.1-1.13.2.2.1"><a href="#appendix-A.2" class="auto internal xref">A.2</a>.  <a href="#name-ci-cd-pipeline-accessing-ex" class="internal xref">CI/CD Pipeline Accessing External Artifact Registry</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.13.2.3">
+                <p id="section-toc.1-1.13.2.3.1"><a href="#appendix-A.3" class="auto internal xref">A.3</a>.  <a href="#name-agentic-ai-workflow-calling" class="internal xref">Agentic AI Workflow Calling an External Tool</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14">
+            <p id="section-toc.1-1.14.1"><a href="#appendix-B" class="auto internal xref">Appendix B</a>.  <a href="#name-relationship-to-related-spe" class="internal xref">Relationship to Related Specifications</a></p>
+<ul class="compact toc ulBare ulEmpty">
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.14.2.1">
+                <p id="section-toc.1-1.14.2.1.1"><a href="#appendix-B.1" class="auto internal xref">B.1</a>.  <a href="#name-identity-assertion-jwt-auth" class="internal xref">Identity Assertion JWT Authorization Grant</a></p>
+</li>
+            </ul>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.15">
+            <p id="section-toc.1-1.15.1"><a href="#appendix-C" class="auto internal xref"></a><a href="#name-acknowledgements" class="internal xref">Acknowledgements</a></p>
+</li>
+          <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.16">
+            <p id="section-toc.1-1.16.1"><a href="#appendix-D" class="auto internal xref"></a><a href="#name-authors-address" class="internal xref">Author's Address</a></p>
+</li>
+        </ul>
+</nav>
+</section>
+</div>
+<div id="introduction">
+<section id="section-1">
+      <h2 id="name-introduction">
+<a href="#section-1" class="section-number selfRef">1. </a><a href="#name-introduction" class="section-name selfRef">Introduction</a>
+      </h2>
+<p id="section-1-1">Modern multi-service architectures decompose business functionality
+across many workloads that may span organizational and cloud-provider
+trust boundaries.  When a workload operating inside a trust domain
+needs to invoke a resource in a foreign trust domain, it must
+present credentials that are meaningful to the foreign domain's
+authorization server — credentials that are both trustworthy and
+that faithfully convey the original initiating context.<a href="#section-1-1" class="pilcrow">¶</a></p>
+<p id="section-1-2">The OAuth Identity and Authorization Chaining Across Domains
+specification <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> defines a
+general mechanism by which a client in Trust Domain A can obtain a
+JWT Authorization Grant from the Authorization Server of Trust Domain A
+and present it to the Authorization Server of Trust Domain B to receive
+an access token.  The base specification deliberately leaves the choice
+of subject token type open, allowing profiles to constrain and
+specialize the mechanism for specific deployment scenarios.<a href="#section-1-2" class="pilcrow">¶</a></p>
+<p id="section-1-3">The Transaction Tokens specification
+<span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span> defines a token format and
+issuance protocol purpose-built for propagating user identity and
+authorization context across workloads within a single trust domain.
+A Transaction Token (Txn-Token) is a short-lived, cryptographically
+signed JWT that captures the identity of the initiating principal, the
+authorization scope, and immutable parameters of the original external
+request.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-4">This specification defines the additional details necessary to use a
+Txn-Token as the <code>subject_token</code> in the Token Exchange request
+described in Section 2.3 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.
+Doing so creates a natural bridge: the same rich context that
+Txn-Tokens propagate within a trusted domain is preserved and
+transformed into a cross-domain JWT Authorization Grant that carries
+this context across the domain boundary.<a href="#section-1-4" class="pilcrow">¶</a></p>
+<p id="section-1-5">This profile is complementary to the Identity Assertion JWT
+Authorization Grant profile
+<span>[<a href="#I-D.ietf-oauth-identity-assertion-authz-grant" class="cite xref">I-D.ietf-oauth-identity-assertion-authz-grant</a>]</span>, a companion OAuth
+Working Group document that targets deployments where the Resource
+Authorization Server already trusts a common IdP for SSO and subject
+resolution, and where an OpenID Connect ID Token or SAML 2.0 assertion
+representing an authenticated human session is the subject token.
+This profile instead addresses the workload-to-workload scenario
+described in the WIMSE architecture <span>[<a href="#I-D.ietf-wimse-arch" class="cite xref">I-D.ietf-wimse-arch</a>]</span>, where no
+human end-user session is driving the cross-domain access and the
+input credential is a Txn-Token representing an authorized machine
+transaction.  A detailed structural comparison of the two profiles
+appears in the informative appendix on Related Specifications.<a href="#section-1-5" class="pilcrow">¶</a></p>
+<div id="requirements-language">
+<section id="section-1.1">
+        <h3 id="name-requirements-language">
+<a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-requirements-language" class="section-name selfRef">Requirements Language</a>
+        </h3>
+<p id="section-1.1-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>", "<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>",
+"<span class="bcp14">MAY</span>", and "<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as
+described in BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they
+appear in all capitals, as shown here.<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="conventions-and-definitions">
+<section id="section-2">
+      <h2 id="name-conventions-and-definitions">
+<a href="#section-2" class="section-number selfRef">2. </a><a href="#name-conventions-and-definitions" class="section-name selfRef">Conventions and Definitions</a>
+      </h2>
+<p id="section-2-1">The key words "<span class="bcp14">MUST</span>", "<span class="bcp14">MUST NOT</span>", "<span class="bcp14">REQUIRED</span>", "<span class="bcp14">SHALL</span>", "<span class="bcp14">SHALL NOT</span>",
+"<span class="bcp14">SHOULD</span>", "<span class="bcp14">SHOULD NOT</span>", "<span class="bcp14">RECOMMENDED</span>", "<span class="bcp14">NOT RECOMMENDED</span>", "<span class="bcp14">MAY</span>", and
+"<span class="bcp14">OPTIONAL</span>" in this document are to be interpreted as described in
+BCP 14 <span>[<a href="#RFC2119" class="cite xref">RFC2119</a>]</span> <span>[<a href="#RFC8174" class="cite xref">RFC8174</a>]</span> when, and only when, they appear in all
+capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶</a></p>
+<div id="roles">
+<section id="section-2.1">
+        <h3 id="name-roles">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-roles" class="section-name selfRef">Roles</a>
+        </h3>
+<p id="section-2.1-1">The following roles are used in this document.  They extend the role
+definitions in <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.<a href="#section-2.1-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-2.1-2">
+          <dt id="section-2.1-2.1">Requesting Workload:</dt>
+          <dd style="margin-left: 1.5em" id="section-2.1-2.2">
+            <p id="section-2.1-2.2.1">A workload (as defined in <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>)
+operating inside Trust Domain A that wishes to invoke a protected
+resource in Trust Domain B.  This workload acts as the client in the
+identity chaining flow.<a href="#section-2.1-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-2.1-2.3">Transaction Token Service (TTS):</dt>
+          <dd style="margin-left: 1.5em" id="section-2.1-2.4">
+            <p id="section-2.1-2.4.1">The service within Trust Domain A that mints Txn-Tokens.  The TTS
+is the logical equivalent of the Authorization Server of Trust Domain
+A for the purposes of producing the subject token that initiates the
+chaining flow.  In some deployments the TTS and the Authorization
+Server of Trust Domain A <span class="bcp14">MAY</span> be co-located.<a href="#section-2.1-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-2.1-2.5">Authorization Server of Trust Domain A (AS-A):</dt>
+          <dd style="margin-left: 1.5em" id="section-2.1-2.6">
+            <p id="section-2.1-2.6.1">The OAuth 2.0 Authorization Server within Trust Domain A that
+receives the Token Exchange request from the Requesting Workload,
+validates the presented Txn-Token, and issues the JWT Authorization
+Grant.<a href="#section-2.1-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-2.1-2.7">Authorization Server of Trust Domain B (AS-B):</dt>
+          <dd style="margin-left: 1.5em" id="section-2.1-2.8">
+            <p id="section-2.1-2.8.1">The OAuth 2.0 Authorization Server within Trust Domain B that
+receives the JWT Authorization Grant and issues an access token for
+the Protected Resource.<a href="#section-2.1-2.8.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-2.1-2.9">Protected Resource:</dt>
+          <dd style="margin-left: 1.5em" id="section-2.1-2.10">
+            <p id="section-2.1-2.10.1">The resource server in Trust Domain B that the Requesting Workload
+wishes to call.<a href="#section-2.1-2.10.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+</div>
+<div id="overview">
+<section id="section-3">
+      <h2 id="name-overview">
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-overview" class="section-name selfRef">Overview</a>
+      </h2>
+<p id="section-3-1">The flow defined in this profile extends the identity chaining flow of
+<span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> by specifying the exact nature of
+the subject token presented in Step 2 of that flow.  The complete
+end-to-end sequence is:<a href="#section-3-1" class="pilcrow">¶</a></p>
+<span id="name-transaction-token-chaining-"></span><div id="fig-flow">
+<figure id="figure-1">
+        <div class="alignLeft art-ascii-art art-text artwork" id="section-3-2.1">
+<pre>
++----------+ +----------+ +---------+ +---------+ +---------+
+| External |  |Requesting|  |  TTS /  |  | AS-B  |  |Protected|
+| Endpoint |  | Workload |  |  AS-A   |  |       |  |Resource |
+|(Trust A) |  |(Trust A) |  |(Trust A)|  |(TrustB|  |(Trust B)|
++----+-----+  +----+-----+  +----+----+  +---+---+  +---+----+
+     |              |             |           |           |
+     | (1) Access   |             |           |           |
+     |   Token /   |             |           |           |
+     |  API Request|             |           |           |
+     |------------&gt;|             |           |           |
+     |             |             |           |           |
+     |             | (2) Request |           |           |
+     |             |  Txn-Token  |           |           |
+     |             | [TxnToken]  |           |           |
+     |             |------------&gt;|           |           |
+     |             |             |           |           |
+     |             | (3) Txn-    |           |           |
+     |             |   Token     |           |           |
+     |             |&lt;- - - - - - |           |           |
+     |             |             |           |           |
+     |             | (4) Discover|           |           |
+     |             |  AS-B       |           |           |
+     |             |-------------------------------+     |
+     |             |             |           |           |
+     |             | (5) Token Exchange      |           |
+     |             |  [RFC8693]  |           |           |
+     |             | subject_token = Txn-Token           |
+     |             |------------&gt;|           |           |
+     |             |             |           |           |
+     |             | (6) JWT Authorization   |           |
+     |             |   Grant     |           |           |
+     |             |&lt;- - - - - - |           |           |
+     |             |             |           |           |
+     |             | (7) JWT Bearer Grant    |           |
+     |             |   [RFC7523] |           |           |
+     |             |----------------------------&gt;|       |
+     |             |             |           |           |
+     |             | (8) Access Token        |           |
+     |             |&lt;- - - - - - - - - - - - |           |
+     |             |             |           |           |
+     |             | (9) API Request         |           |
+     |             |------------------------------------&gt;|
+     |             |             |           |           |
+</pre>
+</div>
+<figcaption><a href="#figure-1" class="selfRef">Figure 1</a>:
+<a href="#name-transaction-token-chaining-" class="selfRef">Transaction Token Chaining Flow</a>
+        </figcaption></figure>
+</div>
+<p id="section-3-3">The steps are as follows:<a href="#section-3-3" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-3-4">
+<li id="section-3-4.1">
+          <p id="section-3-4.1.1">An external request arrives at the Requesting Workload's External
+Endpoint, accompanied by an OAuth 2.0 access token or other
+authorization credential.<a href="#section-3-4.1.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-4.2">
+          <p id="section-3-4.2.1">The Requesting Workload exchanges the incoming access token with its
+local Transaction Token Service (TTS) for a Txn-Token covering the
+current transaction context.  This step follows the Txn-Token
+issuance procedures defined in <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>.<a href="#section-3-4.2.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-4.3">
+          <p id="section-3-4.3.1">The TTS issues a Txn-Token to the Requesting Workload.<a href="#section-3-4.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-4.4">
+          <p id="section-3-4.4.1">The Requesting Workload discovers AS-B using the mechanisms defined
+in Section 2.2 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>, such as the
+<code>authorization_servers</code> property in OAuth 2.0 Protected Resource
+Metadata <span>[<a href="#RFC9728" class="cite xref">RFC9728</a>]</span>.  The Requesting Workload obtains AS-B's issuer
+URL for use as the <code>audience</code> parameter in the subsequent Token
+Exchange request.<a href="#section-3-4.4.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-4.5">
+          <p id="section-3-4.5.1">The Requesting Workload presents the Txn-Token as the <code>subject_token</code>
+in an OAuth 2.0 Token Exchange <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span> request to AS-A.  The
+request includes AS-B's issuer URL as the <code>audience</code> parameter and,
+optionally, the target resource server URI as the <code>resource</code> parameter.
+See <a href="#token-exchange-request-parameters" class="auto internal xref">Section 4.2</a> for the full parameter
+specification.<a href="#section-3-4.5.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-4.6">
+          <p id="section-3-4.6.1">AS-A validates the Txn-Token, evaluates its authorization policy,
+transcribes claims as appropriate (see <a href="#claims-transcription" class="auto internal xref">Section 7</a>),
+and returns a JWT Authorization Grant.<a href="#section-3-4.6.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-4.7">
+          <p id="section-3-4.7.1">The Requesting Workload presents the JWT Authorization Grant to AS-B
+using the JWT Profile for OAuth 2.0 Authorization Grants <span>[<a href="#RFC7523" class="cite xref">RFC7523</a>]</span>.<a href="#section-3-4.7.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-4.8">
+          <p id="section-3-4.8.1">AS-B validates the JWT Authorization Grant and issues an access token
+for the Protected Resource.<a href="#section-3-4.8.1" class="pilcrow">¶</a></p>
+</li>
+        <li id="section-3-4.9">
+          <p id="section-3-4.9.1">The Requesting Workload calls the Protected Resource using the access
+token.<a href="#section-3-4.9.1" class="pilcrow">¶</a></p>
+</li>
+      </ol>
+</section>
+</div>
+<div id="transaction-token-as-subject-token">
+<section id="section-4">
+      <h2 id="name-transaction-token-as-subjec">
+<a href="#section-4" class="section-number selfRef">4. </a><a href="#name-transaction-token-as-subjec" class="section-name selfRef">Transaction Token as Subject Token</a>
+      </h2>
+<div id="subject-token-requirements">
+<section id="section-4.1">
+        <h3 id="name-subject-token-requirements">
+<a href="#section-4.1" class="section-number selfRef">4.1. </a><a href="#name-subject-token-requirements" class="section-name selfRef">Subject Token Requirements</a>
+        </h3>
+<p id="section-4.1-1">When this profile is used, the <code>subject_token</code> in the Token Exchange
+request (Step 5 of <a href="#fig-flow" class="auto internal xref">Figure 1</a>) <span class="bcp14">MUST</span> be a Txn-Token as defined in
+<span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>.<a href="#section-4.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.1-2">The <code>subject_token_type</code> parameter <span class="bcp14">MUST</span> be:<a href="#section-4.1-2" class="pilcrow">¶</a></p>
+<div class="lang-abnf sourcecode" id="section-4.1-3">
+<pre>
+subject_token_type =
+    "urn:ietf:params:oauth:token-type:txn-token"
+</pre><a href="#section-4.1-3" class="pilcrow">¶</a>
+</div>
+<p id="section-4.1-4">This value is registered with IANA in <a href="#iana-oauth-uri" class="auto internal xref">Section 11.1</a> of this
+document.<a href="#section-4.1-4" class="pilcrow">¶</a></p>
+<p id="section-4.1-5">The Txn-Token presented as the <code>subject_token</code> <span class="bcp14">MUST</span> satisfy all of
+the validity requirements specified in
+<span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>, including:<a href="#section-4.1-5" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.1-6.1">
+            <p id="section-4.1-6.1.1">The Txn-Token <span class="bcp14">MUST NOT</span> be expired.<a href="#section-4.1-6.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-6.2">
+            <p id="section-4.1-6.2.1">The Txn-Token <span class="bcp14">MUST</span> be signed and verifiable by AS-A using keys
+published by the TTS.<a href="#section-4.1-6.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-4.1-6.3">
+            <p id="section-4.1-6.3.1">The Txn-Token's <code>aud</code> claim <span class="bcp14">MUST</span> identify AS-A (or a value that
+AS-A accepts as a valid audience for presented subject tokens).<a href="#section-4.1-6.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-4.1-7">A Txn-Token that has already expired or whose signature cannot be
+verified <span class="bcp14">MUST</span> be rejected as defined in Section 2.2.2 of <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="token-exchange-request-parameters">
+<section id="section-4.2">
+        <h3 id="name-token-exchange-request-para">
+<a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-token-exchange-request-para" class="section-name selfRef">Token Exchange Request Parameters</a>
+        </h3>
+<p id="section-4.2-1">In addition to the subject token requirements in
+<a href="#subject-token-requirements" class="auto internal xref">Section 4.1</a>, the Token Exchange request
+(<span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span> Section 2.1) <span class="bcp14">MUST</span> include the following parameters when
+this profile is in use.<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+<div id="identifying-the-target-authorization-server">
+<section id="section-4.2.1">
+          <h4 id="name-identifying-the-target-auth">
+<a href="#section-4.2.1" class="section-number selfRef">4.2.1. </a><a href="#name-identifying-the-target-auth" class="section-name selfRef">Identifying the Target Authorization Server</a>
+          </h4>
+<p id="section-4.2.1-1">The Token Exchange request <span class="bcp14">MUST</span> indicate which authorization server
+in Trust Domain B (AS-B) should be the intended audience of the
+resulting JWT Authorization Grant.  This profile uses the <code>audience</code>
+parameter for this purpose, following the same convention as
+<span>[<a href="#I-D.ietf-oauth-identity-assertion-authz-grant" class="cite xref">I-D.ietf-oauth-identity-assertion-authz-grant</a>]</span> Section 4.3.<a href="#section-4.2.1-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.2.1-2">
+            <dt id="section-4.2.1-2.1">
+<code>audience</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.1-2.2">
+              <p id="section-4.2.1-2.2.1"><span class="bcp14">REQUIRED</span>.  The Issuer URL of AS-B as defined in Section 2 of
+<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>.  AS-A uses this value to set the <code>aud</code> claim of the
+resulting JWT Authorization Grant, so that AS-B can verify the
+grant was issued for it.  The value <span class="bcp14">MUST</span> be the <code>issuer</code>
+identifier as advertised in AS-B's authorization server metadata
+(<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>), or a logical name for AS-B that AS-A has been
+configured to recognize and map to AS-B's actual issuer identifier.<a href="#section-4.2.1-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-4.2.1-2.3">
+<code>resource</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.1-2.4">
+              <p id="section-4.2.1-2.4.1"><span class="bcp14">OPTIONAL</span>.  A URI that identifies the specific Protected Resource
+(resource server) in Trust Domain B that the Requesting Workload
+intends to call, as defined in Section 2 of <span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span>.  When
+present, AS-A <span class="bcp14">SHOULD</span> include this value in the <code>resource</code> claim of
+the JWT Authorization Grant so that AS-B can issue a resource-bound
+access token.<a href="#section-4.2.1-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
+<p id="section-4.2.1-3">The two parameters serve distinct purposes that <span class="bcp14">MUST NOT</span> be confused:<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-4.2.1-4.1">
+              <p id="section-4.2.1-4.1.1"><code>audience</code> identifies the <strong>authorization server</strong> (AS-B) that
+will receive and validate the JWT Authorization Grant.  It
+determines the <code>aud</code> claim of the grant.<a href="#section-4.2.1-4.1.1" class="pilcrow">¶</a></p>
+</li>
+            <li class="normal" id="section-4.2.1-4.2">
+              <p id="section-4.2.1-4.2.1"><code>resource</code> identifies the <strong>resource server</strong> (the protected API)
+for which an access token is ultimately sought.  It is used by
+AS-B when issuing the access token, not for validating the grant
+itself.<a href="#section-4.2.1-4.2.1" class="pilcrow">¶</a></p>
+</li>
+          </ul>
+<p id="section-4.2.1-5">This distinction aligns with <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>
+Section 2.3.1, which requires either <code>resource</code> or <code>audience</code> to be
+present and specifies that these values identify the target
+authorization server.  However, in this profile <code>resource</code> in the
+Token Exchange request identifies the resource server (following
+<span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span>), while <code>audience</code> identifies AS-B.  Implementations
+<span class="bcp14">MUST</span> use <code>audience</code> to identify AS-B and <span class="bcp14">MAY</span> additionally use
+<code>resource</code> to identify the target resource server, but <span class="bcp14">MUST NOT</span> pass
+the AS-B issuer URL as the <code>resource</code> parameter.<a href="#section-4.2.1-5" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="remaining-parameters">
+<section id="section-4.2.2">
+          <h4 id="name-remaining-parameters">
+<a href="#section-4.2.2" class="section-number selfRef">4.2.2. </a><a href="#name-remaining-parameters" class="section-name selfRef">Remaining Parameters</a>
+          </h4>
+<span class="break"></span><dl class="dlParallel" id="section-4.2.2-1">
+            <dt id="section-4.2.2-1.1">
+<code>grant_type</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.2-1.2">
+              <p id="section-4.2.2-1.2.1"><span class="bcp14">REQUIRED</span>.  The value <span class="bcp14">MUST</span> be
+<code>urn:ietf:params:oauth:grant-type:token-exchange</code>.<a href="#section-4.2.2-1.2.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-4.2.2-1.3">
+<code>subject_token</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.2-1.4">
+              <p id="section-4.2.2-1.4.1"><span class="bcp14">REQUIRED</span>.  The Txn-Token as described in
+<a href="#subject-token-requirements" class="auto internal xref">Section 4.1</a>.<a href="#section-4.2.2-1.4.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-4.2.2-1.5">
+<code>subject_token_type</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.2-1.6">
+              <p id="section-4.2.2-1.6.1"><span class="bcp14">REQUIRED</span>.  The value <span class="bcp14">MUST</span> be
+<code>urn:ietf:params:oauth:token-type:txn-token</code>.<a href="#section-4.2.2-1.6.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-4.2.2-1.7">
+<code>requested_token_type</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.2-1.8">
+              <p id="section-4.2.2-1.8.1"><span class="bcp14">OPTIONAL</span>.  When present, the value <span class="bcp14">MUST</span> be
+<code>urn:ietf:params:oauth:token-type:jwt</code>, indicating that a JWT
+Authorization Grant is requested.  If absent, AS-A <span class="bcp14">MUST</span> still
+produce a JWT Authorization Grant conforming to this profile when
+the other parameters conform to this profile.<a href="#section-4.2.2-1.8.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-4.2.2-1.9">
+<code>scope</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.2-1.10">
+              <p id="section-4.2.2-1.10.1"><span class="bcp14">OPTIONAL</span>.  The space-separated list of scopes requested for
+the resulting JWT Authorization Grant, which constrains the
+access token that AS-B will ultimately issue.  AS-A <span class="bcp14">MUST NOT</span>
+issue a JWT Authorization Grant with a scope that exceeds the
+scope asserted in the <code>scope</code> claim of the presented Txn-Token.
+If the requested scope is wider than the Txn-Token's scope,
+AS-A <span class="bcp14">MUST</span> either narrow the granted scope to the intersection
+or deny the request.<a href="#section-4.2.2-1.10.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
+<p id="section-4.2.2-2">The <code>actor_token</code> and <code>actor_token_type</code> parameters defined in
+<span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span> are not used in this profile.<a href="#section-4.2.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="example-token-exchange-request">
+<section id="section-4.2.3">
+          <h4 id="name-example-token-exchange-requ">
+<a href="#section-4.2.3" class="section-number selfRef">4.2.3. </a><a href="#name-example-token-exchange-requ" class="section-name selfRef">Example Token Exchange Request</a>
+          </h4>
+<p id="section-4.2.3-1">The following is a non-normative example of a Token Exchange request
+conforming to this profile.  The Requesting Workload (a service in
+Trust Domain A) requests a JWT Authorization Grant for AS-B
+(<code>https://as.b.example</code>) in order to subsequently call the
+inventory API (<code>https://api.b.example/inventory</code>).<a href="#section-4.2.3-1" class="pilcrow">¶</a></p>
+<div class="lang-http-message sourcecode" id="section-4.2.3-2">
+<pre>
+POST /token HTTP/1.1
+Host: as.a.example
+Content-Type: application/x-www-form-urlencoded
+Authorization: Bearer &lt;workload-client-credential&gt;
+
+grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
+&amp;subject_token=&lt;txn-token&gt;
+&amp;subject_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Atxn-token
+&amp;audience=https%3A%2F%2Fas.b.example
+&amp;resource=https%3A%2F%2Fapi.b.example%2Finventory
+&amp;scope=inventory.read
+</pre><a href="#section-4.2.3-2" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+<div id="token-exchange-response">
+<section id="section-4.2.4">
+          <h4 id="name-token-exchange-response">
+<a href="#section-4.2.4" class="section-number selfRef">4.2.4. </a><a href="#name-token-exchange-response" class="section-name selfRef">Token Exchange Response</a>
+          </h4>
+<p id="section-4.2.4-1">If the request is valid and the Requesting Workload is authorized to
+receive a JWT Authorization Grant for the indicated audience, AS-A
+returns a Token Exchange response as defined in Section 2.2 of
+<span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.<a href="#section-4.2.4-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-4.2.4-2">
+            <dt id="section-4.2.4-2.1">
+<code>access_token</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.4-2.2">
+              <p id="section-4.2.4-2.2.1"><span class="bcp14">REQUIRED</span>.  The JWT Authorization Grant.  (Token Exchange uses the
+<code>access_token</code> field for the returned token for historical
+compatibility reasons, even though this is not an OAuth access
+token.)<a href="#section-4.2.4-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-4.2.4-2.3">
+<code>issued_token_type</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.4-2.4">
+              <p id="section-4.2.4-2.4.1"><span class="bcp14">REQUIRED</span>.  The value <span class="bcp14">MUST</span> be
+<code>urn:ietf:params:oauth:token-type:jwt</code>.<a href="#section-4.2.4-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-4.2.4-2.5">
+<code>token_type</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.4-2.6">
+              <p id="section-4.2.4-2.6.1"><span class="bcp14">REQUIRED</span>.  The value <span class="bcp14">MUST</span> be <code>N_A</code>, as this is not an OAuth
+access token and sender-constraining via <code>token_type</code> does not
+apply.<a href="#section-4.2.4-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-4.2.4-2.7">
+<code>expires_in</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.4-2.8">
+              <p id="section-4.2.4-2.8.1"><span class="bcp14">RECOMMENDED</span>.  The lifetime of the JWT Authorization Grant in
+seconds.  This value <span class="bcp14">SHOULD</span> reflect the <code>exp</code> claim of the
+returned grant JWT and <span class="bcp14">SHOULD</span> be short (see <a href="#jwt-authorization-grant" class="auto internal xref">Section 6</a>).<a href="#section-4.2.4-2.8.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-4.2.4-2.9">
+<code>refresh_token</code>:</dt>
+            <dd style="margin-left: 1.5em" id="section-4.2.4-2.10">
+              <p id="section-4.2.4-2.10.1">This parameter <span class="bcp14">SHOULD NOT</span> be present.<a href="#section-4.2.4-2.10.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
+<p id="section-4.2.4-3">On error, AS-A returns an OAuth 2.0 token error response as defined
+in Section 5.2 of <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span> and Section 2.2.2 of <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.<a href="#section-4.2.4-3" class="pilcrow">¶</a></p>
+<div class="lang-http-message sourcecode" id="section-4.2.4-4">
+<pre>
+HTTP/1.1 200 OK
+Content-Type: application/json
+Cache-Control: no-cache, no-store
+
+{
+  "access_token": "eyJ...&lt;JWT Authorization Grant&gt;...",
+  "issued_token_type": "urn:ietf:params:oauth:token-type:jwt",
+  "token_type": "N_A",
+  "expires_in": 60
+}
+</pre><a href="#section-4.2.4-4" class="pilcrow">¶</a>
+</div>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="processing-rules">
+<section id="section-5">
+      <h2 id="name-processing-rules">
+<a href="#section-5" class="section-number selfRef">5. </a><a href="#name-processing-rules" class="section-name selfRef">Processing Rules</a>
+      </h2>
+<div id="as-a-processing-rules">
+<section id="section-5.1">
+        <h3 id="name-as-a-processing-rules">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-as-a-processing-rules" class="section-name selfRef">AS-A Processing Rules</a>
+        </h3>
+<p id="section-5.1-1">Upon receipt of a Token Exchange request conforming to this profile,
+AS-A <span class="bcp14">MUST</span> perform the following steps:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.1-2">
+<li id="section-5.1-2.1">
+            <p id="section-5.1-2.1.1">Authenticate the client (Requesting Workload) using the mechanisms
+specified in Section 5.1 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> and
+Section 2.5 of <span>[<a href="#RFC9700" class="cite xref">RFC9700</a>]</span>.<a href="#section-5.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.2">
+            <p id="section-5.1-2.2.1">Validate the Txn-Token signature using the public keys of the TTS
+that issued it.  AS-A <span class="bcp14">MUST</span> establish a trust relationship with the
+TTS; in deployments where the TTS and AS-A are co-located, this is
+straightforward.  Where they are separate services, AS-A <span class="bcp14">MUST</span> be
+configured with the TTS's <code>jwks_uri</code> or equivalent key material.<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.3">
+            <p id="section-5.1-2.3.1">Validate that the Txn-Token is not expired.<a href="#section-5.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.4">
+            <p id="section-5.1-2.4.1">Validate that the <code>aud</code> claim of the Txn-Token is acceptable to
+AS-A (i.e., the Txn-Token was intended for consumption by AS-A or
+the TTS acting on AS-A's behalf).<a href="#section-5.1-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.5">
+            <p id="section-5.1-2.5.1">Resolve the target AS-B from the <code>audience</code> parameter.  AS-A <span class="bcp14">MUST</span>
+verify that the <code>audience</code> value corresponds to a known AS-B with
+which a trust relationship has been established.  If the <code>audience</code>
+is unknown or the policy prohibits issuing a JWT Authorization Grant
+for that audience, AS-A <span class="bcp14">MUST</span> deny the request as specified in
+Section 2.2.2 of <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.  AS-A <span class="bcp14">MUST NOT</span> accept a bare resource
+server URI in the <code>audience</code> parameter in place of an AS-B issuer
+identifier.<a href="#section-5.1-2.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.6">
+            <p id="section-5.1-2.6.1">If the <code>resource</code> parameter is present, validate that it identifies
+a resource server within Trust Domain B that is consistent with the
+indicated <code>audience</code> (AS-B).  AS-A <span class="bcp14">SHOULD</span> propagate the <code>resource</code>
+value into the <code>resource</code> claim of the JWT Authorization Grant so
+that AS-B can issue a resource-bound access token (see
+<span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span>).<a href="#section-5.1-2.6.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.7">
+            <p id="section-5.1-2.7.1">Validate that the requested <code>scope</code> (if present) does not exceed
+the scope of the presented Txn-Token.  AS-A <span class="bcp14">MUST NOT</span> issue a JWT
+Authorization Grant with a broader scope than the Txn-Token's scope.<a href="#section-5.1-2.7.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.8">
+            <p id="section-5.1-2.8.1">Apply claims transcription policy as described in
+<a href="#claims-transcription" class="auto internal xref">Section 7</a>.<a href="#section-5.1-2.8.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.9">
+            <p id="section-5.1-2.9.1">Construct and sign the JWT Authorization Grant as described in
+<a href="#jwt-authorization-grant" class="auto internal xref">Section 6</a>, setting the <code>aud</code> claim to the AS-B
+issuer identifier resolved in step 5.<a href="#section-5.1-2.9.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.1-2.10">
+            <p id="section-5.1-2.10.1">Return the JWT Authorization Grant in the Token Exchange response
+as described in <a href="#token-exchange-request-parameters" class="auto internal xref">Section 4.2</a>.<a href="#section-5.1-2.10.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+</section>
+</div>
+<div id="as-b-processing-rules">
+<section id="section-5.2">
+        <h3 id="name-as-b-processing-rules">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-as-b-processing-rules" class="section-name selfRef">AS-B Processing Rules</a>
+        </h3>
+<p id="section-5.2-1">Upon receipt of a JWT Bearer grant request (<span>[<a href="#RFC7523" class="cite xref">RFC7523</a>]</span>) that
+originated from this profile, AS-B <span class="bcp14">MUST</span> perform the following steps
+in addition to the processing rules specified in Section 2.4.2 of
+<span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-5.2-2">
+<li id="section-5.2-2.1">
+            <p id="section-5.2-2.1.1">Validate the <code>typ</code> header of the JWT Authorization Grant.  The value
+<span class="bcp14">MUST</span> be <code>txn-chain+jwt</code> as defined in <a href="#jwt-authorization-grant" class="auto internal xref">Section 6</a>.<a href="#section-5.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.2-2.2">
+            <p id="section-5.2-2.2.1">Validate the <code>aud</code> claim identifies AS-B.<a href="#section-5.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.2-2.3">
+            <p id="section-5.2-2.3.1">Validate the <code>sub</code> claim or mapped workload identity claim against
+known or policy-authorized subjects within Trust Domain B.<a href="#section-5.2-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.2-2.4">
+            <p id="section-5.2-2.4.1">If present, evaluate the <code>txn_claims</code> claim (see
+<a href="#claims-transcription" class="auto internal xref">Section 7</a>) when applying authorization policy, such
+as verifying that the original request context is consistent with
+the access being requested.<a href="#section-5.2-2.4.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-5.2-2.5">
+            <p id="section-5.2-2.5.1">Issue an access token constrained by the scope asserted in the JWT
+Authorization Grant.  AS-B <span class="bcp14">SHOULD NOT</span> issue refresh tokens as
+described in Section 5.4 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.<a href="#section-5.2-2.5.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
+</section>
+</div>
+</section>
+</div>
+<div id="jwt-authorization-grant">
+<section id="section-6">
+      <h2 id="name-jwt-authorization-grant">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-jwt-authorization-grant" class="section-name selfRef">JWT Authorization Grant</a>
+      </h2>
+<div id="grant-format">
+<section id="section-6.1">
+        <h3 id="name-grant-format">
+<a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-grant-format" class="section-name selfRef">Grant Format</a>
+        </h3>
+<p id="section-6.1-1">The JWT Authorization Grant produced by AS-A in response to a Token
+Exchange request conforming to this profile is a JWT <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>
+that <span class="bcp14">MUST</span> conform to the JWT Authorization Grant requirements
+specified in Section 2.3.3 of
+<span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
+<div id="jwt-header">
+<section id="section-6.1.1">
+          <h4 id="name-jwt-header">
+<a href="#section-6.1.1" class="section-number selfRef">6.1.1. </a><a href="#name-jwt-header" class="section-name selfRef">JWT Header</a>
+          </h4>
+<p id="section-6.1.1-1">The JWT header <span class="bcp14">MUST</span> include the following:<a href="#section-6.1.1-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1.1-2">
+            <dt id="section-6.1.1-2.1">typ:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.1-2.2">
+              <p id="section-6.1.1-2.2.1"><span class="bcp14">REQUIRED</span>.  The value <span class="bcp14">MUST</span> be <code>txn-chain+jwt</code>.  Using an explicit
+type is <span class="bcp14">REQUIRED</span> by this profile, consistent with the JSON Web
+Token Best Current Practices <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.<a href="#section-6.1.1-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.1-2.3">alg:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.1-2.4">
+              <p id="section-6.1.1-2.4.1"><span class="bcp14">REQUIRED</span>.  An asymmetric signing algorithm appropriate for the
+security requirements of the deployment.  Deployments <span class="bcp14">SHOULD</span>
+use PS256, PS384, PS512, ES256, ES384, or ES512 as defined in
+<span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>.  The use of <code>none</code> or symmetric algorithms is
+prohibited.<a href="#section-6.1.1-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.1-2.5">kid:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.1-2.6">
+              <p id="section-6.1.1-2.6.1"><span class="bcp14">RECOMMENDED</span>.  The key identifier corresponding to the signing key.<a href="#section-6.1.1-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="jwt-body-claims">
+<section id="section-6.1.2">
+          <h4 id="name-jwt-body-claims">
+<a href="#section-6.1.2" class="section-number selfRef">6.1.2. </a><a href="#name-jwt-body-claims" class="section-name selfRef">JWT Body Claims</a>
+          </h4>
+<p id="section-6.1.2-1">The following claims <span class="bcp14">MUST</span> be present in the JWT Authorization Grant:<a href="#section-6.1.2-1" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1.2-2">
+            <dt id="section-6.1.2-2.1">iss:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-2.2">
+              <p id="section-6.1.2-2.2.1"><span class="bcp14">REQUIRED</span>.  The Issuer identifier of AS-A (<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> Section 2).<a href="#section-6.1.2-2.2.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.2-2.3">sub:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-2.4">
+              <p id="section-6.1.2-2.4.1"><span class="bcp14">REQUIRED</span>.  The subject of the JWT Authorization Grant.  This
+<span class="bcp14">MUST</span> be derived from the <code>sub</code> claim of the Txn-Token.  AS-A <span class="bcp14">MAY</span>
+transcribe the identifier according to the mapping defined in
+<a href="#claims-transcription" class="auto internal xref">Section 7</a>.<a href="#section-6.1.2-2.4.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.2-2.5">aud:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-2.6">
+              <p id="section-6.1.2-2.6.1"><span class="bcp14">REQUIRED</span>.  The Issuer URL of AS-B (<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> Section 2), derived
+from the <code>audience</code> parameter of the Token Exchange request.  As
+specified in Section 2.3.3 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>,
+the <code>aud</code> claim <span class="bcp14">SHOULD</span> be restricted to a single authorization server
+to prevent the grant from being replayed at an unintended AS.<a href="#section-6.1.2-2.6.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.2-2.7">iat:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-2.8">
+              <p id="section-6.1.2-2.8.1"><span class="bcp14">REQUIRED</span>.  The time at which the grant was issued (<span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>
+Section 4.1.6).<a href="#section-6.1.2-2.8.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.2-2.9">exp:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-2.10">
+              <p id="section-6.1.2-2.10.1"><span class="bcp14">REQUIRED</span>.  The expiration time of the grant (<span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span> Section
+4.1.4).  The lifetime <span class="bcp14">SHOULD</span> be short — deployments <span class="bcp14">SHOULD</span> use a
+value no greater than 300 seconds (5 minutes) and <span class="bcp14">SHOULD</span> prefer
+values of 60 seconds or less.<a href="#section-6.1.2-2.10.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.2-2.11">jti:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-2.12">
+              <p id="section-6.1.2-2.12.1"><span class="bcp14">REQUIRED</span>.  A unique identifier for this JWT (<span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span> Section
+4.1.7).  AS-B <span class="bcp14">SHOULD</span> enforce single-use semantics by tracking
+presented <code>jti</code> values within the grant's validity window.<a href="#section-6.1.2-2.12.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.2-2.13">scope:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-2.14">
+              <p id="section-6.1.2-2.14.1"><span class="bcp14">RECOMMENDED</span>.  The space-separated list of scopes authorized for
+this grant (<span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span> Section 3.3).  The scope <span class="bcp14">MUST NOT</span> be wider
+than the scope in the <code>scope</code> claim of the source Txn-Token.<a href="#section-6.1.2-2.14.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
+<p id="section-6.1.2-3">The following claims <span class="bcp14">SHOULD</span> be present:<a href="#section-6.1.2-3" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1.2-4">
+            <dt id="section-6.1.2-4.1">txn:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-4.2">
+              <p id="section-6.1.2-4.2.1">The unique transaction identifier of the originating Txn-Token, as
+defined in <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>.  Including this
+claim preserves the transaction correlation chain across the domain
+boundary and supports auditing.<a href="#section-6.1.2-4.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
+<p id="section-6.1.2-5">The following claims <span class="bcp14">MAY</span> be present:<a href="#section-6.1.2-5" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="section-6.1.2-6">
+            <dt id="section-6.1.2-6.1">resource:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-6.2">
+              <p id="section-6.1.2-6.2.1">A URI or array of URIs identifying the Protected Resource(s) in
+Trust Domain B for which access is being requested, as defined in
+Section 2 of <span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span>.  When present, this claim <span class="bcp14">MUST</span> be derived
+from the <code>resource</code> parameter of the Token Exchange request.  AS-B
+<span class="bcp14">SHOULD</span> use this value to issue a resource-bound access token.  Note
+that this claim identifies the <strong>resource server</strong> (the API), not AS-B;
+it is distinct from the <code>aud</code> claim, which identifies AS-B.<a href="#section-6.1.2-6.2.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.2-6.3">txn_claims:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-6.4">
+              <p id="section-6.1.2-6.4.1">A JSON object containing a subset of claims transcribed from the
+Txn-Token.  The exact set of claims to include is determined by
+the AS-A's claims transcription policy (see
+<a href="#claims-transcription" class="auto internal xref">Section 7</a>).  Claims that reveal internal
+infrastructure details or that are not meaningful to AS-B
+<span class="bcp14">SHOULD</span> be omitted.<a href="#section-6.1.2-6.4.1" class="pilcrow">¶</a></p>
+</dd>
+            <dd class="break"></dd>
+<dt id="section-6.1.2-6.5">cnf:</dt>
+            <dd style="margin-left: 1.5em" id="section-6.1.2-6.6">
+              <p id="section-6.1.2-6.6.1">If sender-constraining is in use (see <a href="#sender-constraining" class="auto internal xref">Section 9.2</a>),
+the confirmation method claim as defined in RFC 7800.<a href="#section-6.1.2-6.6.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="example-jwt-authorization-grant">
+<section id="section-6.1.3">
+          <h4 id="name-example-jwt-authorization-g">
+<a href="#section-6.1.3" class="section-number selfRef">6.1.3. </a><a href="#name-example-jwt-authorization-g" class="section-name selfRef">Example JWT Authorization Grant</a>
+          </h4>
+<p id="section-6.1.3-1">The following is a non-normative example of the header and claims of a
+JWT Authorization Grant produced by this profile, corresponding to the
+Token Exchange request example in
+<a href="#token-exchange-request-parameters" class="auto internal xref">Section 4.2</a>.  The token is presented in
+decoded form.<a href="#section-6.1.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.1.3-2">Header:<a href="#section-6.1.3-2" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-6.1.3-3">
+<pre>
+{
+  "typ": "txn-chain+jwt",
+  "alg": "ES256",
+  "kid": "as-a-2026-01"
+}
+</pre><a href="#section-6.1.3-3" class="pilcrow">¶</a>
+</div>
+<p id="section-6.1.3-4">Claims:<a href="#section-6.1.3-4" class="pilcrow">¶</a></p>
+<div class="lang-json sourcecode" id="section-6.1.3-5">
+<pre>
+{
+  "iss": "https://as.a.example",
+  "sub": "workload-svc-1@a.example",
+  "aud": "https://as.b.example",
+  "iat": 1746700000,
+  "exp": 1746700060,
+  "jti": "8f14e45f-ceee-467a-a19e-ab8f290a1f30",
+  "scope": "inventory.read",
+  "resource": "https://api.b.example/inventory",
+  "txn": "a9b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "txn_claims": {
+    "purp": "inventory-check",
+    "rctx": {
+      "ip": "203.0.113.42"
+    }
+  }
+}
+</pre><a href="#section-6.1.3-5" class="pilcrow">¶</a>
+</div>
+<p id="section-6.1.3-6">Note that <code>aud</code> is set to <code>https://as.b.example</code> (the AS-B issuer
+identifier, derived from the <code>audience</code> request parameter) and
+<code>resource</code> is set to <code>https://api.b.example/inventory</code> (the resource
+server URI, derived from the <code>resource</code> request parameter).  These
+are distinct values serving distinct purposes.<a href="#section-6.1.3-6" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+</section>
+</div>
+<div id="claims-transcription">
+<section id="section-7">
+      <h2 id="name-claims-transcription">
+<a href="#section-7" class="section-number selfRef">7. </a><a href="#name-claims-transcription" class="section-name selfRef">Claims Transcription</a>
+      </h2>
+<p id="section-7-1">This profile constrains and extends the claims transcription rules of
+Section 2.5 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> as follows.<a href="#section-7-1" class="pilcrow">¶</a></p>
+<div id="mandatory-transcriptions">
+<section id="section-7.1">
+        <h3 id="name-mandatory-transcriptions">
+<a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-mandatory-transcriptions" class="section-name selfRef">Mandatory Transcriptions</a>
+        </h3>
+<p id="section-7.1-1">AS-A <span class="bcp14">MUST</span> derive the <code>sub</code> claim of the JWT Authorization Grant from
+the <code>sub</code> claim of the Txn-Token.  If the subject identifier format
+differs between Trust Domain A and Trust Domain B, AS-A <span class="bcp14">MUST</span>
+translate the identifier accordingly.  If no mapping for the subject
+can be determined, AS-A <span class="bcp14">MUST</span> reject the request.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
+<p id="section-7.1-2">AS-A <span class="bcp14">MUST</span> transcribe the <code>txn</code> claim (the unique transaction
+identifier) from the Txn-Token into the JWT Authorization Grant.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="constrained-scope-transcription">
+<section id="section-7.2">
+        <h3 id="name-constrained-scope-transcrip">
+<a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-constrained-scope-transcrip" class="section-name selfRef">Constrained Scope Transcription</a>
+        </h3>
+<p id="section-7.2-1">AS-A <span class="bcp14">MUST NOT</span> expand the scope beyond the <code>scope</code> claim of the
+source Txn-Token.  AS-A <span class="bcp14">MAY</span> further restrict the scope in response
+to policy or the <code>scope</code> parameter in the Token Exchange request.
+The effective scope in the JWT Authorization Grant <span class="bcp14">MUST</span> be the
+intersection of the requested scope and the Txn-Token's scope.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="optional-context-claims-transcription">
+<section id="section-7.3">
+        <h3 id="name-optional-context-claims-tra">
+<a href="#section-7.3" class="section-number selfRef">7.3. </a><a href="#name-optional-context-claims-tra" class="section-name selfRef">Optional Context Claims Transcription</a>
+        </h3>
+<p id="section-7.3-1">AS-A <span class="bcp14">MAY</span> include a <code>txn_claims</code> claim in the JWT Authorization Grant,
+containing a subset of claims extracted from the Txn-Token body.
+The purpose of this claim is to allow AS-B to make more informed
+authorization decisions based on the original transaction context.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
+<p id="section-7.3-2">The following guidance applies to transcribing Txn-Token claims into
+<code>txn_claims</code>:<a href="#section-7.3-2" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.3-3.1">
+            <p id="section-7.3-3.1.1">Claims that identify internal infrastructure, intermediate
+workloads, or internal IP addresses <span class="bcp14">SHOULD</span> be omitted unless
+Trust Domain B has an explicit need for them.<a href="#section-7.3-3.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.3-3.2">
+            <p id="section-7.3-3.2.1">The <code>purp</code> claim (purpose/intent of the transaction) <span class="bcp14">SHOULD</span> be
+included when it is meaningful to AS-B's authorization policy.<a href="#section-7.3-3.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.3-3.3">
+            <p id="section-7.3-3.3.1">The <code>rctx</code> claim (requester context) <span class="bcp14">MAY</span> be included in a
+redacted form to preserve the IP address of the original external
+endpoint while stripping internal network information.<a href="#section-7.3-3.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.3-3.4">
+            <p id="section-7.3-3.4.1">AS-A <span class="bcp14">SHOULD NOT</span> include claims that are specific to the internal
+workload orchestration of Trust Domain A and that have no
+normative meaning in Trust Domain B.<a href="#section-7.3-3.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+<p id="section-7.3-4">When AS-B receives a JWT Authorization Grant that includes
+<code>txn_claims</code>, both AS-A (at grant issuance time) and AS-B (at token
+issuance time) <span class="bcp14">MUST</span> agree on the semantics of the included claims.
+Profiles or deployment agreements <span class="bcp14">SHOULD</span> define the set of claims
+that may appear in <code>txn_claims</code> and their interpretation.<a href="#section-7.3-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="subject-identifier-formats">
+<section id="section-7.4">
+        <h3 id="name-subject-identifier-formats">
+<a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-subject-identifier-formats" class="section-name selfRef">Subject Identifier Formats</a>
+        </h3>
+<p id="section-7.4-1">When SPIFFE Workload Identifiers <span>[<a href="#I-D.ietf-wimse-arch" class="cite xref">I-D.ietf-wimse-arch</a>]</span> or WIMSE
+Workload Credentials <span>[<a href="#I-D.ietf-wimse-workload-creds" class="cite xref">I-D.ietf-wimse-workload-creds</a>]</span> are in use in
+Trust Domain A, the <code>sub</code> claim of the Txn-Token may be a SPIFFE URI
+(e.g., <code>spiffe://trust-domain-a.example/ns/default/sa/svc1</code>).  AS-A
+<span class="bcp14">MUST</span> map this identifier to a form that AS-B can recognize.  Possible
+mappings include:<a href="#section-7.4-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-7.4-2.1">
+            <p id="section-7.4-2.1.1">A local identifier at AS-B if a prior federation agreement has
+established an explicit mapping.<a href="#section-7.4-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-7.4-2.2">
+            <p id="section-7.4-2.2.1">A transformed identifier that preserves the structural SPIFFE URI
+form (e.g., <code>spiffe://trust-domain-a.example/svc1</code>) and relies on
+AS-B's policy to reason about cross-domain SPIFFE URIs.<a href="#section-7.4-2.2.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+</section>
+</div>
+<div id="authorization-server-metadata">
+<section id="section-8">
+      <h2 id="name-authorization-server-metada">
+<a href="#section-8" class="section-number selfRef">8. </a><a href="#name-authorization-server-metada" class="section-name selfRef">Authorization Server Metadata</a>
+      </h2>
+<p id="section-8-1">This profile registers the following addition to the Authorization
+Server Metadata defined in <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and Section 3 of
+<span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.<a href="#section-8-1" class="pilcrow">¶</a></p>
+<p id="section-8-2">In addition to the <code>identity_chaining_requested_token_types_supported</code>
+metadata parameter, an Authorization Server that supports this profile
+<span class="bcp14">SHOULD</span> include the following token type in the list:<a href="#section-8-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-8-3">
+<pre>
+urn:ietf:params:oauth:token-type:txn-token
+</pre><a href="#section-8-3" class="pilcrow">¶</a>
+</div>
+<p id="section-8-4">Inclusion of this value indicates that the Authorization Server will
+accept Txn-Tokens as the <code>subject_token</code> in a Token Exchange request
+conforming to this profile.<a href="#section-8-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="security-considerations">
+<section id="section-9">
+      <h2 id="name-security-considerations">
+<a href="#section-9" class="section-number selfRef">9. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
+      </h2>
+<div id="client-authentication">
+<section id="section-9.1">
+        <h3 id="name-client-authentication">
+<a href="#section-9.1" class="section-number selfRef">9.1. </a><a href="#name-client-authentication" class="section-name selfRef">Client Authentication</a>
+        </h3>
+<p id="section-9.1-1">The Requesting Workload <span class="bcp14">MUST</span> authenticate to AS-A when performing the
+Token Exchange request.  AS-A <span class="bcp14">SHOULD</span> follow the guidance of Section
+2.5 of <span>[<a href="#RFC9700" class="cite xref">RFC9700</a>]</span> for client authentication.  The use of
+asymmetric key-based client authentication (e.g., <span>[<a href="#RFC7523" class="cite xref">RFC7523</a>]</span> client
+assertion) is <span class="bcp14">RECOMMENDED</span>.  The use of static shared secrets for
+client authentication is <span class="bcp14">NOT RECOMMENDED</span>.<a href="#section-9.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="sender-constraining">
+<section id="section-9.2">
+        <h3 id="name-sender-constraining-tokens">
+<a href="#section-9.2" class="section-number selfRef">9.2. </a><a href="#name-sender-constraining-tokens" class="section-name selfRef">Sender Constraining Tokens</a>
+        </h3>
+<p id="section-9.2-1">AS-B <span class="bcp14">SHOULD</span> issue sender-constrained access tokens.  Both DPoP
+(OAuth 2.0 Demonstrating Proof of Possession) and Mutual-TLS
+(<span>[<a href="#RFC9700" class="cite xref">RFC9700</a>]</span> Section 2.3) are <span class="bcp14">RECOMMENDED</span> mechanisms.<a href="#section-9.2-1" class="pilcrow">¶</a></p>
+<p id="section-9.2-2">When the Authorization Server in Trust Domain A acts as client to
+AS-B (as in Appendix B.2 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>),
+the delegated key binding mechanism described in Appendix B.3 of
+<span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> <span class="bcp14">SHOULD</span> be used.  In this
+case, AS-A <span class="bcp14">MUST</span> verify proof of possession of the Requesting
+Workload's public key and convey the key to AS-B using the
+<code>requested_cnf</code> claim in the JWT Authorization Grant, so that AS-B
+can bind the resulting access token to that key.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="txn-token-as-bearer-credential">
+<section id="section-9.3">
+        <h3 id="name-txn-token-as-bearer-credent">
+<a href="#section-9.3" class="section-number selfRef">9.3. </a><a href="#name-txn-token-as-bearer-credent" class="section-name selfRef">Txn-Token as Bearer Credential</a>
+        </h3>
+<p id="section-9.3-1">A Txn-Token presented as a subject token is a bearer credential.
+If an attacker captures a valid Txn-Token before the Token Exchange
+request is made, it can potentially be used to obtain a JWT
+Authorization Grant.  Deployments <span class="bcp14">MUST</span> evaluate this risk.
+Mitigations include:<a href="#section-9.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-9.3-2.1">
+            <p id="section-9.3-2.1.1">Ensuring that all communication between the Requesting Workload
+and AS-A occurs over mutually authenticated TLS.<a href="#section-9.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-9.3-2.2">
+            <p id="section-9.3-2.2.1">Configuring very short Txn-Token lifetimes (on the order of
+seconds to minutes).<a href="#section-9.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-9.3-2.3">
+            <p id="section-9.3-2.3.1">Requiring that the Requesting Workload authenticate itself to AS-A
+with client credentials that cannot be stolen along with the
+Txn-Token.<a href="#section-9.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="jwt-authorization-grant-replay">
+<section id="section-9.4">
+        <h3 id="name-jwt-authorization-grant-rep">
+<a href="#section-9.4" class="section-number selfRef">9.4. </a><a href="#name-jwt-authorization-grant-rep" class="section-name selfRef">JWT Authorization Grant Replay</a>
+        </h3>
+<p id="section-9.4-1">The JWT Authorization Grant produced by this profile is also a
+bearer token.  AS-A <span class="bcp14">SHOULD</span> restrict its validity to a short
+lifetime.  AS-B <span class="bcp14">SHOULD</span> enforce single-use semantics for the <code>jti</code>
+claim to prevent replay.  See Section 5.5 of
+<span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> for additional guidance.<a href="#section-9.4-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="txn-token-cross-domain-leakage">
+<section id="section-9.5">
+        <h3 id="name-txn-token-cross-domain-leak">
+<a href="#section-9.5" class="section-number selfRef">9.5. </a><a href="#name-txn-token-cross-domain-leak" class="section-name selfRef">Txn-Token Cross-Domain Leakage</a>
+        </h3>
+<p id="section-9.5-1">Txn-Tokens are designed for use within a single trust domain and <span class="bcp14">MAY</span>
+contain information about internal workload call chains,
+infrastructure topology, or sensitive operational parameters that
+<span class="bcp14">MUST NOT</span> be exposed beyond the trust boundary.  AS-A <span class="bcp14">MUST NOT</span>
+forward the raw Txn-Token to AS-B.  The Txn-Token is consumed by
+AS-A, and only the carefully transcribed JWT Authorization Grant
+(with appropriate claims minimization as defined in
+<a href="#claims-transcription" class="auto internal xref">Section 7</a>) crosses the trust domain boundary.<a href="#section-9.5-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="scope-boundary-enforcement">
+<section id="section-9.6">
+        <h3 id="name-scope-boundary-enforcement">
+<a href="#section-9.6" class="section-number selfRef">9.6. </a><a href="#name-scope-boundary-enforcement" class="section-name selfRef">Scope Boundary Enforcement</a>
+        </h3>
+<p id="section-9.6-1">AS-A <span class="bcp14">MUST</span> enforce that the scope in the JWT Authorization Grant does
+not exceed the scope of the presented Txn-Token.  This prevents a
+workload from using identity chaining to escalate its privileges
+beyond what was authorized in the originating transaction.  AS-B <span class="bcp14">MUST</span>
+independently verify that the scope requested in the access token
+request does not exceed the scope of the presented JWT Authorization
+Grant.<a href="#section-9.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="trust-domain-isolation">
+<section id="section-9.7">
+        <h3 id="name-trust-domain-isolation">
+<a href="#section-9.7" class="section-number selfRef">9.7. </a><a href="#name-trust-domain-isolation" class="section-name selfRef">Trust Domain Isolation</a>
+        </h3>
+<p id="section-9.7-1">The trust relationship between AS-A and AS-B confers only the ability
+for AS-A to issue JWT Authorization Grants that AS-B will accept.
+AS-B <span class="bcp14">MUST NOT</span> allow clients in Trust Domain B to present JWT
+Authorization Grants issued by AS-A on behalf of clients in Trust
+Domain A as a mechanism to elevate their own privileges within Trust
+Domain B.<a href="#section-9.7-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="refresh-tokens">
+<section id="section-9.8">
+        <h3 id="name-refresh-tokens">
+<a href="#section-9.8" class="section-number selfRef">9.8. </a><a href="#name-refresh-tokens" class="section-name selfRef">Refresh Tokens</a>
+        </h3>
+<p id="section-9.8-1">AS-B <span class="bcp14">SHOULD NOT</span> issue refresh tokens in response to a JWT
+Authorization Grant request conforming to this profile, consistent
+with Section 5.4 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.  Because
+Txn-Tokens are short-lived and transaction-specific, re-obtaining a
+new Txn-Token and repeating the chaining flow is the correct
+mechanism for renewing authorization.<a href="#section-9.8-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="privacy-considerations">
+<section id="section-10">
+      <h2 id="name-privacy-considerations">
+<a href="#section-10" class="section-number selfRef">10. </a><a href="#name-privacy-considerations" class="section-name selfRef">Privacy Considerations</a>
+      </h2>
+<p id="section-10-1">Txn-Tokens may contain claims derived from the original external
+request, including information about the initiating user, their
+device, or the nature of the request.  This specification requires
+AS-A to apply claims minimization (see <a href="#claims-transcription" class="auto internal xref">Section 7</a>)
+before issuing a JWT Authorization Grant.<a href="#section-10-1" class="pilcrow">¶</a></p>
+<p id="section-10-2">Deployments <span class="bcp14">MUST</span> ensure that any user-identifying information
+included in <code>txn_claims</code> is consistent with the privacy policies of
+both Trust Domain A and Trust Domain B.  Trust relationships between
+authorization servers <span class="bcp14">MUST</span> be established with user privacy in mind,
+including alignment of data handling policies.<a href="#section-10-2" class="pilcrow">¶</a></p>
+<p id="section-10-3">The propagation of the <code>txn</code> claim (transaction correlation
+identifier) across domain boundaries enables end-to-end transaction
+tracing.  This may assist auditing and debugging but also constitutes
+a form of cross-domain correlation.  Deployments <span class="bcp14">SHOULD</span> evaluate
+whether the auditability benefits of propagating the <code>txn</code> claim
+outweigh the privacy implications in their specific context.<a href="#section-10-3" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="iana-considerations">
+<section id="section-11">
+      <h2 id="name-iana-considerations">
+<a href="#section-11" class="section-number selfRef">11. </a><a href="#name-iana-considerations" class="section-name selfRef">IANA Considerations</a>
+      </h2>
+<div id="iana-oauth-uri">
+<section id="section-11.1">
+        <h3 id="name-oauth-uri-registry">
+<a href="#section-11.1" class="section-number selfRef">11.1. </a><a href="#name-oauth-uri-registry" class="section-name selfRef">OAuth URI Registry</a>
+        </h3>
+<p id="section-11.1-1">This specification requests registration of the following value in
+the "OAuth URI" registry established by <span>[<a href="#RFC6749" class="cite xref">RFC6749</a>]</span> (maintained by
+IANA at <a href="https://www.iana.org/assignments/oauth-parameters">https://www.iana.org/assignments/oauth-parameters</a>):<a href="#section-11.1-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-11.1-2.1">
+            <p id="section-11.1-2.1.1">URI: <code>urn:ietf:params:oauth:token-type:txn-token</code><a href="#section-11.1-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-11.1-2.2">
+            <p id="section-11.1-2.2.1">Common Name: Transaction Token<a href="#section-11.1-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-11.1-2.3">
+            <p id="section-11.1-2.3.1">Change Controller: IETF<a href="#section-11.1-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-11.1-2.4">
+            <p id="section-11.1-2.4.1">Specification Document(s): <a href="#subject-token-requirements" class="auto internal xref">Section 4.1</a> of
+this document<a href="#section-11.1-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="jwt-typ-registration">
+<section id="section-11.2">
+        <h3 id="name-jwt-typ-registration">
+<a href="#section-11.2" class="section-number selfRef">11.2. </a><a href="#name-jwt-typ-registration" class="section-name selfRef">JWT Typ Registration</a>
+        </h3>
+<p id="section-11.2-1">This specification requests registration of the following value in
+the "JSON Web Signature and Encryption Header Parameters" registry
+(maintained by IANA):<a href="#section-11.2-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-11.2-2.1">
+            <p id="section-11.2-2.1.1">Header Parameter Name: <code>txn-chain+jwt</code><a href="#section-11.2-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-11.2-2.2">
+            <p id="section-11.2-2.2.1">Header Parameter Description: JWT type for a Transaction Token
+Chaining Authorization Grant as defined in this document<a href="#section-11.2-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-11.2-2.3">
+            <p id="section-11.2-2.3.1">Change Controller: IETF<a href="#section-11.2-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-11.2-2.4">
+            <p id="section-11.2-2.4.1">Specification Document(s): <a href="#jwt-authorization-grant" class="auto internal xref">Section 6</a> of this
+document<a href="#section-11.2-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+<div id="jwt-claims-registry">
+<section id="section-11.3">
+        <h3 id="name-jwt-claims-registry">
+<a href="#section-11.3" class="section-number selfRef">11.3. </a><a href="#name-jwt-claims-registry" class="section-name selfRef">JWT Claims Registry</a>
+        </h3>
+<p id="section-11.3-1">This specification requests registration of the following claim name
+in the "JSON Web Token Claims" registry (maintained by IANA):<a href="#section-11.3-1" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-11.3-2.1">
+            <p id="section-11.3-2.1.1">Claim Name: <code>txn_claims</code><a href="#section-11.3-2.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-11.3-2.2">
+            <p id="section-11.3-2.2.1">Claim Description: Transcribed claims from a Transaction Token,
+included in a JWT Authorization Grant to convey cross-domain
+authorization context<a href="#section-11.3-2.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-11.3-2.3">
+            <p id="section-11.3-2.3.1">Change Controller: IETF<a href="#section-11.3-2.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="section-11.3-2.4">
+            <p id="section-11.3-2.4.1">Specification Document(s): <a href="#claims-transcription" class="auto internal xref">Section 7</a> of this
+document<a href="#section-11.3-2.4.1" class="pilcrow">¶</a></p>
+</li>
+        </ul>
+</section>
+</div>
+</section>
+</div>
+<div id="sec-combined-references">
+<section id="section-12">
+      <h2 id="name-references">
+<a href="#section-12" class="section-number selfRef">12. </a><a href="#name-references" class="section-name selfRef">References</a>
+      </h2>
+<div id="sec-normative-references">
+<section id="section-12.1">
+        <h3 id="name-normative-references">
+<a href="#section-12.1" class="section-number selfRef">12.1. </a><a href="#name-normative-references" class="section-name selfRef">Normative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-oauth-identity-chaining">[I-D.ietf-oauth-identity-chaining]</dt>
+        <dd>
+<span class="refAuthor">Schwenkschuster, A.</span>, <span class="refAuthor">Kasselman, P.</span>, <span class="refAuthor">Burgin, K.</span>, <span class="refAuthor">Jenkins, M.</span>, <span class="refAuthor">Campbell, B.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth Identity and Authorization Chaining Across Domains"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-identity-chaining-11</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-11">https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-11</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-oauth-transaction-tokens">[I-D.ietf-oauth-transaction-tokens]</dt>
+        <dd>
+<span class="refAuthor">Tulshibagwale, A.</span>, <span class="refAuthor">Fletcher, G.</span>, and <span class="refAuthor">P. Kasselman</span>, <span class="refTitle">"Transaction Tokens"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-transaction-tokens-08</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-ietf-oauth-transaction-tokens/">https://datatracker.ietf.org/doc/draft-ietf-oauth-transaction-tokens/</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC2119">[RFC2119]</dt>
+        <dd>
+<span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC6749">[RFC6749]</dt>
+        <dd>
+<span class="refAuthor">Hardt, D., Ed.</span>, <span class="refTitle">"The OAuth 2.0 Authorization Framework"</span>, <span class="seriesInfo">RFC 6749</span>, <span class="seriesInfo">DOI 10.17487/RFC6749</span>, <time datetime="2012-10" class="refDate">October 2012</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc6749">https://www.rfc-editor.org/rfc/rfc6749</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7519">[RFC7519]</dt>
+        <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">N. Sakimura</span>, <span class="refTitle">"JSON Web Token (JWT)"</span>, <span class="seriesInfo">RFC 7519</span>, <span class="seriesInfo">DOI 10.17487/RFC7519</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7519">https://www.rfc-editor.org/rfc/rfc7519</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7521">[RFC7521]</dt>
+        <dd>
+<span class="refAuthor">Campbell, B.</span>, <span class="refAuthor">Mortimore, C.</span>, <span class="refAuthor">Jones, M.</span>, and <span class="refAuthor">Y. Goland</span>, <span class="refTitle">"Assertion Framework for OAuth 2.0 Client Authentication and Authorization Grants"</span>, <span class="seriesInfo">RFC 7521</span>, <span class="seriesInfo">DOI 10.17487/RFC7521</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7521">https://www.rfc-editor.org/rfc/rfc7521</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC7523">[RFC7523]</dt>
+        <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Campbell, B.</span>, and <span class="refAuthor">C. Mortimore</span>, <span class="refTitle">"JSON Web Token (JWT) Profile for OAuth 2.0 Client Authentication and Authorization Grants"</span>, <span class="seriesInfo">RFC 7523</span>, <span class="seriesInfo">DOI 10.17487/RFC7523</span>, <time datetime="2015-05" class="refDate">May 2015</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc7523">https://www.rfc-editor.org/rfc/rfc7523</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8174">[RFC8174]</dt>
+        <dd>
+<span class="refAuthor">Leiba, B.</span>, <span class="refTitle">"Ambiguity of Uppercase vs Lowercase in RFC 2119 Key Words"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 8174</span>, <span class="seriesInfo">DOI 10.17487/RFC8174</span>, <time datetime="2017-05" class="refDate">May 2017</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8174">https://www.rfc-editor.org/rfc/rfc8174</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8414">[RFC8414]</dt>
+        <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Sakimura, N.</span>, and <span class="refAuthor">J. Bradley</span>, <span class="refTitle">"OAuth 2.0 Authorization Server Metadata"</span>, <span class="seriesInfo">RFC 8414</span>, <span class="seriesInfo">DOI 10.17487/RFC8414</span>, <time datetime="2018-06" class="refDate">June 2018</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8414">https://www.rfc-editor.org/rfc/rfc8414</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8693">[RFC8693]</dt>
+        <dd>
+<span class="refAuthor">Jones, M.</span>, <span class="refAuthor">Nadalin, A.</span>, <span class="refAuthor">Campbell, B., Ed.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">C. Mortimore</span>, <span class="refTitle">"OAuth 2.0 Token Exchange"</span>, <span class="seriesInfo">RFC 8693</span>, <span class="seriesInfo">DOI 10.17487/RFC8693</span>, <time datetime="2020-01" class="refDate">January 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8693">https://www.rfc-editor.org/rfc/rfc8693</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8707">[RFC8707]</dt>
+        <dd>
+<span class="refAuthor">Campbell, B.</span>, <span class="refAuthor">Bradley, J.</span>, and <span class="refAuthor">H. Tschofenig</span>, <span class="refTitle">"Resource Indicators for OAuth 2.0"</span>, <span class="seriesInfo">RFC 8707</span>, <span class="seriesInfo">DOI 10.17487/RFC8707</span>, <time datetime="2020-02" class="refDate">February 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8707">https://www.rfc-editor.org/rfc/rfc8707</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC8725">[RFC8725]</dt>
+        <dd>
+<span class="refAuthor">Sheffer, Y.</span>, <span class="refAuthor">Hardt, D.</span>, and <span class="refAuthor">M. Jones</span>, <span class="refTitle">"JSON Web Token Best Current Practices"</span>, <span class="seriesInfo">BCP 225</span>, <span class="seriesInfo">RFC 8725</span>, <span class="seriesInfo">DOI 10.17487/RFC8725</span>, <time datetime="2020-02" class="refDate">February 2020</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc8725">https://www.rfc-editor.org/rfc/rfc8725</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9700">[RFC9700]</dt>
+        <dd>
+<span class="refAuthor">Lodderstedt, T.</span>, <span class="refAuthor">Bradley, J.</span>, <span class="refAuthor">Labunets, A.</span>, and <span class="refAuthor">D. Fett</span>, <span class="refTitle">"Best Current Practice for OAuth 2.0 Security"</span>, <span class="seriesInfo">BCP 240</span>, <span class="seriesInfo">RFC 9700</span>, <span class="seriesInfo">DOI 10.17487/RFC9700</span>, <time datetime="2025-01" class="refDate">January 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9700">https://www.rfc-editor.org/rfc/rfc9700</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9728">[RFC9728]</dt>
+      <dd>
+<span class="refAuthor">Jones, M.B.</span>, <span class="refAuthor">Hunt, P.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"OAuth 2.0 Protected Resource Metadata"</span>, <span class="seriesInfo">RFC 9728</span>, <span class="seriesInfo">DOI 10.17487/RFC9728</span>, <time datetime="2025-04" class="refDate">April 2025</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9728">https://www.rfc-editor.org/rfc/rfc9728</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+<div id="sec-informative-references">
+<section id="section-12.2">
+        <h3 id="name-informative-references">
+<a href="#section-12.2" class="section-number selfRef">12.2. </a><a href="#name-informative-references" class="section-name selfRef">Informative References</a>
+        </h3>
+<dl class="references">
+<dt id="I-D.ietf-oauth-identity-assertion-authz-grant">[I-D.ietf-oauth-identity-assertion-authz-grant]</dt>
+        <dd>
+<span class="refAuthor">Parecki, A.</span>, <span class="refAuthor">McGuinness, K.</span>, and <span class="refAuthor">B. Campbell</span>, <span class="refTitle">"Identity Assertion JWT Authorization Grant"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-identity-assertion-authz-grant-03</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/">https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-wimse-arch">[I-D.ietf-wimse-arch]</dt>
+        <dd>
+<span class="refAuthor">Salowey, J.</span>, <span class="refAuthor">Rosomakho, Y.</span>, and <span class="refAuthor">H. Tschofenig</span>, <span class="refTitle">"Workload Identity in a Multi System Environment (WIMSE) Architecture"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-wimse-arch-07</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-ietf-wimse-arch/">https://datatracker.ietf.org/doc/draft-ietf-wimse-arch/</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="I-D.ietf-wimse-workload-creds">[I-D.ietf-wimse-workload-creds]</dt>
+        <dd>
+<span class="refAuthor">Campbell, B.</span>, <span class="refAuthor">Salowey, J.</span>, <span class="refAuthor">Schwenkschuster, A.</span>, <span class="refAuthor">Sheffer, Y.</span>, and <span class="refAuthor">Y. Rosomakho</span>, <span class="refTitle">"WIMSE Workload Credentials"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-wimse-workload-creds-00</span>, <time datetime="2025" class="refDate">2025</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-ietf-wimse-workload-creds/">https://datatracker.ietf.org/doc/draft-ietf-wimse-workload-creds/</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9068">[RFC9068]</dt>
+        <dd>
+<span class="refAuthor">Bertocci, V.</span>, <span class="refTitle">"JSON Web Token (JWT) Profile for OAuth 2.0 Access Tokens"</span>, <span class="seriesInfo">RFC 9068</span>, <span class="seriesInfo">DOI 10.17487/RFC9068</span>, <time datetime="2021-10" class="refDate">October 2021</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9068">https://www.rfc-editor.org/rfc/rfc9068</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC9396">[RFC9396]</dt>
+      <dd>
+<span class="refAuthor">Lodderstedt, T.</span>, <span class="refAuthor">Richer, J.</span>, and <span class="refAuthor">B. Campbell</span>, <span class="refTitle">"OAuth 2.0 Rich Authorization Requests"</span>, <span class="seriesInfo">RFC 9396</span>, <span class="seriesInfo">DOI 10.17487/RFC9396</span>, <time datetime="2023-05" class="refDate">May 2023</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc9396">https://www.rfc-editor.org/rfc/rfc9396</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+</dl>
+</section>
+</div>
+</section>
+</div>
+<div id="use-cases">
+<section id="appendix-A">
+      <h2 id="name-use-cases">
+<a href="#appendix-A" class="section-number selfRef">Appendix A. </a><a href="#name-use-cases" class="section-name selfRef">Use Cases</a>
+      </h2>
+<div id="workload-to-workload-cross-domain-api-access">
+<section id="appendix-A.1">
+        <h3 id="name-workload-to-workload-cross-">
+<a href="#appendix-A.1" class="section-number selfRef">A.1. </a><a href="#name-workload-to-workload-cross-" class="section-name selfRef">Workload-to-Workload Cross-Domain API Access</a>
+        </h3>
+<p id="appendix-A.1-1">A service mesh within Trust Domain A processes an API request
+initiated by an external user.  The gateway workload obtains a
+Txn-Token capturing the user identity, the request scope, and the
+original client IP address.  A downstream workload within the mesh
+determines that it must call a partner API in Trust Domain B.  Using
+this profile, the downstream workload exchanges its Txn-Token for a
+JWT Authorization Grant targeting Trust Domain B's authorization
+server, then presents the grant to obtain an access token for the
+partner API.  The partner's resource server receives an access token
+whose issuer is Trust Domain B's authorization server, containing a
+mapped subject identifier and a minimal set of contextual claims.
+The raw internal Txn-Token is never exposed outside Trust Domain A.<a href="#appendix-A.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="cicd-pipeline-accessing-external-artifact-registry">
+<section id="appendix-A.2">
+        <h3 id="name-ci-cd-pipeline-accessing-ex">
+<a href="#appendix-A.2" class="section-number selfRef">A.2. </a><a href="#name-ci-cd-pipeline-accessing-ex" class="section-name selfRef">CI/CD Pipeline Accessing External Artifact Registry</a>
+        </h3>
+<p id="appendix-A.2-1">A CI/CD orchestrator in Trust Domain A manages build pipelines.
+Each pipeline run is represented as a transaction within Trust Domain
+A, identified by a Txn-Token that captures the pipeline identifier,
+repository, and commit hash in its <code>txn_claims</code>.  When a pipeline
+run needs to publish an artifact to an external registry in Trust
+Domain B, the pipeline workload exchanges its Txn-Token for a JWT
+Authorization Grant.  The grant includes a transcribed <code>txn_claims</code>
+object containing the repository and commit hash.  The external
+registry's authorization server issues a scoped upload token that
+Trust Domain B's audit logs can correlate with the originating build
+pipeline.<a href="#appendix-A.2-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="agentic-ai-workflow-calling-an-external-tool">
+<section id="appendix-A.3">
+        <h3 id="name-agentic-ai-workflow-calling">
+<a href="#appendix-A.3" class="section-number selfRef">A.3. </a><a href="#name-agentic-ai-workflow-calling" class="section-name selfRef">Agentic AI Workflow Calling an External Tool</a>
+        </h3>
+<p id="appendix-A.3-1">An AI orchestration platform in Trust Domain A manages AI agent
+tasks on behalf of a user.  The platform issues a Txn-Token for each
+agent invocation, capturing the user identity and the declared intent
+(<code>purp</code>) of the agent task (e.g., "generate-billing-report").  When
+the agent must call a third-party data API in Trust Domain B, the
+platform uses this profile to exchange the Txn-Token for a JWT
+Authorization Grant that conveys the user identity and the task
+intent to Trust Domain B.  This enables the external data service to
+apply intent-aware authorization policies without receiving the full
+internal Txn-Token.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="relationship-to-related-specifications">
+<section id="appendix-B">
+      <h2 id="name-relationship-to-related-spe">
+<a href="#appendix-B" class="section-number selfRef">Appendix B. </a><a href="#name-relationship-to-related-spe" class="section-name selfRef">Relationship to Related Specifications</a>
+      </h2>
+<p id="appendix-B-1">This specification is one of a family of profiles of
+<span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.<a href="#appendix-B-1" class="pilcrow">¶</a></p>
+<div id="identity-assertion-jwt-authorization-grant">
+<section id="appendix-B.1">
+        <h3 id="name-identity-assertion-jwt-auth">
+<a href="#appendix-B.1" class="section-number selfRef">B.1. </a><a href="#name-identity-assertion-jwt-auth" class="section-name selfRef">Identity Assertion JWT Authorization Grant</a>
+        </h3>
+<p id="appendix-B.1-1"><span>[<a href="#I-D.ietf-oauth-identity-assertion-authz-grant" class="cite xref">I-D.ietf-oauth-identity-assertion-authz-grant</a>]</span> (the "ID-JAG"
+specification, adopted by the OAuth Working Group as of April 2026)
+targets deployments where the Resource Authorization Server (AS-B)
+already trusts the issuing IdP (AS-A) for Single Sign-On (SSO) and
+subject resolution.  The subject token in that profile is a human
+user's Identity Assertion — typically an OpenID Connect ID Token or
+a SAML 2.0 assertion.<a href="#appendix-B.1-1" class="pilcrow">¶</a></p>
+<p id="appendix-B.1-2">The key structural properties of the ID-JAG profile that distinguish
+it from this specification are:<a href="#appendix-B.1-2" class="pilcrow">¶</a></p>
+<span class="break"></span><dl class="dlParallel" id="appendix-B.1-3">
+          <dt id="appendix-B.1-3.1">Subject Token Type:</dt>
+          <dd style="margin-left: 1.5em" id="appendix-B.1-3.2">
+            <p id="appendix-B.1-3.2.1">The ID-JAG profile uses an OpenID Connect ID Token
+(<code>urn:ietf:params:oauth:token-type:id_token</code>) or SAML 2.0
+assertion (<code>urn:ietf:params:oauth:token-type:saml2</code>) as the
+<code>subject_token</code>.  This profile uses a Txn-Token
+(<code>urn:ietf:params:oauth:token-type:txn-token</code>).<a href="#appendix-B.1-3.2.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="appendix-B.1-3.3">Principal Model:</dt>
+          <dd style="margin-left: 1.5em" id="appendix-B.1-3.4">
+            <p id="appendix-B.1-3.4.1">The ID-JAG profile is centered on a human End-User whose
+authenticated session with the IdP drives the cross-domain
+access request.  This profile is centered on a software
+workload acting on the basis of an authorized transaction,
+which may or may not involve a human initiating principal.<a href="#appendix-B.1-3.4.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="appendix-B.1-3.5">
+<code>audience</code> and <code>resource</code> Parameters:</dt>
+          <dd style="margin-left: 1.5em" id="appendix-B.1-3.6">
+            <p id="appendix-B.1-3.6.1">Both profiles use <code>audience</code> in the Token Exchange request to
+identify the target authorization server (AS-B), following the
+convention in <span>[<a href="#I-D.ietf-oauth-identity-assertion-authz-grant" class="cite xref">I-D.ietf-oauth-identity-assertion-authz-grant</a>]</span>
+Section 4.3.  The <code>resource</code> parameter (<span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span>) in the Token
+Exchange request identifies the target resource server (the API),
+not AS-B.  This profile adopts the same parameter semantics.  Both
+profiles treat <code>audience</code> and <code>resource</code> as serving distinct
+purposes: <code>audience</code> → AS-B issuer URL → becomes <code>aud</code> in the grant;
+<code>resource</code> → resource server URI → becomes <code>resource</code> claim in the
+grant and subsequently constrains the access token issued by AS-B.<a href="#appendix-B.1-3.6.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="appendix-B.1-3.7">
+<code>client_id</code> Requirement:</dt>
+          <dd style="margin-left: 1.5em" id="appendix-B.1-3.8">
+            <p id="appendix-B.1-3.8.1">The ID-JAG includes a <span class="bcp14">REQUIRED</span> <code>client_id</code> claim identifying
+the OAuth 2.0 client at the Resource Authorization Server that
+will act on behalf of the resource owner.  This allows the
+Resource Authorization Server to enforce its own client
+registration and policy independently of the IdP.  This profile
+uses the Requesting Workload's authenticated identity (conveyed
+via client authentication to AS-A) rather than a pre-registered
+<code>client_id</code> at AS-B, which is consistent with the workload
+credential model of <span>[<a href="#I-D.ietf-wimse-arch" class="cite xref">I-D.ietf-wimse-arch</a>]</span>.<a href="#appendix-B.1-3.8.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="appendix-B.1-3.9">Multi-Tenancy:</dt>
+          <dd style="margin-left: 1.5em" id="appendix-B.1-3.10">
+            <p id="appendix-B.1-3.10.1">The ID-JAG profile defines <code>tenant</code>, <code>aud_tenant</code>, and <code>aud_sub</code>
+claims to handle multi-tenant SaaS deployments where a shared IdP
+and shared Resource Authorization Server each host multiple
+organizational tenants.  This profile does not define equivalent
+claims, as workload trust domains are typically bounded by
+organizational or cloud-provider boundaries rather than tenant
+identifiers within a shared service.<a href="#appendix-B.1-3.10.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="appendix-B.1-3.11">Rich Authorization Requests (RAR):</dt>
+          <dd style="margin-left: 1.5em" id="appendix-B.1-3.12">
+            <p id="appendix-B.1-3.12.1">The ID-JAG profile supports the optional <code>authorization_details</code>
+claim (<span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>) in the grant, enabling structured
+authorization beyond simple scope strings.  This profile does not
+currently define RAR integration; a future revision or companion
+document <span class="bcp14">MAY</span> define how RAR <code>authorization_details</code> from the
+originating Txn-Token are transcribed into the JWT Authorization
+Grant.<a href="#appendix-B.1-3.12.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="appendix-B.1-3.13">SAML 2.0 Interoperability:</dt>
+          <dd style="margin-left: 1.5em" id="appendix-B.1-3.14">
+            <p id="appendix-B.1-3.14.1">The ID-JAG profile includes a dedicated section on SAML 2.0
+Identity Assertion interoperability, enabling deployments that use
+SAML as the SSO protocol to participate in cross-domain access.
+This profile does not address SAML, as Txn-Tokens are JWT-based
+and operate within the OAuth/WIMSE ecosystem.<a href="#appendix-B.1-3.14.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="appendix-B.1-3.15">Sender Constraining:</dt>
+          <dd style="margin-left: 1.5em" id="appendix-B.1-3.16">
+            <p id="appendix-B.1-3.16.1">Both profiles discuss sender-constraining of access tokens.  The
+ID-JAG profile defines a Proof-of-Possession mechanism using a
+<code>cnf</code> claim in the ID-JAG itself to convey the client's public
+key to the Resource Authorization Server, enabling the Resource
+Authorization Server to issue a bound access token.  This profile
+adopts the delegated key binding mechanism described in Appendix
+B.3 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> for the
+authorization-server-as-client topology and uses <code>requested_cnf</code>
+in the JWT Authorization Grant.<a href="#appendix-B.1-3.16.1" class="pilcrow">¶</a></p>
+</dd>
+        <dd class="break"></dd>
+</dl>
+<p id="appendix-B.1-4">The two profiles are intended to be complementary.  A deployment
+<span class="bcp14">MAY</span> support both simultaneously: using the ID-JAG profile for
+user-initiated cross-domain access (where an authenticated human
+session is the driver) and this profile for machine-initiated
+cross-domain access (where a Txn-Token representing an authorized
+workload transaction is the driver).  An authorization server
+implementing both profiles <span class="bcp14">SHOULD</span> distinguish between the two grant
+types by inspecting the <code>typ</code> header of the JWT Authorization Grant:
+<code>oauth-id-jag+jwt</code> for the ID-JAG profile and <code>txn-chain+jwt</code> for
+this profile.<a href="#appendix-B.1-4" class="pilcrow">¶</a></p>
+</section>
+</div>
+</section>
+</div>
+<div id="acknowledgements">
+<section id="appendix-C">
+      <h2 id="name-acknowledgements">
+<a href="#name-acknowledgements" class="section-name selfRef">Acknowledgements</a>
+      </h2>
+<p id="appendix-C-1">The author would like to thank Atul Tulshibagwale, Pieter Kasselman,
+Aaron Parecki, Brian Campbell, Arndt Schwenkschuster, Kelley Burgin,
+and the members of the IETF OAuth Working Group for their foundational
+work on the specifications that this profile depends on.<a href="#appendix-C-1" class="pilcrow">¶</a></p>
+<p id="appendix-C-2">The Transaction Tokens concept was originally developed by Atul
+Tulshibagwale, George Fletcher, and Pieter Kasselman.  The OAuth
+Identity and Authorization Chaining Across Domains specification was
+authored by Arndt Schwenkschuster, Pieter Kasselman, Kelley Burgin,
+Michael Jenkins, Brian Campbell, and Aaron Parecki.<a href="#appendix-C-2" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="authors-addresses">
+<section id="appendix-D">
+      <h2 id="name-authors-address">
+<a href="#name-authors-address" class="section-name selfRef">Author's Address</a>
+      </h2>
+<address class="vcard">
+        <div dir="auto" class="left"><span class="fn nameRole">George Fletcher</span></div>
+<div dir="auto" class="left"><span class="org">Practical Identity LLC</span></div>
+<div class="email">
+<span>Email:</span>
+<a href="mailto:george@practicalidentity.com" class="email">george@practicalidentity.com</a>
+</div>
+</address>
+</section>
+</div>
+<script>const toc = document.getElementById("toc");
+toc.querySelector("h2").addEventListener("click", e => {
+  toc.classList.toggle("active");
+});
+toc.querySelector("nav").addEventListener("click", e => {
+  toc.classList.remove("active");
+});
+</script>
+</body>
+</html>
