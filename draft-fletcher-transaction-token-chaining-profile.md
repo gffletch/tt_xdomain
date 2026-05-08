@@ -5,7 +5,7 @@ docname: draft-fletcher-transaction-token-chaining-profile-latest
 category: std
 submissiontype: IETF
 ipr: trust200902
-workgroup: Web Authorization Protocol
+# workgroup: Web Authorization Protocol
 keyword:
   - oauth
   - transaction tokens
