@@ -21,7 +21,7 @@ documents.  The `docname` field in the YAML front matter of the
 Markdown source must match this name exactly:
 
 ```yaml
-docname: draft-fletcher-transaction-token-chaining-profile-00
+docname: draft-fletcher-transaction-token-chaining-profile-latest
 ```
 
 The document was initially drafted with an incorrect `docname` of
@@ -352,7 +352,7 @@ draft-fletcher-oauth-transaction-token-chaining-profile-00
 This must be corrected to:
 
 ```
-draft-fletcher-transaction-token-chaining-profile-00
+draft-fletcher-transaction-token-chaining-profile-latest
 ```
 
 Individual IETF drafts do not carry the working group name in the
