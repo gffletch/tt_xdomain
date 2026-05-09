@@ -343,7 +343,7 @@ Table of Contents
    context and mints a Txn-Token that captures the Initiating
    Principal's identity (which may be a user identity, a system
    identity, or a workload identity), the purpose of the transaction
-   (purp), and relevant request parameters (rctx).  The Txn-Token is
+   (scope), and relevant request parameters (rctx).  The Txn-Token is
    propagated to all downstream workloads within Trust Domain A that
    participate in processing the transaction.
 
@@ -415,7 +415,7 @@ Table of Contents
        or a workload identity), following the Txn-Token issuance
        procedures defined in [I-D.ietf-oauth-transaction-tokens].  The
        TTS records the Initiating Principal's identity in the sub claim
-       and the transaction purpose in the purp claim of the Txn-Token.
+       and the transaction purpose in the scope claim of the Txn-Token.
 
    3.  The TTS issues a Txn-Token to the Requesting Workload.  The Txn-
        Token is scoped to Trust Domain A and MUST NOT be presented to
@@ -499,7 +499,7 @@ Table of Contents
    System Identity:  The sub claim identifies an internal system
       component (such as an SMTP server or a messaging gateway) acting
       in its own right, with no external user as the Initiating
-      Principal.  The purp claim is particularly significant in this
+      Principal.  The scope claim is particularly significant in this
       case, as it conveys the reason for the transaction in the absence
       of a user-facing authorization context.
 
@@ -741,7 +741,7 @@ Table of Contents
 
    6.  If present, evaluate the txn_claims claim to apply context-aware
        authorization policy (see Section 7), for example verifying that
-       the purp value is consistent with the requested scope.
+       the scope value is consistent with the requested scope.
 
    7.  Issue an access token constrained by the scope and, if present,
        the resource claim in the JWT Authorization Grant.  AS-B SHOULD
@@ -829,7 +829,7 @@ Table of Contents
    The following is a non-normative example corresponding to the mail
    service scenario in Section 4.3.  The Initiating Principal is the
    mail service's system identity (mail-gateway@enterprise.example) and
-   the Txn-Token's rctx carries the SMTP envelope sender.  The purp and
+   the Txn-Token's rctx carries the SMTP envelope sender.  The scope and
    a minimized rctx are transcribed into txn_claims.
 
    Header:
@@ -853,7 +853,7 @@ Table of Contents
      "resource": "https://api.spamsvc.example/spam-rating",
      "txn": "a9b2c3d4-e5f6-7890-abcd-ef1234567890",
      "txn_claims": {
-       "purp": "mail-delivery",
+       "scope": "mail-delivery",
        "rctx": {
          "smtp_from": "sender@external.example"
        }
@@ -932,7 +932,7 @@ Table of Contents
    B's authorization policy.  AS-A MUST apply the following minimization
    rules:
 
-   Purpose Claim (purp):  SHOULD be included when it is meaningful to
+   Purpose Claim (scope):  SHOULD be included when it is meaningful to
       AS-B's authorization policy (e.g., to enable the Protected
       Resource to apply different handling based on transaction type).
 
@@ -1245,7 +1245,7 @@ A.1.  User-Initiated External API Call Requiring a Partner Service
    The API gateway workload requests a Txn-Token from the TTS,
    presenting the user's access token as the inbound credential.  The
    TTS mints a Txn-Token with sub set to the user's enterprise
-   identifier, purp set to watchlist-update, and rctx capturing the
+   identifier, scope set to watchlist-update, and rctx capturing the
    mobile client's OAuth client identifier and IP address.  This Txn-
    Token propagates through the internal portfolio service call chain.
 
@@ -1256,7 +1256,7 @@ A.1.  User-Initiated External API Call Requiring a Partner Service
    profile.  AS-A maps the user's enterprise identifier to a cross-
    domain user identifier agreed with the partner (e.g., the user's
    email address or a pairwise identifier), and includes a minimized
-   txn_claims carrying purp: watchlist-update.
+   txn_claims carrying scope: watchlist-update.
 
    The partner's authorization server issues an access token that
    identifies the user (enabling per-user rate limiting and audit
@@ -1271,9 +1271,9 @@ A.2.  System-Initiated Event Requiring a Partner Service
    under its own system credential; no external OAuth client is
    involved.  The SMTP server requests a Txn-Token from the TTS with sub
    set to its system identity (system:mail-gateway@enterprise.example),
-   purp set to mail-delivery, and rctx carrying the SMTP envelope sender
-   address and the recipient user's internal identifier.  This Txn-Token
-   propagates to the mail storage service workload.
+   scope set to mail-delivery, and rctx carrying the SMTP envelope
+   sender address and the recipient user's internal identifier.  This
+   Txn-Token propagates to the mail storage service workload.
 
    Before storing the message in the recipient's mailbox, the mail
    storage service must call a spam-rating API operated by a partner
@@ -1284,7 +1284,7 @@ A.2.  System-Initiated Event Requiring a Partner Service
    The mail storage service exchanges the Txn-Token for a JWT
    Authorization Grant using this profile.  AS-A maps the system
    identity to the cross-domain service identifier agreed with the spam
-   service, and includes a minimized txn_claims carrying purp: mail-
+   service, and includes a minimized txn_claims carrying scope: mail-
    delivery and rctx.smtp_from (the envelope sender address, stripped of
    internal routing metadata).
 
@@ -1300,14 +1300,14 @@ A.3.  Automated Workload Requiring a Partner Service
    The job is an automated workload with no direct external caller,
    triggered by an internal scheduler.  The scheduler requests a Txn-
    Token from the TTS with sub set to the job's SPIFFE workload URI
-   (spiffe://enterprise.example/telemetry/nightly-agg), purp set to
+   (spiffe://enterprise.example/telemetry/nightly-agg), scope set to
    telemetry-aggregation, and no user context in rctx.
 
    To complete the aggregation, the job must query a third-party
    analytics API in Trust Domain B.  The job exchanges the Txn-Token for
    a JWT Authorization Grant using this profile.  AS-A maps the SPIFFE
    workload URI to a cross-domain workload identifier agreed with the
-   analytics provider, and includes purp: telemetry-aggregation in
+   analytics provider, and includes scope: telemetry-aggregation in
    txn_claims.
 
    The analytics provider's authorization server issues a scoped access
