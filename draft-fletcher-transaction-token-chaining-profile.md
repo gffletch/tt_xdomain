@@ -1,7 +1,7 @@
 ---
 title: "Transaction Token Authorization Grant Profile for OAuth Identity and Authorization Chaining"
 abbrev: "Txn-Token Chaining Profile"
-docname: draft-fletcher-oauth-transaction-token-chaining-profile-00
+docname: draft-fletcher-transaction-token-chaining-profile-00
 category: std
 submissiontype: IETF
 ipr: trust200902
@@ -167,7 +167,7 @@ Protocol Working Group mailing list (oauth@ietf.org), which is
 archived at <https://mailarchive.ietf.org/arch/browse/oauth/>.
 
 Source for this draft and an issue tracker can be found at
-<https://github.com/george-fletcher/draft-fletcher-oauth-transaction-token-chaining-profile>.
+<https://github.com/george-fletcher/draft-fletcher-transaction-token-chaining-profile>.
 
 --- middle
 
