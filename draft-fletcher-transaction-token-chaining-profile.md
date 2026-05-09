@@ -507,11 +507,10 @@ The `subject_token_type` parameter MUST be:
 
 ~~~ abnf
 subject_token_type =
-    "urn:ietf:params:oauth:token-type:txn-token"
+    "urn:ietf:params:oauth:token-type:txn_token"
 ~~~
 
-This value is registered with IANA in {{iana-oauth-uri}} of this
-document.
+This value is defined in {{I-D.ietf-oauth-transaction-tokens}}.
 
 The Txn-Token presented as the `subject_token` MUST satisfy all of
 the validity requirements specified in
@@ -624,7 +623,7 @@ pass the AS-B issuer URL as the `resource` parameter.
 
 `subject_token_type`:
 : REQUIRED.  The value MUST be
-  `urn:ietf:params:oauth:token-type:txn-token`.
+  `urn:ietf:params:oauth:token-type:txn_token`.
 
 `requested_token_type`:
 : OPTIONAL.  When present, the value MUST be
@@ -662,7 +661,7 @@ Authorization: Bearer <mail-service-client-credential>
 
 grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
 &subject_token=<txn-token>
-&subject_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Atxn-token
+&subject_token_type=urn%3Aietf%3Aparams%3Aoauth%3Atoken-type%3Atxn_token
 &audience=https%3A%2F%2Fas.spamsvc.example
 &resource=https%3A%2F%2Fapi.spamsvc.example%2Fspam-rating
 &scope=spam.rating.read
@@ -1059,7 +1058,7 @@ defined in {{RFC8414}} and Section 3 of
 {{I-D.ietf-oauth-identity-chaining}}.
 
 An Authorization Server that supports this profile MUST include the
-value `urn:ietf:params:oauth:token-type:txn-token` in its
+value `urn:ietf:params:oauth:token-type:txn_token` in its
 `identity_chaining_requested_token_types_supported` metadata
 parameter.  This signals that the Authorization Server accepts
 Txn-Tokens as the `subject_token` in a Token Exchange request
@@ -1170,18 +1169,6 @@ deployment, particularly for human-user-initiated transactions.
 
 
 # IANA Considerations
-
-## OAuth URI Registry {#iana-oauth-uri}
-
-This specification requests registration of the following value in
-the "OAuth URI" registry established by {{RFC6749}} (maintained by
-IANA at <https://www.iana.org/assignments/oauth-parameters>):
-
-- URI: `urn:ietf:params:oauth:token-type:txn-token`
-- Common Name: Transaction Token
-- Change Controller: IETF
-- Specification Document(s): {{subject-token-requirements}} of
-  this document
 
 ## JWT Typ Registration
 
@@ -1321,7 +1308,7 @@ The key structural differences between the two profiles are:
 Subject Token Type:
 : The ID-JAG profile uses an OpenID Connect ID Token or SAML 2.0
   assertion as the `subject_token`.  This profile uses a Txn-Token
-  (`urn:ietf:params:oauth:token-type:txn-token`).
+  (`urn:ietf:params:oauth:token-type:txn_token`).
 
 Initiating Principal Scope:
 : The ID-JAG profile is exclusively centered on a human End-User
