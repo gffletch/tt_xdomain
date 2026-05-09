@@ -1,7 +1,7 @@
 ---
 title: "Transaction Token Authorization Grant Profile for OAuth Identity and Authorization Chaining"
 abbrev: "Txn-Token Chaining Profile"
-docname: draft-fletcher-transaction-token-chaining-profile-00
+docname: draft-fletcher-transaction-token-chaining-profile-latest
 category: std
 submissiontype: IETF
 ipr: trust200902
