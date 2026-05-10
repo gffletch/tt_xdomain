@@ -530,8 +530,11 @@ verified MUST be rejected as defined in Section 2.2.2 of {{RFC8693}}.
 ## Txn-Token Initiating Principal Context {#txn-token-initiating-principal-context}
 
 The Txn-Token's `sub` claim identifies the Initiating Principal of
-the transaction.  AS-A MUST be capable of processing Token Exchange
-requests for all of the following Initiating Principal types:
+the transaction.  The Initiating Principal type is not constrained
+by this profile; a Txn-Token may represent any originating context
+defined by the Transaction Token specification
+{{I-D.ietf-oauth-transaction-tokens}}.  The following are common
+examples:
 
 Human User Identity:
 : The `sub` claim identifies a human user whose identity was
@@ -556,12 +559,14 @@ Workload Identity:
   the form of SPIFFE URIs {{I-D.ietf-wimse-arch}} when
   WIMSE-compatible infrastructure is in use within Trust Domain A.
 
-The claims transcription rules in {{claims-transcription}} and the
-subject identifier mapping rules in {{subject-identifier-mapping}}
-apply regardless of which Initiating Principal type the Txn-Token
-represents.  AS-A MUST map the `sub` claim to an identifier
-appropriate for Trust Domain B, applying principal-type-specific
-mapping logic as defined in {{subject-identifier-mapping}}.
+The above examples are illustrative; other Initiating Principal types
+are possible.  The claims transcription rules in
+{{claims-transcription}} and the subject identifier mapping rules in
+{{subject-identifier-mapping}} apply regardless of which Initiating
+Principal type the Txn-Token represents.  AS-A MUST map the `sub`
+claim to an identifier appropriate for Trust Domain B, applying the
+mapping logic defined in the Cross-Domain Trust Agreement for the
+Initiating Principal type in question.
 
 
 ## Token Exchange Request Parameters {#token-exchange-request-parameters}
@@ -789,21 +794,14 @@ to the processing rules specified in Section 2.4.2 of
 4. Validate that the JWT is not expired and that the `jti` value has
    not been previously presented (single-use enforcement).
 
-5. Resolve the subject.  The resolution strategy depends on the
-   Initiating Principal type reflected in the `sub` claim:
-
-   a. For human user identities, AS-B SHOULD attempt to match the
-      `sub` claim (or a supplementary identifier such as `email` in
-      `txn_claims`) against its local user directory or subject
-      registry.
-
-   b. For system or workload identities, AS-B SHOULD evaluate the
-      `sub` claim against its configured cross-domain workload
-      access policy.
-
-   c. If subject resolution fails and the Cross-Domain Trust
-      Agreement does not permit Just-In-Time provisioning, AS-B
-      MUST return an error.
+5. Resolve the subject from the `sub` claim according to the mapping
+   rules defined in the Cross-Domain Trust Agreement.  AS-B SHOULD
+   evaluate the `sub` claim against its configured cross-domain
+   access policy; supplementary identifiers in `txn_claims` (e.g.,
+   `email`) MAY also be used for subject resolution where the
+   Cross-Domain Trust Agreement permits.  If subject resolution fails
+   and the Cross-Domain Trust Agreement does not permit Just-In-Time
+   provisioning, AS-B MUST return an error.
 
 6. If present, evaluate the `txn_claims` claim to apply
    context-aware authorization policy (see {{claims-transcription}}),
@@ -981,35 +979,11 @@ The `sub` claim of the Txn-Token identifies the Initiating Principal
 within Trust Domain A's namespace.  AS-A MUST translate this
 identifier to a form that is both meaningful and authorized for use
 in Trust Domain B, according to the mapping rules defined in the
-Cross-Domain Trust Agreement.  The appropriate strategy depends on
-the Initiating Principal type:
-
-Human User Identity:
-: AS-A SHOULD map the user's `sub` to a cross-domain user
-  identifier that AS-B can resolve to a local subject.  This MAY be
-  an email address, a stable pairwise identifier, or another
-  identifier agreed in the Cross-Domain Trust Agreement.  If AS-B
-  supports Just-In-Time provisioning and the Cross-Domain Trust
-  Agreement permits it, supplementary identity attributes (e.g.,
-  `email`) MAY be included in the `txn_claims` object to facilitate
-  subject resolution at AS-B.
-
-System Identity:
-: AS-A SHOULD map the system component's identifier to a
-  cross-domain system identity agreed in the Cross-Domain Trust
-  Agreement.  A common pattern is a structured identifier of the
-  form `system:<component>@<trust-domain>` (e.g.,
-  `system:mail-gateway@enterprise.example`).
-
-Workload Identity:
-: AS-A SHOULD map the workload identifier to a form recognized by
-  AS-B.  Where SPIFFE URIs {{I-D.ietf-wimse-arch}} are in use, AS-A
-  SHOULD apply the SPIFFE URI translation rules defined in the
-  Cross-Domain Trust Agreement (e.g., preserving the structural
-  SPIFFE URI form or mapping to a local workload identifier at AS-B).
-
-If no mapping can be determined for the Initiating Principal, AS-A
-MUST deny the Token Exchange request.
+Cross-Domain Trust Agreement.  The Cross-Domain Trust Agreement MUST
+define mapping rules for every Initiating Principal type that may
+appear in Txn-Tokens exchanged under this profile.  If no mapping
+can be determined for the Initiating Principal presented, AS-A MUST
+deny the Token Exchange request.
 
 ## Claims Minimization
 
