@@ -1794,8 +1794,8 @@ published by the TTS.<a href="#section-4.1-6.2.1" class="pilcrow">¶</a></p>
 AS-A accepts as a valid audience for presented subject tokens).<a href="#section-4.1-6.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
-<p id="section-4.1-7">A Txn-Token that has already expired or whose signature cannot be
-verified <span class="bcp14">MUST</span> be rejected as defined in Section 2.2.2 of <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
+<p id="section-4.1-7">A Txn-Token failing any of the above checks <span class="bcp14">MUST</span> be rejected per
+Section 2.2.2 of <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.<a href="#section-4.1-7" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="txn-token-initiating-principal-context">
@@ -1864,53 +1864,29 @@ this profile is in use.<a href="#section-4.3-1" class="pilcrow">¶</a></p>
           <h4 id="name-identifying-the-target-auth">
 <a href="#section-4.3.1" class="section-number selfRef">4.3.1. </a><a href="#name-identifying-the-target-auth" class="section-name selfRef">Identifying the Target Authorization Server and Resource</a>
           </h4>
-<p id="section-4.3.1-1">The Token Exchange request <span class="bcp14">MUST</span> identify the Authorization Server in
-Trust Domain B (AS-B) that should be the intended audience of the
-resulting JWT Authorization Grant.  This profile uses the <code>audience</code>
-parameter for this purpose, following the convention established in
-<span>[<a href="#I-D.ietf-oauth-identity-assertion-authz-grant" class="cite xref">I-D.ietf-oauth-identity-assertion-authz-grant</a>]</span> Section 4.3.<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
+<p id="section-4.3.1-1">This profile uses the <code>audience</code> and <code>resource</code> parameters following
+the convention in <span>[<a href="#I-D.ietf-oauth-identity-assertion-authz-grant" class="cite xref">I-D.ietf-oauth-identity-assertion-authz-grant</a>]</span>
+Section 4.3.  The two parameters serve distinct purposes and <span class="bcp14">MUST NOT</span>
+be conflated.<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-4.3.1-2">
             <dt id="section-4.3.1-2.1">
 <code>audience</code>:</dt>
             <dd style="margin-left: 1.5em" id="section-4.3.1-2.2">
-              <p id="section-4.3.1-2.2.1"><span class="bcp14">REQUIRED</span>.  The Issuer URL of AS-B as defined in Section 2 of
-<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span>.  AS-A uses this value to set the <code>aud</code> claim of the
-resulting JWT Authorization Grant, so that AS-B can verify the
-grant was issued for it.  The value <span class="bcp14">MUST</span> be the <code>issuer</code>
-identifier as advertised in AS-B's authorization server metadata,
-or a logical name for AS-B that AS-A has been configured to
-recognize and map to AS-B's actual issuer identifier.<a href="#section-4.3.1-2.2.1" class="pilcrow">¶</a></p>
+              <p id="section-4.3.1-2.2.1"><span class="bcp14">REQUIRED</span>.  The <code>issuer</code> identifier of AS-B (<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> Section 2).
+Becomes the <code>aud</code> claim of the JWT Authorization Grant.
+Implementations <span class="bcp14">MUST</span> use this parameter to identify AS-B and <span class="bcp14">MUST NOT</span> pass the AS-B issuer URL as <code>resource</code>.<a href="#section-4.3.1-2.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-4.3.1-2.3">
 <code>resource</code>:</dt>
             <dd style="margin-left: 1.5em" id="section-4.3.1-2.4">
-              <p id="section-4.3.1-2.4.1"><span class="bcp14">OPTIONAL</span>.  A URI that identifies the specific Protected Resource
-(resource server) in Trust Domain B that the Requesting Workload
-intends to call, as defined in Section 2 of <span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span>.  When
-present, AS-A <span class="bcp14">SHOULD</span> include this value in the <code>resource</code> claim of
-the JWT Authorization Grant so that AS-B can issue a resource-bound
-access token.<a href="#section-4.3.1-2.4.1" class="pilcrow">¶</a></p>
+              <p id="section-4.3.1-2.4.1"><span class="bcp14">OPTIONAL</span>.  A URI identifying the Protected Resource (resource
+server) in Trust Domain B, as defined in <span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span> Section 2.
+When present, AS-A <span class="bcp14">SHOULD</span> propagate this value into the <code>resource</code>
+claim of the JWT Authorization Grant.<a href="#section-4.3.1-2.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
-<p id="section-4.3.1-3">The two parameters serve distinct purposes that <span class="bcp14">MUST NOT</span> be
-conflated:<a href="#section-4.3.1-3" class="pilcrow">¶</a></p>
-<ul class="normal">
-<li class="normal" id="section-4.3.1-4.1">
-              <p id="section-4.3.1-4.1.1"><code>audience</code> identifies the <strong>authorization server</strong> (AS-B) that
-will receive and validate the JWT Authorization Grant.  Its value
-becomes the <code>aud</code> claim of the grant.<a href="#section-4.3.1-4.1.1" class="pilcrow">¶</a></p>
-</li>
-            <li class="normal" id="section-4.3.1-4.2">
-              <p id="section-4.3.1-4.2.1"><code>resource</code> identifies the <strong>resource server</strong> (the Protected
-Resource — the partner API to be called) for which an access token
-is ultimately sought.  AS-B uses it when scoping the access token;
-it does not appear in the <code>aud</code> claim.<a href="#section-4.3.1-4.2.1" class="pilcrow">¶</a></p>
-</li>
-          </ul>
-<p id="section-4.3.1-5">Implementations <span class="bcp14">MUST</span> use <code>audience</code> to identify AS-B and <span class="bcp14">MUST NOT</span>
-pass the AS-B issuer URL as the <code>resource</code> parameter.<a href="#section-4.3.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="remaining-parameters">
@@ -1952,13 +1928,10 @@ when the other parameters conform to this profile.<a href="#section-4.3.2-1.8.1"
 <dt id="section-4.3.2-1.9">
 <code>scope</code>:</dt>
             <dd style="margin-left: 1.5em" id="section-4.3.2-1.10">
-              <p id="section-4.3.2-1.10.1"><span class="bcp14">OPTIONAL</span>.  The space-separated list of scopes requested for the
-resulting JWT Authorization Grant, constraining the access token
-that AS-B will ultimately issue.  AS-A <span class="bcp14">MUST NOT</span> issue a JWT
-Authorization Grant with a scope that exceeds the <code>scope</code> claim of
-the presented Txn-Token.  If the requested scope is wider than the
-Txn-Token's scope, AS-A <span class="bcp14">MUST</span> either narrow the scope to the
-intersection or deny the request.<a href="#section-4.3.2-1.10.1" class="pilcrow">¶</a></p>
+              <p id="section-4.3.2-1.10.1"><span class="bcp14">OPTIONAL</span>.  Space-separated list of scopes requested for the JWT
+Authorization Grant.  AS-A <span class="bcp14">MUST NOT</span> issue a grant with scope
+exceeding the <code>scope</code> claim of the presented Txn-Token (see
+<a href="#claims-transcription" class="auto internal xref">Section 7</a>).<a href="#section-4.3.2-1.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -2023,9 +1996,7 @@ compatibility reasons; this is not an OAuth access token.)<a href="#section-4.3.
 <dt id="section-4.3.4-2.5">
 <code>token_type</code>:</dt>
             <dd style="margin-left: 1.5em" id="section-4.3.4-2.6">
-              <p id="section-4.3.4-2.6.1"><span class="bcp14">REQUIRED</span>.  The value <span class="bcp14">MUST</span> be <code>N_A</code>, as this is not an OAuth
-access token and token-type-based sender constraining does not
-apply at this step.<a href="#section-4.3.4-2.6.1" class="pilcrow">¶</a></p>
+              <p id="section-4.3.4-2.6.1"><span class="bcp14">REQUIRED</span>.  The value <span class="bcp14">MUST</span> be <code>N_A</code>.<a href="#section-4.3.4-2.6.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-4.3.4-2.7">
@@ -2086,28 +2057,23 @@ and Section 2.5 of <span>[<a href="#RFC9700" class="cite xref">RFC9700</a>]</spa
 </li>
           <li id="section-5.1-2.2">
             <p id="section-5.1-2.2.1">Validate the Txn-Token signature using the public keys of the TTS
-that issued it.  AS-A <span class="bcp14">MUST</span> establish a trust relationship with the
-TTS; in deployments where the TTS and AS-A are co-located this is
-straightforward.  Where they are separate services, AS-A <span class="bcp14">MUST</span> be
-configured with the TTS's <code>jwks_uri</code> or equivalent key material.<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
+that issued it.  AS-A <span class="bcp14">MUST</span> be configured with the TTS's <code>jwks_uri</code>
+or equivalent key material.<a href="#section-5.1-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.1-2.3">
             <p id="section-5.1-2.3.1">Validate that the Txn-Token is not expired.<a href="#section-5.1-2.3.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.1-2.4">
-            <p id="section-5.1-2.4.1">Validate that the <code>aud</code> claim of the Txn-Token is acceptable to
-AS-A (i.e., the Txn-Token was issued for consumption by AS-A or
-the TTS acting on AS-A's behalf).<a href="#section-5.1-2.4.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-2.4.1">Validate that the <code>aud</code> claim of the Txn-Token identifies AS-A
+or a value AS-A is configured to accept as a valid audience for
+presented subject tokens.<a href="#section-5.1-2.4.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.1-2.5">
-            <p id="section-5.1-2.5.1">Resolve the target AS-B from the <code>audience</code> parameter.  AS-A <span class="bcp14">MUST</span>
-verify that the <code>audience</code> value corresponds to a known AS-B with
-which a Cross-Domain Trust Agreement has been established.  If the
-<code>audience</code> is unknown or policy prohibits issuing a JWT
-Authorization Grant for that audience, AS-A <span class="bcp14">MUST</span> return an error
-as specified in Section 2.2.2 of <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.  AS-A <span class="bcp14">MUST NOT</span>
-accept a resource server URI in the <code>audience</code> parameter in place
-of an AS-B issuer identifier.<a href="#section-5.1-2.5.1" class="pilcrow">¶</a></p>
+            <p id="section-5.1-2.5.1">Verify that the <code>audience</code> value identifies a known AS-B for which
+a Cross-Domain Trust Agreement has been established.  AS-A <span class="bcp14">MUST NOT</span> accept a resource server URI in <code>audience</code> in place of an
+AS-B issuer identifier.  If the audience is unknown or disallowed
+by policy, AS-A <span class="bcp14">MUST</span> return an error per Section 2.2.2 of
+<span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.<a href="#section-5.1-2.5.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.1-2.6">
             <p id="section-5.1-2.6.1">If the <code>resource</code> parameter is present, validate that it
@@ -2216,9 +2182,7 @@ specified in Section 2.3.3 of <span>[<a href="#I-D.ietf-oauth-identity-chaining"
 <span class="break"></span><dl class="dlParallel" id="section-6.1.1-1">
             <dt id="section-6.1.1-1.1">typ:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.1-1.2">
-              <p id="section-6.1.1-1.2.1"><span class="bcp14">REQUIRED</span>.  The value <span class="bcp14">MUST</span> be <code>txn-chain+jwt</code>.  Explicit JWT
-typing is <span class="bcp14">REQUIRED</span> by this profile, consistent with JSON Web Token
-Best Current Practices <span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>.<a href="#section-6.1.1-1.2.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.1-1.2.1"><span class="bcp14">REQUIRED</span>.  The value <span class="bcp14">MUST</span> be <code>txn-chain+jwt</code> (<span>[<a href="#RFC8725" class="cite xref">RFC8725</a>]</span>).<a href="#section-6.1.1-1.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.1-1.3">alg:</dt>
@@ -2295,10 +2259,9 @@ presented <code>jti</code> values within the grant's validity window.<a href="#s
 <span class="break"></span><dl class="dlParallel" id="section-6.1.2-4">
             <dt id="section-6.1.2-4.1">txn:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.2-4.2">
-              <p id="section-6.1.2-4.2.1">The unique transaction identifier from the originating Txn-Token,
-as defined in <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>.  Preserves
-end-to-end transaction correlation across the domain boundary.
-AS-B <span class="bcp14">SHOULD</span> record this value in its audit logs.<a href="#section-6.1.2-4.2.1" class="pilcrow">¶</a></p>
+              <p id="section-6.1.2-4.2.1">The unique transaction identifier from the originating Txn-Token
+(<span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>).  AS-B <span class="bcp14">SHOULD</span> record this
+value in its audit logs.<a href="#section-6.1.2-4.2.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -2307,12 +2270,9 @@ AS-B <span class="bcp14">SHOULD</span> record this value in its audit logs.<a hr
             <dt id="section-6.1.2-6.1">resource:</dt>
             <dd style="margin-left: 1.5em" id="section-6.1.2-6.2">
               <p id="section-6.1.2-6.2.1">A URI or array of URIs identifying the Protected Resource(s) in
-Trust Domain B, as defined in Section 2 of <span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span>.  Derived
-from the <code>resource</code> parameter of the Token Exchange request.  AS-B
-<span class="bcp14">SHOULD</span> use this to issue a resource-bound access token.  This
-value identifies the <strong>resource server</strong> (the partner API), not
-AS-B.  It is distinct from — and must never duplicate — the <code>aud</code>
-claim.<a href="#section-6.1.2-6.2.1" class="pilcrow">¶</a></p>
+Trust Domain B (<span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span> Section 2), derived from the <code>resource</code>
+parameter of the Token Exchange request.  AS-B <span class="bcp14">SHOULD</span> use this to
+issue a resource-bound access token.<a href="#section-6.1.2-6.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
 <dt id="section-6.1.2-6.3">txn_claims:</dt>
@@ -2496,9 +2456,7 @@ defined in <span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> and S
 <p id="section-8-2">An Authorization Server that supports this profile <span class="bcp14">MUST</span> include the
 value <code>urn:ietf:params:oauth:token-type:txn_token</code> in its
 <code>identity_chaining_requested_token_types_supported</code> metadata
-parameter.  This signals that the Authorization Server accepts
-Txn-Tokens as the <code>subject_token</code> in a Token Exchange request
-conforming to this profile.<a href="#section-8-2" class="pilcrow">¶</a></p>
+parameter.<a href="#section-8-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="security-considerations">
@@ -2541,11 +2499,11 @@ Authorization Grant.<a href="#section-9.2-2" class="pilcrow">¶</a></p>
         <h3 id="name-txn-token-confidentiality">
 <a href="#section-9.3" class="section-number selfRef">9.3. </a><a href="#name-txn-token-confidentiality" class="section-name selfRef">Txn-Token Confidentiality</a>
         </h3>
-<p id="section-9.3-1">A Txn-Token is a bearer credential scoped to Trust Domain A and <span class="bcp14">MUST NOT</span> be forwarded to any entity outside Trust Domain A.  All
-communication between the Requesting Workload and AS-A that involves
-a Txn-Token <span class="bcp14">MUST</span> occur over mutually authenticated TLS.  Txn-Token
-lifetimes <span class="bcp14">SHOULD</span> be short to limit the window of exposure if a token
-is captured in transit.<a href="#section-9.3-1" class="pilcrow">¶</a></p>
+<p id="section-9.3-1">A Txn-Token <span class="bcp14">MUST NOT</span> be forwarded to any entity outside Trust Domain A.
+All communication between the Requesting Workload and AS-A <span class="bcp14">MUST</span> be
+encrypted and the Requesting Workload <span class="bcp14">MUST</span> be authenticated (e.g.,
+via mutual TLS; see also <a href="#client-authentication" class="auto internal xref">Section 9.1</a>).
+Txn-Token lifetimes <span class="bcp14">SHOULD</span> be short.<a href="#section-9.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="jwt-authorization-grant-replay-prevention">

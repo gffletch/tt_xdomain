@@ -478,8 +478,8 @@ Table of Contents
    *  The Txn-Token's aud claim MUST identify AS-A (or a value that AS-A
       accepts as a valid audience for presented subject tokens).
 
-   A Txn-Token that has already expired or whose signature cannot be
-   verified MUST be rejected as defined in Section 2.2.2 of [RFC8693].
+   A Txn-Token failing any of the above checks MUST be rejected per
+   Section 2.2.2 of [RFC8693].
 
 4.2.  Txn-Token Initiating Principal Context
 
@@ -527,41 +527,20 @@ Table of Contents
 
 4.3.1.  Identifying the Target Authorization Server and Resource
 
-   The Token Exchange request MUST identify the Authorization Server in
-   Trust Domain B (AS-B) that should be the intended audience of the
-   resulting JWT Authorization Grant.  This profile uses the audience
-   parameter for this purpose, following the convention established in
-   [I-D.ietf-oauth-identity-assertion-authz-grant] Section 4.3.
+   This profile uses the audience and resource parameters following the
+   convention in [I-D.ietf-oauth-identity-assertion-authz-grant]
+   Section 4.3.  The two parameters serve distinct purposes and MUST NOT
+   be conflated.
 
-   audience:  REQUIRED.  The Issuer URL of AS-B as defined in Section 2
-      of [RFC8414].  AS-A uses this value to set the aud claim of the
-      resulting JWT Authorization Grant, so that AS-B can verify the
-      grant was issued for it.  The value MUST be the issuer identifier
-      as advertised in AS-B's authorization server metadata, or a
-      logical name for AS-B that AS-A has been configured to recognize
-      and map to AS-B's actual issuer identifier.
+   audience:  REQUIRED.  The issuer identifier of AS-B ([RFC8414]
+      Section 2).  Becomes the aud claim of the JWT Authorization Grant.
+      Implementations MUST use this parameter to identify AS-B and MUST
+      NOT pass the AS-B issuer URL as resource.
 
-   resource:  OPTIONAL.  A URI that identifies the specific Protected
-      Resource (resource server) in Trust Domain B that the Requesting
-      Workload intends to call, as defined in Section 2 of [RFC8707].
-      When present, AS-A SHOULD include this value in the resource claim
-      of the JWT Authorization Grant so that AS-B can issue a resource-
-      bound access token.
-
-   The two parameters serve distinct purposes that MUST NOT be
-   conflated:
-
-   *  audience identifies the *authorization server* (AS-B) that will
-      receive and validate the JWT Authorization Grant.  Its value
-      becomes the aud claim of the grant.
-
-   *  resource identifies the *resource server* (the Protected Resource
-      — the partner API to be called) for which an access token is
-      ultimately sought.  AS-B uses it when scoping the access token; it
-      does not appear in the aud claim.
-
-   Implementations MUST use audience to identify AS-B and MUST NOT pass
-   the AS-B issuer URL as the resource parameter.
+   resource:  OPTIONAL.  A URI identifying the Protected Resource
+      (resource server) in Trust Domain B, as defined in [RFC8707]
+      Section 2.  When present, AS-A SHOULD propagate this value into
+      the resource claim of the JWT Authorization Grant.
 
 4.3.2.  Remaining Parameters
 
@@ -578,13 +557,10 @@ Table of Contents
       produce a JWT Authorization Grant conforming to this profile when
       the other parameters conform to this profile.
 
-   scope:  OPTIONAL.  The space-separated list of scopes requested for
-      the resulting JWT Authorization Grant, constraining the access
-      token that AS-B will ultimately issue.  AS-A MUST NOT issue a JWT
-      Authorization Grant with a scope that exceeds the scope claim of
-      the presented Txn-Token.  If the requested scope is wider than the
-      Txn-Token's scope, AS-A MUST either narrow the scope to the
-      intersection or deny the request.
+   scope:  OPTIONAL.  Space-separated list of scopes requested for the
+      JWT Authorization Grant.  AS-A MUST NOT issue a grant with scope
+      exceeding the scope claim of the presented Txn-Token (see
+      Section 7).
 
    The actor_token and actor_token_type parameters defined in [RFC8693]
    are not used in this profile.
@@ -626,9 +602,7 @@ Table of Contents
    issued_token_type:  REQUIRED.  The value MUST be
       urn:ietf:params:oauth:token-type:jwt.
 
-   token_type:  REQUIRED.  The value MUST be N_A, as this is not an
-      OAuth access token and token-type-based sender constraining does
-      not apply at this step.
+   token_type:  REQUIRED.  The value MUST be N_A.
 
    expires_in:  RECOMMENDED.  The lifetime of the JWT Authorization
       Grant in seconds.  This value SHOULD reflect the exp claim of the
@@ -662,26 +636,21 @@ Table of Contents
         [I-D.ietf-oauth-identity-chaining] and Section 2.5 of [RFC9700].
 
    2.   Validate the Txn-Token signature using the public keys of the
-        TTS that issued it.  AS-A MUST establish a trust relationship
-        with the TTS; in deployments where the TTS and AS-A are co-
-        located this is straightforward.  Where they are separate
-        services, AS-A MUST be configured with the TTS's jwks_uri or
-        equivalent key material.
+        TTS that issued it.  AS-A MUST be configured with the TTS's
+        jwks_uri or equivalent key material.
 
    3.   Validate that the Txn-Token is not expired.
 
-   4.   Validate that the aud claim of the Txn-Token is acceptable to
-        AS-A (i.e., the Txn-Token was issued for consumption by AS-A or
-        the TTS acting on AS-A's behalf).
+   4.   Validate that the aud claim of the Txn-Token identifies AS-A or
+        a value AS-A is configured to accept as a valid audience for
+        presented subject tokens.
 
-   5.   Resolve the target AS-B from the audience parameter.  AS-A MUST
-        verify that the audience value corresponds to a known AS-B with
-        which a Cross-Domain Trust Agreement has been established.  If
-        the audience is unknown or policy prohibits issuing a JWT
-        Authorization Grant for that audience, AS-A MUST return an error
-        as specified in Section 2.2.2 of [RFC8693].  AS-A MUST NOT
-        accept a resource server URI in the audience parameter in place
-        of an AS-B issuer identifier.
+   5.   Verify that the audience value identifies a known AS-B for which
+        a Cross-Domain Trust Agreement has been established.  AS-A MUST
+        NOT accept a resource server URI in audience in place of an AS-B
+        issuer identifier.  If the audience is unknown or disallowed by
+        policy, AS-A MUST return an error per Section 2.2.2 of
+        [RFC8693].
 
    6.   If the resource parameter is present, validate that it
         identifies a Protected Resource within Trust Domain B consistent
@@ -756,9 +725,7 @@ Table of Contents
 
 6.1.1.  JWT Header
 
-   typ:  REQUIRED.  The value MUST be txn-chain+jwt.  Explicit JWT
-      typing is REQUIRED by this profile, consistent with JSON Web Token
-      Best Current Practices [RFC8725].
+   typ:  REQUIRED.  The value MUST be txn-chain+jwt ([RFC8725]).
 
    alg:  REQUIRED.  An asymmetric signing algorithm.  Deployments SHOULD
       use PS256, PS384, PS512, ES256, ES384, or ES512 as defined in
@@ -799,19 +766,15 @@ Table of Contents
    The following claims SHOULD be present:
 
    txn:  The unique transaction identifier from the originating Txn-
-      Token, as defined in [I-D.ietf-oauth-transaction-tokens].
-      Preserves end-to-end transaction correlation across the domain
-      boundary.  AS-B SHOULD record this value in its audit logs.
+      Token ([I-D.ietf-oauth-transaction-tokens]).  AS-B SHOULD record
+      this value in its audit logs.
 
    The following claims MAY be present:
 
    resource:  A URI or array of URIs identifying the Protected
-      Resource(s) in Trust Domain B, as defined in Section 2 of
-      [RFC8707].  Derived from the resource parameter of the Token
-      Exchange request.  AS-B SHOULD use this to issue a resource-bound
-      access token.  This value identifies the *resource server* (the
-      partner API), not AS-B.  It is distinct from — and must never
-      duplicate — the aud claim.
+      Resource(s) in Trust Domain B ([RFC8707] Section 2), derived from
+      the resource parameter of the Token Exchange request.  AS-B SHOULD
+      use this to issue a resource-bound access token.
 
    txn_claims:  A JSON object containing a curated subset of Txn-Token
       claims, selected and minimized per the policy in Section 7.  AS-B
@@ -942,8 +905,6 @@ Table of Contents
    An Authorization Server that supports this profile MUST include the
    value urn:ietf:params:oauth:token-type:txn_token in its
    identity_chaining_requested_token_types_supported metadata parameter.
-   This signals that the Authorization Server accepts Txn-Tokens as the
-   subject_token in a Token Exchange request conforming to this profile.
 
 9.  Security Considerations
 
@@ -972,12 +933,11 @@ Table of Contents
 
 9.3.  Txn-Token Confidentiality
 
-   A Txn-Token is a bearer credential scoped to Trust Domain A and MUST
-   NOT be forwarded to any entity outside Trust Domain A.  All
-   communication between the Requesting Workload and AS-A that involves
-   a Txn-Token MUST occur over mutually authenticated TLS.  Txn-Token
-   lifetimes SHOULD be short to limit the window of exposure if a token
-   is captured in transit.
+   A Txn-Token MUST NOT be forwarded to any entity outside Trust Domain
+   A.  All communication between the Requesting Workload and AS-A MUST
+   be encrypted and the Requesting Workload MUST be authenticated (e.g.,
+   via mutual TLS; see also Section 9.1).  Txn-Token lifetimes SHOULD be
+   short.
 
 9.4.  JWT Authorization Grant Replay Prevention
 
