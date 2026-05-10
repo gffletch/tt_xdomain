@@ -1068,7 +1068,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Fletcher</td>
-<td class="center">Expires 10 November 2026</td>
+<td class="center">Expires 11 November 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1081,12 +1081,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-fletcher-transaction-token-chaining-profile-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-05-09" class="published">9 May 2026</time>
+<time datetime="2026-05-10" class="published">10 May 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-11-10">10 November 2026</time></dd>
+<dd class="expires"><time datetime="2026-11-11">11 November 2026</time></dd>
 <dt class="label-authors">Author:</dt>
 <dd class="authors">
 <div class="author">
@@ -1146,7 +1146,7 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 10 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 11 November 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1804,8 +1804,11 @@ verified <span class="bcp14">MUST</span> be rejected as defined in Section 2.2.2
 <a href="#section-4.2" class="section-number selfRef">4.2. </a><a href="#name-txn-token-initiating-princi" class="section-name selfRef">Txn-Token Initiating Principal Context</a>
         </h3>
 <p id="section-4.2-1">The Txn-Token's <code>sub</code> claim identifies the Initiating Principal of
-the transaction.  AS-A <span class="bcp14">MUST</span> be capable of processing Token Exchange
-requests for all of the following Initiating Principal types:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
+the transaction.  The Initiating Principal type is not constrained
+by this profile; a Txn-Token may represent any originating context
+defined by the Transaction Token specification
+<span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>.  The following are common
+examples:<a href="#section-4.2-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-4.2-2">
           <dt id="section-4.2-2.1">Human User Identity:</dt>
           <dd style="margin-left: 1.5em" id="section-4.2-2.2">
@@ -1837,12 +1840,14 @@ WIMSE-compatible infrastructure is in use within Trust Domain A.<a href="#sectio
 </dd>
         <dd class="break"></dd>
 </dl>
-<p id="section-4.2-3">The claims transcription rules in <a href="#claims-transcription" class="auto internal xref">Section 7</a> and the
-subject identifier mapping rules in <a href="#subject-identifier-mapping" class="auto internal xref">Section 7.3</a>
-apply regardless of which Initiating Principal type the Txn-Token
-represents.  AS-A <span class="bcp14">MUST</span> map the <code>sub</code> claim to an identifier
-appropriate for Trust Domain B, applying principal-type-specific
-mapping logic as defined in <a href="#subject-identifier-mapping" class="auto internal xref">Section 7.3</a>.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
+<p id="section-4.2-3">The above examples are illustrative; other Initiating Principal types
+are possible.  The claims transcription rules in
+<a href="#claims-transcription" class="auto internal xref">Section 7</a> and the subject identifier mapping rules in
+<a href="#subject-identifier-mapping" class="auto internal xref">Section 7.3</a> apply regardless of which Initiating
+Principal type the Txn-Token represents.  AS-A <span class="bcp14">MUST</span> map the <code>sub</code>
+claim to an identifier appropriate for Trust Domain B, applying the
+mapping logic defined in the Cross-Domain Trust Agreement for the
+Initiating Principal type in question.<a href="#section-4.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="token-exchange-request-parameters">
@@ -2164,21 +2169,14 @@ the JWT signature using the public keys advertised by that AS-A.<a href="#sectio
 not been previously presented (single-use enforcement).<a href="#section-5.2-2.4.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.2-2.5">
-            <p id="section-5.2-2.5.1">Resolve the subject.  The resolution strategy depends on the
-Initiating Principal type reflected in the <code>sub</code> claim:<a href="#section-5.2-2.5.1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2.5.2">
-a. For human user identities, AS-B <span class="bcp14">SHOULD</span> attempt to match the
-   <code>sub</code> claim (or a supplementary identifier such as <code>email</code> in
-   <code>txn_claims</code>) against its local user directory or subject
-   registry.<a href="#section-5.2-2.5.2" class="pilcrow">¶</a></p>
-<p id="section-5.2-2.5.3">
-b. For system or workload identities, AS-B <span class="bcp14">SHOULD</span> evaluate the
-   <code>sub</code> claim against its configured cross-domain workload
-   access policy.<a href="#section-5.2-2.5.3" class="pilcrow">¶</a></p>
-<p id="section-5.2-2.5.4">
-c. If subject resolution fails and the Cross-Domain Trust
-   Agreement does not permit Just-In-Time provisioning, AS-B
-   <span class="bcp14">MUST</span> return an error.<a href="#section-5.2-2.5.4" class="pilcrow">¶</a></p>
+            <p id="section-5.2-2.5.1">Resolve the subject from the <code>sub</code> claim according to the mapping
+rules defined in the Cross-Domain Trust Agreement.  AS-B <span class="bcp14">SHOULD</span>
+evaluate the <code>sub</code> claim against its configured cross-domain
+access policy; supplementary identifiers in <code>txn_claims</code> (e.g.,
+<code>email</code>) <span class="bcp14">MAY</span> also be used for subject resolution where the
+Cross-Domain Trust Agreement permits.  If subject resolution fails
+and the Cross-Domain Trust Agreement does not permit Just-In-Time
+provisioning, AS-B <span class="bcp14">MUST</span> return an error.<a href="#section-5.2-2.5.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.2-2.6">
             <p id="section-5.2-2.6.1">If present, evaluate the <code>txn_claims</code> claim to apply
@@ -2427,42 +2425,11 @@ Txn-Token's scope under any circumstances.<a href="#section-7.2-1" class="pilcro
 within Trust Domain A's namespace.  AS-A <span class="bcp14">MUST</span> translate this
 identifier to a form that is both meaningful and authorized for use
 in Trust Domain B, according to the mapping rules defined in the
-Cross-Domain Trust Agreement.  The appropriate strategy depends on
-the Initiating Principal type:<a href="#section-7.3-1" class="pilcrow">¶</a></p>
-<span class="break"></span><dl class="dlParallel" id="section-7.3-2">
-          <dt id="section-7.3-2.1">Human User Identity:</dt>
-          <dd style="margin-left: 1.5em" id="section-7.3-2.2">
-            <p id="section-7.3-2.2.1">AS-A <span class="bcp14">SHOULD</span> map the user's <code>sub</code> to a cross-domain user
-identifier that AS-B can resolve to a local subject.  This <span class="bcp14">MAY</span> be
-an email address, a stable pairwise identifier, or another
-identifier agreed in the Cross-Domain Trust Agreement.  If AS-B
-supports Just-In-Time provisioning and the Cross-Domain Trust
-Agreement permits it, supplementary identity attributes (e.g.,
-<code>email</code>) <span class="bcp14">MAY</span> be included in the <code>txn_claims</code> object to facilitate
-subject resolution at AS-B.<a href="#section-7.3-2.2.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-7.3-2.3">System Identity:</dt>
-          <dd style="margin-left: 1.5em" id="section-7.3-2.4">
-            <p id="section-7.3-2.4.1">AS-A <span class="bcp14">SHOULD</span> map the system component's identifier to a
-cross-domain system identity agreed in the Cross-Domain Trust
-Agreement.  A common pattern is a structured identifier of the
-form <code>system:&lt;component&gt;@&lt;trust-domain&gt;</code> (e.g.,
-<code>system:mail-gateway@enterprise.example</code>).<a href="#section-7.3-2.4.1" class="pilcrow">¶</a></p>
-</dd>
-          <dd class="break"></dd>
-<dt id="section-7.3-2.5">Workload Identity:</dt>
-          <dd style="margin-left: 1.5em" id="section-7.3-2.6">
-            <p id="section-7.3-2.6.1">AS-A <span class="bcp14">SHOULD</span> map the workload identifier to a form recognized by
-AS-B.  Where SPIFFE URIs <span>[<a href="#I-D.ietf-wimse-arch" class="cite xref">I-D.ietf-wimse-arch</a>]</span> are in use, AS-A
-<span class="bcp14">SHOULD</span> apply the SPIFFE URI translation rules defined in the
-Cross-Domain Trust Agreement (e.g., preserving the structural
-SPIFFE URI form or mapping to a local workload identifier at AS-B).<a href="#section-7.3-2.6.1" class="pilcrow">¶</a></p>
-</dd>
-        <dd class="break"></dd>
-</dl>
-<p id="section-7.3-3">If no mapping can be determined for the Initiating Principal, AS-A
-<span class="bcp14">MUST</span> deny the Token Exchange request.<a href="#section-7.3-3" class="pilcrow">¶</a></p>
+Cross-Domain Trust Agreement.  The Cross-Domain Trust Agreement <span class="bcp14">MUST</span>
+define mapping rules for every Initiating Principal type that may
+appear in Txn-Tokens exchanged under this profile.  If no mapping
+can be determined for the Initiating Principal presented, AS-A <span class="bcp14">MUST</span>
+deny the Token Exchange request.<a href="#section-7.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="claims-minimization">
