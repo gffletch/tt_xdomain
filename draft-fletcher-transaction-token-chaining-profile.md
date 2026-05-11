@@ -146,7 +146,7 @@ Authorization Chaining Across Domains
 {{I-D.ietf-oauth-identity-chaining}} mechanism that uses a Transaction
 Token (Txn-Token) {{I-D.ietf-oauth-transaction-tokens}} as the subject
 token in a Token Exchange {{RFC8693}} request to obtain a JWT
-Authorization Grant for crossing a trust domain boundary.
+Authorization Grant for crossing a trust boundary.
 
 A Txn-Token is scoped to a single trust domain and represents the
 full authorization context of an in-progress transaction, regardless
@@ -154,8 +154,8 @@ of whether that transaction was initiated by a human user calling an
 external API, by an internal system event, or by an automated
 workload.  This profile specifies how a service operating within that
 trust domain can present its Txn-Token to obtain a JWT Authorization
-Grant that carries the necessary context across a trust domain
-boundary, enabling an access token to be issued for a partner service,
+Grant that carries the necessary context across a trust boundary,
+enabling an access token to be issued for a partner service,
 without exposing internal trust-domain credentials or token formats
 beyond the trust boundary.
 
@@ -179,7 +179,7 @@ transaction for a user or an automated process, must call one or more
 partner APIs that lie outside the organization's own trust boundary.
 The challenge is to carry the authorization context of the original
 transaction — including the identity and authorization of the
-initiating principal — across that boundary in a way that is
+Initiating Principal — across that boundary in a way that is
 trustworthy to the partner, without leaking internal credentials or
 internal token formats.
 
@@ -262,7 +262,7 @@ Trust Domain A.
 This profile is complementary to the Identity Assertion JWT
 Authorization Grant profile
 {{I-D.ietf-oauth-identity-assertion-authz-grant}}, which targets
-deployments where the Resource Authorization Server already trusts a
+deployments where the target authorization server already trusts a
 common IdP for SSO and subject resolution, using an OpenID Connect
 ID Token or SAML 2.0 assertion as the subject token.  That profile
 is optimized for the human-user, single-sign-on scenario, where the
@@ -291,8 +291,9 @@ capitals, as shown here.
 
 ## Roles
 
-The following roles are used in this document.  They extend the role
-definitions in {{I-D.ietf-oauth-identity-chaining}}.
+The following roles are used in this document.  They extend the
+OAuth 2.0 roles defined in {{RFC6749}} as used in
+{{I-D.ietf-oauth-identity-chaining}}.
 
 Initiating Principal:
 : The entity whose authorization context is captured in the Txn-Token.
@@ -314,7 +315,7 @@ Transaction Token Service (TTS):
   The TTS is the authoritative source of transaction authorization
   context within Trust Domain A.  In some deployments the TTS and
   AS-A MAY be co-located; in others they are separate services within
-  the same trust domain.
+  the same Trust Domain.
 
 Authorization Server of Trust Domain A (AS-A):
 : The OAuth 2.0 Authorization Server within Trust Domain A that
@@ -344,11 +345,13 @@ Transaction:
 Trust Domain:
 : A deployment-specific security and administrative boundary within
   which services, identifiers, credentials, and policy decisions are
-  mutually trusted.  Txn-Tokens are scoped to a single trust domain.
-  In this specification, Trust Domain A is the trust domain in which
-  the transaction originates and in which the Requesting Workload
-  operates.  Trust Domain B is the trust domain in which the Protected
-  Resource and AS-B operate.
+  mutually trusted.  This term is used in
+  {{I-D.ietf-oauth-identity-chaining}} without a formal definition;
+  this profile formalizes it.  Txn-Tokens are scoped to a single
+  Trust Domain.  In this specification, Trust Domain A is the Trust
+  Domain in which the transaction originates and in which the
+  Requesting Workload operates.  Trust Domain B is the Trust Domain
+  in which the Protected Resource and AS-B operate.
 
 Cross-Domain Trust Agreement:
 : A bilateral or federated configuration through which AS-A and AS-B
@@ -951,7 +954,7 @@ deny the Token Exchange request.
 
 ## Claims Minimization
 
-Txn-Tokens MUST NOT be forwarded across trust domain boundaries.
+Txn-Tokens MUST NOT be forwarded across trust boundaries.
 The JWT Authorization Grant is the only artifact that crosses the
 boundary, and AS-A MUST apply strict claims minimization.
 
@@ -1138,8 +1141,8 @@ in the "JSON Web Token Claims" registry (maintained by IANA):
 
 The following use cases illustrate the three Initiating Principal
 types described in {{txn-token-initiating-principal-context}}, each
-demonstrating a scenario where a workload within a trust domain must
-call a partner service in a separate trust domain to complete the
+demonstrating a scenario where a workload within a Trust Domain must
+call a partner service in a separate Trust Domain to complete the
 transaction.
 
 ## User-Initiated External API Call Requiring a Partner Service
@@ -1279,7 +1282,7 @@ Trust Relationship Basis:
 Multi-Tenancy:
 : The ID-JAG profile defines `tenant`, `aud_tenant`, and `aud_sub`
   claims for multi-tenant SaaS deployments.  This profile does not
-  define equivalent tenant-scoping claims, as trust domain
+  define equivalent tenant-scoping claims, as Trust Domain
   boundaries are typically organizational or service-provider
   boundaries rather than tenant partitions within a shared platform.
 
