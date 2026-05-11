@@ -4,8 +4,8 @@
 
 Web Authorization Protocol                                   G. Fletcher
 Internet-Draft                                    Practical Identity LLC
-Intended status: Standards Track                             10 May 2026
-Expires: 11 November 2026
+Intended status: Standards Track                             11 May 2026
+Expires: 12 November 2026
 
 
   Transaction Token Authorization Grant Profile for OAuth Identity and
@@ -61,7 +61,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 November 2026.
+   This Internet-Draft will expire on 12 November 2026.
 
 Copyright Notice
 
