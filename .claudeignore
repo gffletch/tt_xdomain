@@ -1,0 +1,4 @@
+~/.ssh/
+~/.aws/
+**/.env
+**/secrets/
