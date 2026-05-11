@@ -16,6 +16,7 @@
 /lib
 /node_modules/
 /versioned/
+resume
 Gemfile.lock
 archive.json
 draft-fletcher-transaction-token-chaining-profile.xml
