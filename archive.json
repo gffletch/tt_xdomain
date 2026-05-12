@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-10T02:55:10.565663+00:00",
+  "timestamp": "2026-05-12T02:55:53.240446+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -49,6 +49,148 @@
       "color": "ffffff"
     }
   ],
-  "issues": [],
-  "pulls": []
+  "issues": [
+    {
+      "number": 1,
+      "id": "I_kwDOSYHu488AAAABB3ovnQ",
+      "title": "Terminology alignment",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/1",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "To minimise the risks of confusion amongst new readers, it may be useful to adhere to Identity Chaining terminology as much as possible (e.g. be explicit about Trust Domain A, Trust Domain B distinctions, or at the very least provide a mapping (aligning on identity chaining terminology took time nad even caused confusion amongst authors).",
+      "createdAt": "2026-05-11T11:26:41Z",
+      "updatedAt": "2026-05-11T12:30:40Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "body": "Ok, first attempt in this PR: https://github.com/gffletch/tt_xdomain/pull/7",
+          "createdAt": "2026-05-11T12:30:40Z",
+          "updatedAt": "2026-05-11T12:30:40Z"
+        }
+      ]
+    },
+    {
+      "number": 2,
+      "id": "I_kwDOSYHu488AAAABB3p0yQ",
+      "title": "Model TTS and AS as separate entities in Section 3.2",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/2",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "We always maintained that the transaction token service does not neeed to be an OAuth authorization server, so keeping that distinction here would help enforce that (there is even language in the transaction token servece spec that states you don't need to support token exchange if the transaction token is being requested over another interface than HTTP).",
+      "createdAt": "2026-05-11T11:29:25Z",
+      "updatedAt": "2026-05-11T11:29:25Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 3,
+      "id": "I_kwDOSYHu488AAAABB3rBbQ",
+      "title": "AS Discovery simplification.",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/3",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Instead of elaborating on AS discovery in section 3.2, just refer to the identity chaining spec:\n\n<snip>\nThe Requesting Workload discovers AS-B using the mechanisms defined in Section 2.2 of [[I-D.ietf-oauth-identity-chaining](https://gffletch.github.io/tt_xdomain/draft-fletcher-transaction-token-chaining-profile.html#I-D.ietf-oauth-identity-chaining)]\n</snip>",
+      "createdAt": "2026-05-11T11:32:40Z",
+      "updatedAt": "2026-05-11T11:32:40Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 4,
+      "id": "I_kwDOSYHu488AAAABB3sHfg",
+      "title": "Allow for extensibility in the JWT Auth Grant",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/4",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Perhaps s ingle sentence to say \"the Txn-token JWT Authorization Grant may include additional claims\" (stating the obvious perhaps),",
+      "createdAt": "2026-05-11T11:35:45Z",
+      "updatedAt": "2026-05-11T11:35:45Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 5,
+      "id": "I_kwDOSYHu488AAAABB3t5Kg",
+      "title": "Avoid \"Purpose Claim\"",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/5",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Section 7.4 talks about a \"Purpose Claim\". Perhaps just refer to this as the \"scope\" claim and the talk about purpose (similar to how we did this for transaction tokens).",
+      "createdAt": "2026-05-11T11:40:46Z",
+      "updatedAt": "2026-05-11T11:55:33Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "body": "Yeah... somehow I think the robot pulled an older version of the transaction token spec. I fixed all the references to the `purp` claim and I agree more needs to be done :) ",
+          "createdAt": "2026-05-11T11:55:33Z",
+          "updatedAt": "2026-05-11T11:55:33Z"
+        }
+      ]
+    },
+    {
+      "number": 6,
+      "id": "I_kwDOSYHu488AAAABB3wAPA",
+      "title": "Consider adding a reference to the AIMS draft",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/6",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "As part of the motivation for this work, you may want to point to the AIMS draft  (section 10.5 - https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-01.html#name-cross-domain-access) which says: \n\n>When using OAuth Identity and Authorization Chaining Across Domains ([[OAUTH-ID-CHAIN](https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-01.html#OAUTH-ID-CHAIN)]), an Agent SHOULD use the access token or transaction token it received to obtain a JWT authorization grant as described in [Section 2.3](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-08#section-2.3) of [[OAUTH-ID-CHAIN](https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-01.html#OAUTH-ID-CHAIN)] and then use the JWT authorization grant it receives to obtain an access token for the resource it is trying to access as defined in [Section 2.4](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-08#section-2.4) of [[OAUTH-ID-CHAIN](https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-01.html#OAUTH-ID-CHAIN)].\n\nHowever, it does not define details of how to do this, raising an interop requriement (hence the need for this draft).\n",
+      "createdAt": "2026-05-11T11:47:02Z",
+      "updatedAt": "2026-05-11T11:47:02Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
+  "pulls": [
+    {
+      "number": 7,
+      "id": "PR_kwDOSYHu487aP2Vk",
+      "title": "Adjust terminology to better match the Identity Chaining draft",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/7",
+      "state": "MERGED",
+      "author": "gffletch",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Adjusted terminology to better match the Identity Chaining draft",
+      "createdAt": "2026-05-11T12:30:00Z",
+      "updatedAt": "2026-05-12T01:47:56Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "08c1693552a12b31fec346873708fa362deecda7",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "issue_1",
+      "headRefOid": "ea3d8eb46590b39acd07faff731af9ae1ef9d096",
+      "closedAt": "2026-05-12T01:47:56Z",
+      "mergedAt": "2026-05-12T01:47:56Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "6628fac48c93de05246209fceeb1397b0170c5bb"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
 }
