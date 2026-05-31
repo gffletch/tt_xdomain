@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-12T02:55:53.240446+00:00",
+  "timestamp": "2026-05-31T03:50:28.370728+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -62,7 +62,7 @@
       "labels": [],
       "body": "To minimise the risks of confusion amongst new readers, it may be useful to adhere to Identity Chaining terminology as much as possible (e.g. be explicit about Trust Domain A, Trust Domain B distinctions, or at the very least provide a mapping (aligning on identity chaining terminology took time nad even caused confusion amongst authors).",
       "createdAt": "2026-05-11T11:26:41Z",
-      "updatedAt": "2026-05-11T12:30:40Z",
+      "updatedAt": "2026-05-30T10:59:31Z",
       "closedAt": null,
       "comments": [
         {
@@ -71,6 +71,13 @@
           "body": "Ok, first attempt in this PR: https://github.com/gffletch/tt_xdomain/pull/7",
           "createdAt": "2026-05-11T12:30:40Z",
           "updatedAt": "2026-05-11T12:30:40Z"
+        },
+        {
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "body": "@PieterKas I merged PR #7. Let me know if I can close this issue.",
+          "createdAt": "2026-05-30T10:59:31Z",
+          "updatedAt": "2026-05-30T10:59:31Z"
         }
       ]
     },
@@ -159,6 +166,22 @@
       "body": "As part of the motivation for this work, you may want to point to the AIMS draft  (section 10.5 - https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-01.html#name-cross-domain-access) which says: \n\n>When using OAuth Identity and Authorization Chaining Across Domains ([[OAUTH-ID-CHAIN](https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-01.html#OAUTH-ID-CHAIN)]), an Agent SHOULD use the access token or transaction token it received to obtain a JWT authorization grant as described in [Section 2.3](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-08#section-2.3) of [[OAUTH-ID-CHAIN](https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-01.html#OAUTH-ID-CHAIN)] and then use the JWT authorization grant it receives to obtain an access token for the resource it is trying to access as defined in [Section 2.4](https://datatracker.ietf.org/doc/html/draft-ietf-oauth-identity-chaining-08#section-2.4) of [[OAUTH-ID-CHAIN](https://www.ietf.org/archive/id/draft-klrc-aiagent-auth-01.html#OAUTH-ID-CHAIN)].\n\nHowever, it does not define details of how to do this, raising an interop requriement (hence the need for this draft).\n",
       "createdAt": "2026-05-11T11:47:02Z",
       "updatedAt": "2026-05-11T11:47:02Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 8,
+      "id": "I_kwDOSYHu488AAAABD3Lo3w",
+      "title": "Transaction token as subject_token is sufficient",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/8",
+      "state": "OPEN",
+      "author": "gffletch",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Feedback from presenting the draft at the OAuth Security Workshop:\n* Describing the processing rules for allowing the transaction token to be a subject_token is sufficient\n* Descriptions of cross-domain trust agreements is probably at the incorrect layer and should really be part of the base identity chaining draft\n* Descriptions of different types of principals in transaction tokens probably should live in the transaction token specification",
+      "createdAt": "2026-05-30T10:51:32Z",
+      "updatedAt": "2026-05-30T10:51:32Z",
       "closedAt": null,
       "comments": []
     }
