@@ -4,8 +4,11 @@
 
 Web Authorization Protocol                                   G. Fletcher
 Internet-Draft                                    Practical Identity LLC
-Intended status: Standards Track                             12 May 2026
-Expires: 13 November 2026
+Intended status: Standards Track                            P. Kasselman
+Expires: 21 December 2026                               Defakto Security
+                                                               S. O'Dell
+                                                              CVS Health
+                                                            19 June 2026
 
 
   Transaction Token Authorization Grant Profile for OAuth Identity and
@@ -61,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 13 November 2026.
+   This Internet-Draft will expire on 21 December 2026.
 
 Copyright Notice
 
@@ -133,7 +136,9 @@ Table of Contents
    Appendix B.  Relationship to Related Specifications
      B.1.  Identity Assertion JWT Authorization Grant
    Acknowledgements
-   Author's Address
+   Document History
+     Since Draft 01
+   Authors' Addresses
 
 1.  Introduction
 
@@ -1333,8 +1338,26 @@ Acknowledgements
    authored by Arndt Schwenkschuster, Pieter Kasselman, Kelley Burgin,
    Michael Jenkins, Brian Campbell, and Aaron Parecki.
 
-Author's Address
+Document History
+
+   [[ To be removed from final specification ]]
+
+Since Draft 01
+
+   *  Added Pieter Kasselman and Sean O'Dell as authors
+
+Authors' Addresses
 
    George Fletcher
    Practical Identity LLC
    Email: george@practicalidentity.com
+
+
+   Pieter Kasselman
+   Defakto Security
+   Email: pieter@defakto.security
+
+
+   Sean O'Dell
+   CVS Health
+   Email: sean.odell@cvshealth.com
