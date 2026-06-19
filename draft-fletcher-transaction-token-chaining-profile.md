@@ -25,6 +25,14 @@ author:
     name: George Fletcher
     organization: Practical Identity LLC
     email: george@practicalidentity.com
+  - ins: P. Kasselman
+    name: Pieter Kasselman
+    org: Defakto Security
+    email: pieter@defakto.security
+  - ins: S. O'Dell
+    name: Sean O'Dell
+    organization: CVS Health
+    email: sean.odell@cvshealth.com
 
 normative:
   RFC2119:
@@ -1330,3 +1338,12 @@ Tulshibagwale, George Fletcher, and Pieter Kasselman.  The OAuth
 Identity and Authorization Chaining Across Domains specification was
 authored by Arndt Schwenkschuster, Pieter Kasselman, Kelley Burgin,
 Michael Jenkins, Brian Campbell, and Aaron Parecki.
+
+# Document History
+{: numbered="false"}
+[[ To be removed from final specification ]]
+
+## Since Draft 01
+{:numbered="false"}
+
+* Added Pieter Kasselman and Sean O'Dell as authors
