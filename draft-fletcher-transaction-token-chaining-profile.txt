@@ -864,9 +864,9 @@ Table of Contents
    B's authorization policy.  AS-A MUST apply the following minimization
    rules:
 
-   Purpose Claim (scope):  SHOULD be included when it is meaningful to
-      AS-B's authorization policy (e.g., to enable the Protected
-      Resource to apply different handling based on transaction type).
+   Scope Claim (scope):  SHOULD be included when it is meaningful to AS-
+      B's authorization policy (e.g., to enable the Protected Resource
+      to apply different handling based on transaction type).
 
    Requester Context (rctx):  MAY be included in a minimized form.
       Information relevant to the cross-domain request (e.g., the
@@ -1333,6 +1333,8 @@ Since Draft 01
    *  Fixed the sequence diagram in section 3.2
 
    *  Streamlined the text descriptions for the sequence in section 3.2
+
+   *  Cleaned up language that used purpose instead of scope
 
 Authors' Addresses
 
