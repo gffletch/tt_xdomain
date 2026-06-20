@@ -833,8 +833,7 @@ sub:
 
 aud:
 : REQUIRED.  The Issuer URL of AS-B, derived from the `audience`
-  parameter of the Token Exchange request.  MUST be a single value
-  to prevent grant replay at an unintended authorization server.
+  parameter of the Token Exchange request.  MUST be a single value.
 
 iat:
 : REQUIRED.  Issuance time ({{RFC7519}} Section 4.1.6).
@@ -995,9 +994,7 @@ Supplementary Identity Claims:
   subject resolution.
 
 The Cross-Domain Trust Agreement SHOULD define the set of claims
-permitted to appear in `txn_claims` and their expected semantics,
-to ensure that AS-A and AS-B have a shared, normative understanding
-of each transcribed claim.
+permitted to appear in `txn_claims` and their expected semantics.
 
 
 # Authorization Server Metadata
