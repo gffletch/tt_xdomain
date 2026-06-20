@@ -1329,3 +1329,5 @@ Michael Jenkins, Brian Campbell, and Aaron Parecki.
 {:numbered="false"}
 
 * Added Pieter Kasselman and Sean O'Dell as authors
+* Fixed the sequence diagram in section 3.2
+* Streamlined the text descriptions for the sequence in section 3.2
