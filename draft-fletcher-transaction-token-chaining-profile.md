@@ -955,7 +955,7 @@ carry a curated subset of Txn-Token claims that are relevant to
 AS-B's authorization policy.  AS-A MUST apply the following
 minimization rules:
 
-Purpose Claim (`scope`):
+Scope Claim (`scope`):
 : SHOULD be included when it is meaningful to AS-B's authorization
   policy (e.g., to enable the Protected Resource to apply different
   handling based on transaction type).
@@ -1331,3 +1331,4 @@ Michael Jenkins, Brian Campbell, and Aaron Parecki.
 * Added Pieter Kasselman and Sean O'Dell as authors
 * Fixed the sequence diagram in section 3.2
 * Streamlined the text descriptions for the sequence in section 3.2
+* Cleaned up language that used purpose instead of scope
