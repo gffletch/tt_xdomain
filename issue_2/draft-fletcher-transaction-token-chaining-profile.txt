@@ -5,10 +5,10 @@
 Web Authorization Protocol                                   G. Fletcher
 Internet-Draft                                    Practical Identity LLC
 Intended status: Standards Track                            P. Kasselman
-Expires: 21 December 2026                               Defakto Security
+Expires: 22 December 2026                               Defakto Security
                                                                S. O'Dell
                                                               CVS Health
-                                                            19 June 2026
+                                                            20 June 2026
 
 
   Transaction Token Authorization Grant Profile for OAuth Identity and
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 December 2026.
+   This Internet-Draft will expire on 22 December 2026.
 
 Copyright Notice
 
@@ -362,51 +362,51 @@ Table of Contents
    profile.  The complete end-to-end sequence is illustrated in
    Figure 1.
 
-   +----------+  +-----------+  +----------+  +---------+  +---------+
-   |Initiating|  |Requesting |  |  TTS /   |  |  AS-B   |  |Protected|
-   | Request  |  | Workload  |  |  AS-A    |  |(Trust B)|  |Resource |
-   |(Perimeter|  |(Trust A)  |  |(Trust A) |  |         |  |(Trust B)|
-   | Trust A) |  |           |  |          |  |         |  |         |
-   +----+-----+  +-----+-----+  +----+-----+  +----+----+  +----+----+
-        |               |            |              |             |
-        | (1) Inbound   |            |              |             |
-        |   Request     |            |              |             |
-        | (any origin)  |            |              |             |
-        |-------------->|            |              |             |
-        |               |            |              |             |
-        |               | (2) Request|              |             |
-        |               |  Txn-Token |              |             |
-        |               |----------->|              |             |
-        |               |            |              |             |
-        |               | (3) Txn-   |              |             |
-        |               |   Token    |              |             |
-        |               |<- - - - - -|              |             |
-        |               |            |              |             |
-        |               | (4) Discover AS-B         |             |
-        |               |...(RFC9728)...............|             |
-        |               |            |              |             |
-        |               | (5) Token Exchange        |             |
-        |               |   [RFC8693]|              |             |
-        |               | subject_token=Txn-Token   |             |
-        |               | audience=AS-B issuer URL  |             |
-        |               |----------->|              |             |
-        |               |            |              |             |
-        |               | (6) JWT Authorization     |             |
-        |               |    Grant   |              |             |
-        |               |<- - - - - -|              |             |
-        |               |            |              |             |
-        |               | (7) Present JWT Grant     |             |
-        |               |   [RFC7523]               |             |
-        |               |-------------------------->|             |
-        |               |            |              |             |
-        |               | (8) Access Token          |             |
-        |               |<- - - - - - - - - - - - - |             |
-        |               |            |              |             |
-        |               | (9) Call Protected Resource             |
-        |               |---------------------------------------->|
-        |               |            |              |             |
++----------+  +----------+  +---------+  +---------+  +---------+  +---------+
+|Initiating|  |Requesting|  |   TTS   |  |  AS-A   |  |  AS-B   |  |Protected|
+| Request  |  | Workload |  |(Trust A)|  |(Trust A)|  |(Trust B)|  |Resource |
+|(Perimeter|  |(Trust A) |  |         |  |         |  |         |  |(Trust B)|
+| Trust A) |  |          |  |         |  |         |  |         |  |         |
++-----+----+  +-----+----+  +----+----+  +----+----+  +----+----+  +----+----+
+      |             |            |            |            |            |
+      | (1) Inbound |            |            |            |            |
+      | Request     |            |            |            |            |
+      | (any origin)|            |            |            |            |
+      |------------>|            |            |            |            |
+      |             |            |            |            |            |
+      |             | (2) Request|            |            |            |
+      |             | Txn-Token  |            |            |            |
+      |             |----------->|            |            |            |
+      |             |            |            |            |            |
+      |             | (3) Txn-Token           |            |            |
+      |             |< - - - - - |            |            |            |
+      |             |            |            |            |            |
+      |             | (4) Discover AS-B       |            |            |
+      |             | (RFC9728)  |            |            |            |
+      |             |......................................|            |
+      |             |            |            |            |            |
+      |             | (5) Token Exchange      |            |            |
+      |             | [RFC8693]  |            |            |            |
+      |             | subject_token=Txn-Token |            |            |
+      |             | audience=AS-B issuer URL|            |            |
+      |             |------------------------>|            |            |
+      |             |            |            |            |            |
+      |             | (6) JWT Authorization   |            |            |
+      |             | Grant      |            |            |            |
+      |             |< - - - - - - - - - - - -|            |            |
+      |             |            |            |            |            |
+      |             | (7) Present JWT Grant   |            |            |
+      |             | [RFC7523]  |            |            |            |
+      |             |------------------------------------->|            |
+      |             |            |            |            |            |
+      |             | (8) Access Token        |            |            |
+      |             |< - - - - - - - - - - - - - - - - - - |            |
+      |             |            |            |            |            |
+      |             | (9) Call Protected Resource          |            |
+      |             |-------------------------------------------------->|
+      |             |            |            |            |            |
 
-                 Figure 1: Transaction Token Chaining Flow
+              Figure 1: Transaction Token Chaining Flow
 
    The steps are as follows:
 
