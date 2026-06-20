@@ -407,49 +407,49 @@ complete the transaction, it follows the flow defined in this profile.
 The complete end-to-end sequence is illustrated in {{fig-flow}}.
 
 ~~~ ascii-art
-+----------+  +-----------+  +----------+  +---------+  +---------+
-|Initiating|  |Requesting |  |  TTS /   |  |  AS-B   |  |Protected|
-| Request  |  | Workload  |  |  AS-A    |  |(Trust B)|  |Resource |
-|(Perimeter|  |(Trust A)  |  |(Trust A) |  |         |  |(Trust B)|
-| Trust A) |  |           |  |          |  |         |  |         |
-+----+-----+  +-----+-----+  +----+-----+  +----+----+  +----+----+
-     |               |            |              |             |
-     | (1) Inbound   |            |              |             |
-     |   Request     |            |              |             |
-     | (any origin)  |            |              |             |
-     |-------------->|            |              |             |
-     |               |            |              |             |
-     |               | (2) Request|              |             |
-     |               |  Txn-Token |              |             |
-     |               |----------->|              |             |
-     |               |            |              |             |
-     |               | (3) Txn-   |              |             |
-     |               |   Token    |              |             |
-     |               |<- - - - - -|              |             |
-     |               |            |              |             |
-     |               | (4) Discover AS-B         |             |
-     |               |...(RFC9728)...............|             |
-     |               |            |              |             |
-     |               | (5) Token Exchange        |             |
-     |               |   [RFC8693]|              |             |
-     |               | subject_token=Txn-Token   |             |
-     |               | audience=AS-B issuer URL  |             |
-     |               |----------->|              |             |
-     |               |            |              |             |
-     |               | (6) JWT Authorization     |             |
-     |               |    Grant   |              |             |
-     |               |<- - - - - -|              |             |
-     |               |            |              |             |
-     |               | (7) Present JWT Grant     |             |
-     |               |   [RFC7523]               |             |
-     |               |-------------------------->|             |
-     |               |            |              |             |
-     |               | (8) Access Token          |             |
-     |               |<- - - - - - - - - - - - - |             |
-     |               |            |              |             |
-     |               | (9) Call Protected Resource             |
-     |               |---------------------------------------->|
-     |               |            |              |             |
++----------+  +----------+  +---------+  +---------+  +---------+  +---------+
+|Initiating|  |Requesting|  |   TTS   |  |  AS-A   |  |  AS-B   |  |Protected|
+| Request  |  | Workload |  |(Trust A)|  |(Trust A)|  |(Trust B)|  |Resource |
+|(Perimeter|  |(Trust A) |  |         |  |         |  |         |  |(Trust B)|
+| Trust A) |  |          |  |         |  |         |  |         |  |         |
++-----+----+  +-----+----+  +----+----+  +----+----+  +----+----+  +----+----+
+      |             |            |            |            |            |
+      | (1) Inbound |            |            |            |            |
+      | Request     |            |            |            |            |
+      | (any origin)|            |            |            |            |
+      |------------>|            |            |            |            |
+      |             |            |            |            |            |
+      |             | (2) Request|            |            |            |
+      |             | Txn-Token  |            |            |            |
+      |             |----------->|            |            |            |
+      |             |            |            |            |            |
+      |             | (3) Txn-Token           |            |            |
+      |             |< - - - - - |            |            |            |
+      |             |            |            |            |            |
+      |             | (4) Discover AS-B       |            |            |
+      |             | (RFC9728)  |            |            |            |
+      |             |......................................|            |
+      |             |            |            |            |            |
+      |             | (5) Token Exchange      |            |            |
+      |             | [RFC8693]  |            |            |            |
+      |             | subject_token=Txn-Token |            |            |
+      |             | audience=AS-B issuer URL|            |            |
+      |             |------------------------>|            |            |
+      |             |            |            |            |            |
+      |             | (6) JWT Authorization   |            |            |
+      |             | Grant      |            |            |            |
+      |             |< - - - - - - - - - - - -|            |            |
+      |             |            |            |            |            |
+      |             | (7) Present JWT Grant   |            |            |
+      |             | [RFC7523]  |            |            |            |
+      |             |------------------------------------->|            |
+      |             |            |            |            |            |
+      |             | (8) Access Token        |            |            |
+      |             |< - - - - - - - - - - - - - - - - - - |            |
+      |             |            |            |            |            |
+      |             | (9) Call Protected Resource          |            |
+      |             |-------------------------------------------------->|
+      |             |            |            |            |            |
 ~~~
 {: #fig-flow title="Transaction Token Chaining Flow"}
 
