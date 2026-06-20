@@ -1330,6 +1330,10 @@ Since Draft 01
 
    *  Added Pieter Kasselman and Sean O'Dell as authors
 
+   *  Fixed the sequence diagram in section 3.2
+
+   *  Streamlined the text descriptions for the sequence in section 3.2
+
 Authors' Addresses
 
    George Fletcher
