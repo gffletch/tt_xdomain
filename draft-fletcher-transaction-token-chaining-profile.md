@@ -456,39 +456,24 @@ The complete end-to-end sequence is illustrated in {{fig-flow}}.
 The steps are as follows:
 
 1. An inbound request arrives at the Requesting Workload's perimeter.
-   This may be an OAuth 2.0-protected API call from an external user
-   or client, an SMTP message delivery, a scheduled job trigger, or
-   any other initiating event.
 
 2. The Requesting Workload (or the first workload within Trust Domain
-   A that receives the transaction) requests a Txn-Token from the TTS,
-   presenting the available inbound context (e.g., the external OAuth
-   2.0 access token, an internal system credential, or a workload
-   identity), following the Txn-Token issuance procedures defined in
-   {{I-D.ietf-oauth-transaction-tokens}}.  The TTS records the
-   Initiating Principal's identity in the `sub` claim and the
-   transaction purpose in the `scope` claim of the Txn-Token.
+   A that receives the transaction) requests a Txn-Token from the TTS.
 
 3. The TTS issues a Txn-Token to the Requesting Workload.  The
    Txn-Token is scoped to Trust Domain A and MUST NOT be presented
    to any entity outside Trust Domain A.
 
 4. The Requesting Workload discovers AS-B using the mechanisms defined
-   in Section 2.2 of {{I-D.ietf-oauth-identity-chaining}}, such as
-   the `authorization_servers` metadata property in the Protected
-   Resource Metadata {{RFC9728}} published by the Protected Resource.
-   The Requesting Workload obtains AS-B's issuer URL for use as the
-   `audience` parameter in the Token Exchange request.
+   in Section 2.2 of {{I-D.ietf-oauth-identity-chaining}}.
 
 5. The Requesting Workload presents the Txn-Token as the `subject_token`
    in an OAuth 2.0 Token Exchange {{RFC8693}} request to AS-A,
    identifying AS-B in the `audience` parameter and optionally
    specifying the target Protected Resource in the `resource`
-   parameter.  See {{token-exchange-request-parameters}} for the
-   full parameter specification.
+   parameter.
 
-6. AS-A validates the Txn-Token, verifies that a Cross-Domain Trust
-   Agreement exists with the indicated AS-B, applies subject
+6. AS-A validates the Txn-Token, applies subject
    identifier mapping ({{subject-identifier-mapping}}) and claims
    minimization ({{claims-transcription}}), and issues a signed JWT
    Authorization Grant.  The Txn-Token is consumed entirely within
@@ -1344,3 +1329,5 @@ Michael Jenkins, Brian Campbell, and Aaron Parecki.
 {:numbered="false"}
 
 * Added Pieter Kasselman and Sean O'Dell as authors
+* Fixed the sequence diagram in section 3.2
+* Streamlined the text descriptions for the sequence in section 3.2
