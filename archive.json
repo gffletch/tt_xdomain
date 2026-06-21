@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-31T03:50:28.370728+00:00",
+  "timestamp": "2026-06-21T04:11:23.006382+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -55,15 +55,15 @@
       "id": "I_kwDOSYHu488AAAABB3ovnQ",
       "title": "Terminology alignment",
       "url": "https://github.com/gffletch/tt_xdomain/issues/1",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "PieterKas",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "To minimise the risks of confusion amongst new readers, it may be useful to adhere to Identity Chaining terminology as much as possible (e.g. be explicit about Trust Domain A, Trust Domain B distinctions, or at the very least provide a mapping (aligning on identity chaining terminology took time nad even caused confusion amongst authors).",
       "createdAt": "2026-05-11T11:26:41Z",
-      "updatedAt": "2026-05-30T10:59:31Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-20T21:13:28Z",
+      "closedAt": "2026-06-20T21:13:28Z",
       "comments": [
         {
           "author": "gffletch",
@@ -86,32 +86,48 @@
       "id": "I_kwDOSYHu488AAAABB3p0yQ",
       "title": "Model TTS and AS as separate entities in Section 3.2",
       "url": "https://github.com/gffletch/tt_xdomain/issues/2",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "PieterKas",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "We always maintained that the transaction token service does not neeed to be an OAuth authorization server, so keeping that distinction here would help enforce that (there is even language in the transaction token servece spec that states you don't need to support token exchange if the transaction token is being requested over another interface than HTTP).",
       "createdAt": "2026-05-11T11:29:25Z",
-      "updatedAt": "2026-05-11T11:29:25Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-06-20T21:13:53Z",
+      "closedAt": "2026-06-20T21:13:53Z",
+      "comments": [
+        {
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "body": "Updated sequence diagram. Closing issue.",
+          "createdAt": "2026-06-20T21:13:53Z",
+          "updatedAt": "2026-06-20T21:13:53Z"
+        }
+      ]
     },
     {
       "number": 3,
       "id": "I_kwDOSYHu488AAAABB3rBbQ",
       "title": "AS Discovery simplification.",
       "url": "https://github.com/gffletch/tt_xdomain/issues/3",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "PieterKas",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Instead of elaborating on AS discovery in section 3.2, just refer to the identity chaining spec:\n\n<snip>\nThe Requesting Workload discovers AS-B using the mechanisms defined in Section 2.2 of [[I-D.ietf-oauth-identity-chaining](https://gffletch.github.io/tt_xdomain/draft-fletcher-transaction-token-chaining-profile.html#I-D.ietf-oauth-identity-chaining)]\n</snip>",
       "createdAt": "2026-05-11T11:32:40Z",
-      "updatedAt": "2026-05-11T11:32:40Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-06-20T21:41:42Z",
+      "closedAt": "2026-06-20T21:41:42Z",
+      "comments": [
+        {
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "body": "Cleaned up the sequence descriptions ",
+          "createdAt": "2026-06-20T21:41:42Z",
+          "updatedAt": "2026-06-20T21:41:42Z"
+        }
+      ]
     },
     {
       "number": 4,
@@ -134,15 +150,15 @@
       "id": "I_kwDOSYHu488AAAABB3t5Kg",
       "title": "Avoid \"Purpose Claim\"",
       "url": "https://github.com/gffletch/tt_xdomain/issues/5",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "PieterKas",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Section 7.4 talks about a \"Purpose Claim\". Perhaps just refer to this as the \"scope\" claim and the talk about purpose (similar to how we did this for transaction tokens).",
       "createdAt": "2026-05-11T11:40:46Z",
-      "updatedAt": "2026-05-11T11:55:33Z",
-      "closedAt": null,
+      "updatedAt": "2026-06-20T22:00:44Z",
+      "closedAt": "2026-06-20T22:00:44Z",
       "comments": [
         {
           "author": "gffletch",
@@ -150,6 +166,13 @@
           "body": "Yeah... somehow I think the robot pulled an older version of the transaction token spec. I fixed all the references to the `purp` claim and I agree more needs to be done :) ",
           "createdAt": "2026-05-11T11:55:33Z",
           "updatedAt": "2026-05-11T11:55:33Z"
+        },
+        {
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "body": "There may be more language we want to address but the core updates have been made. Closed with PR #13 ",
+          "createdAt": "2026-06-20T22:00:44Z",
+          "updatedAt": "2026-06-20T22:00:44Z"
         }
       ]
     },
@@ -199,7 +222,7 @@
       "labels": [],
       "body": "Adjusted terminology to better match the Identity Chaining draft",
       "createdAt": "2026-05-11T12:30:00Z",
-      "updatedAt": "2026-05-12T01:47:56Z",
+      "updatedAt": "2026-06-20T21:37:08Z",
       "baseRepository": "gffletch/tt_xdomain",
       "baseRefName": "main",
       "baseRefOid": "08c1693552a12b31fec346873708fa362deecda7",
@@ -211,6 +234,146 @@
       "mergedBy": "gffletch",
       "mergeCommit": {
         "oid": "6628fac48c93de05246209fceeb1397b0170c5bb"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 9,
+      "id": "PR_kwDOSYHu487oh4Kg",
+      "title": "Update authors in transaction token chaining profile",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/9",
+      "state": "MERGED",
+      "author": "gffletch",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Added Pieter Kasselman and Sean O'Dell as authors.",
+      "createdAt": "2026-06-19T21:55:16Z",
+      "updatedAt": "2026-06-20T21:37:18Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "6628fac48c93de05246209fceeb1397b0170c5bb",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "add_authors",
+      "headRefOid": "3163c07a6ca28e0b3b457737518ba262344346f0",
+      "closedAt": "2026-06-19T21:56:14Z",
+      "mergedAt": "2026-06-19T21:56:14Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "5d0991474c477ce2295e6b5b8c189dc716967aca"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 10,
+      "id": "PR_kwDOSYHu487oiDKh",
+      "title": "Merge main into issue_2",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/10",
+      "state": "MERGED",
+      "author": "gffletch",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Merge updates to main into the issue_2 branch so that it is current with the main branch",
+      "createdAt": "2026-06-19T22:07:16Z",
+      "updatedAt": "2026-06-19T22:08:05Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "issue_2",
+      "baseRefOid": "e7b327b3f4b01575059f2f333476a9595a4d1d88",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "main",
+      "headRefOid": "5d0991474c477ce2295e6b5b8c189dc716967aca",
+      "closedAt": "2026-06-19T22:08:04Z",
+      "mergedAt": "2026-06-19T22:08:04Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "b26c94f058bb21a42971162d8f60211e9ac2c62f"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 11,
+      "id": "PR_kwDOSYHu487owpJ_",
+      "title": "Fix seq diag to separate the TTS and AS-A into separate swim lanes",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/11",
+      "state": "MERGED",
+      "author": "gffletch",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Also addresses some wording changes",
+      "createdAt": "2026-06-20T21:10:47Z",
+      "updatedAt": "2026-06-20T21:37:01Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "5d0991474c477ce2295e6b5b8c189dc716967aca",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "issue_2",
+      "headRefOid": "edcfd1f5855702a9d86b4004bd95cf4be6fd0b1e",
+      "closedAt": "2026-06-20T21:12:12Z",
+      "mergedAt": "2026-06-20T21:12:12Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "1465ceb5dc428dda2fa727dc3c5d4f2971690e5a"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 12,
+      "id": "PR_kwDOSYHu487ow0fo",
+      "title": "Streamlined text descriptions in section 3.2",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/12",
+      "state": "MERGED",
+      "author": "gffletch",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Addresses issue #3 ",
+      "createdAt": "2026-06-20T21:35:48Z",
+      "updatedAt": "2026-06-20T21:36:45Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "31e8c80579d9147a120b931687990c686cce8f37",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "issue_3",
+      "headRefOid": "6f013e18d7968ff44ff9849df1b610ea91736055",
+      "closedAt": "2026-06-20T21:36:35Z",
+      "mergedAt": "2026-06-20T21:36:35Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "dedd3f9ba757a8a0be494f6d7483e019279fe7f1"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 13,
+      "id": "PR_kwDOSYHu487ow_HN",
+      "title": "Update terminology from Purpose Claim to Scope Claim",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/13",
+      "state": "MERGED",
+      "author": "gffletch",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Clarified terminology by changing 'Purpose Claim' to 'Scope Claim'.",
+      "createdAt": "2026-06-20T21:58:26Z",
+      "updatedAt": "2026-06-20T21:59:48Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "dedd3f9ba757a8a0be494f6d7483e019279fe7f1",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "issue_5",
+      "headRefOid": "84fbf73b16b54b3d47ea1ea174f40d7832a9ad85",
+      "closedAt": "2026-06-20T21:59:36Z",
+      "mergedAt": "2026-06-20T21:59:36Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "15c2b11649d0356e0d73177465bea099fdb45197"
       },
       "comments": [],
       "reviews": []
