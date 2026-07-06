@@ -475,7 +475,7 @@ The steps are as follows:
 
 6. AS-A validates the Txn-Token, applies subject
    identifier mapping ({{subject-identifier-mapping}}) and claims
-   minimization ({{claims-transcription}}), and issues a signed JWT
+   minimization ({{}}), and issues a signed JWT
    Authorization Grant.  The Txn-Token is consumed entirely within
    Trust Domain A and is not forwarded.
 
@@ -496,7 +496,7 @@ Trust Domain A and Trust Domain B are roles when crossing from one Trust Domain 
 
 When the Requesting Workload calls the Protected Resource in Trust Domain B (Step 9 of Figure 1), that call is an ordinary inbound request at Trust Domain B's perimeter ({{txn-token-in-domain}}). The receiving workload MAY exchange the inbound access token for a Txn-Token issued by Trust Domain B's own TTS, following {{I-D.ietf-oauth-transaction-tokens}}. If a workload in Trust Domain B's Internal Call Chain subsequently needs to call a Protected Resource in Trust Domain C, it applies this profile unchanged, with Trust Domain B now in the role of Trust Domain A and Trust Domain C in the role of Trust Domain B.
 
-Each time a Trust Domain boundary is crossed, it is self-contained and is governed solely by the Cross-Domain Trust Agreement between the two Trust Domains directly involved. The originating Authorization Server applies its own claims transcription and minimization policy {{#claims-transcription}}, and no Txn-Token leaves its Trust Domain. Whether Authorization Server B propagates the txn claim it receives ({{mandatory-transcription}}) into the access token it issues, and whether Trust Domain B's TTS includes it in the Txn-Token it mints, are deployment decisions.  Deployments requiring end-to-end correlation SHOULD specify in the applicable Cross-Domain Trust Agreements how the originating transaction identifier and any other context are carried forward at each crossing. Deployments seeking to limit cross-domain linkability SHOULD instead generate independent transaction identifiers in each Trust Domain (see {{privacy-considerations}}).
+Each time a Trust Domain boundary is crossed, it is self-contained and is governed solely by the Cross-Domain Trust Agreement between the two Trust Domains directly involved. The originating Authorization Server applies its own claims transcription and minimization policy {{claims-transcription}}, and no Txn-Token leaves its Trust Domain. Whether Authorization Server B propagates the txn claim it receives ({{mandatory-transcription}}) into the access token it issues, and whether Trust Domain B's TTS includes it in the Txn-Token it mints, are deployment decisions.  Deployments requiring end-to-end correlation SHOULD specify in the applicable Cross-Domain Trust Agreements how the originating transaction identifier and any other context are carried forward at each crossing. Deployments seeking to limit cross-domain linkability SHOULD instead generate independent transaction identifiers in each Trust Domain (see {{privacy-considerations}}).
 
 # Transaction Token as Subject Token
 
