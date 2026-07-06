@@ -373,7 +373,7 @@ Cross-Domain Trust Agreement:
 
 # Overview
 
-## Transaction Token Context Within a Trust Domain
+## Transaction Token Context Within a Trust Domain {#txn-token-in-domain}
 
 A transaction enters Trust Domain A at its perimeter.  The
 initiating event may be:
@@ -490,6 +490,13 @@ The steps are as follows:
    access token, completing the cross-domain portion of the
    transaction.
 
+## Chaining Across Multiple Trust Domains {#chaining-across-multiple-trust-domains}
+
+Trust Domain A and Trust Domain B are roles when crossing from one Trust Domain to another, not fixed positions in a deployment. The profile in this specification MAY be applied recursively, allowing a single transaction to traverse any number of Trust Domains.
+
+When the Requesting Workload calls the Protected Resource in Trust Domain B (Step 9 of Figure 1), that call is an ordinary inbound request at Trust Domain B's perimeter ({{txn-token-in-domain}}). The receiving workload MAY exchange the inbound access token for a Txn-Token issued by Trust Domain B's own TTS, following {{I-D.ietf-oauth-transaction-tokens}}. If a workload in Trust Domain B's Internal Call Chain subsequently needs to call a Protected Resource in Trust Domain C, it applies this profile unchanged, with Trust Domain B now in the role of Trust Domain A and Trust Domain C in the role of Trust Domain B.
+
+Each time a Trust Domain boundary is crossed, it is self-contained and is governed solely by the Cross-Domain Trust Agreement between the two Trust Domains directly involved. The originating Authorization Server applies its own claims transcription and minimization policy {{claims-transcription}}, and no Txn-Token leaves its Trust Domain. Whether Authorization Server B propagates the txn claim it receives ({{mandatory-transcription}}) into the access token it issues, and whether Trust Domain B's TTS includes it in the Txn-Token it mints, are deployment decisions.  Deployments requiring end-to-end correlation SHOULD specify in the applicable Cross-Domain Trust Agreements how the originating transaction identifier and any other context are carried forward at each crossing. Deployments seeking to limit cross-domain linkability SHOULD instead generate independent transaction identifiers in each Trust Domain (see {{privacy-considerations}}).
 
 # Transaction Token as Subject Token
 
@@ -915,7 +922,7 @@ API endpoint.  These are distinct values serving distinct purposes.
 This profile constrains and extends the claims transcription rules of
 Section 2.5 of {{I-D.ietf-oauth-identity-chaining}} as follows.
 
-## Mandatory Transcriptions
+## Mandatory Transcriptions {#mandatory-transcription}
 
 AS-A MUST derive the `sub` claim of the JWT Authorization Grant from
 the `sub` claim of the Txn-Token, applying the subject identifier
@@ -1068,8 +1075,11 @@ Issuing a refresh token would decouple the access lifetime from the
 originating transaction's authorization context and create a
 persistent credential outside the control of Trust Domain A.
 
+## Trust Across Multiple Trust Domains
 
-# Privacy Considerations
+When this profile is applied recursively ({{chaining-across-multiple-trust-domains}}), trust remains strictly pairwise. An Authorization Server accepts a JWT Authorization Grant because it trusts the issuing Authorization Server under their Cross-Domain Trust Agreement, not because it has any relationship with Trust Domains further upstream. Because context propagation each time a Trust Domain boundary is crossed is a deployment decision ({{chaining-across-multiple-trust-domains}}), claims in a JWT Authorization Grant may be derived from context that the issuing Trust Domain itself received from an upstream Trust Domain.
+
+# Privacy Considerations {#privacy-considerations}
 
 Txn-Tokens may contain claims that relate to the Initiating
 Principal, including personal identity information for
