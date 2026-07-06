@@ -475,7 +475,7 @@ The steps are as follows:
 
 6. AS-A validates the Txn-Token, applies subject
    identifier mapping ({{subject-identifier-mapping}}) and claims
-   minimization ({{}}), and issues a signed JWT
+   minimization ({{claims-transcription}}), and issues a signed JWT
    Authorization Grant.  The Txn-Token is consumed entirely within
    Trust Domain A and is not forwarded.
 
