@@ -5,10 +5,10 @@
 Web Authorization Protocol                                   G. Fletcher
 Internet-Draft                                    Practical Identity LLC
 Intended status: Standards Track                            P. Kasselman
-Expires: 27 December 2026                               Defakto Security
+Expires: 7 January 2027                                 Defakto Security
                                                                S. O'Dell
                                                               CVS Health
-                                                            25 June 2026
+                                                             6 July 2026
 
 
   Transaction Token Authorization Grant Profile for OAuth Identity and
@@ -64,7 +64,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 December 2026.
+   This Internet-Draft will expire on 7 January 2027.
 
 Copyright Notice
 
@@ -90,6 +90,7 @@ Table of Contents
    3.  Overview
      3.1.  Transaction Token Context Within a Trust Domain
      3.2.  Cross-Domain Invocation
+     3.3.  Chaining Across Multiple Trust Domains
    4.  Transaction Token as Subject Token
      4.1.  Subject Token Requirements
      4.2.  Txn-Token Initiating Principal Context
@@ -121,6 +122,7 @@ Table of Contents
      9.5.  Scope Boundary Enforcement
      9.6.  Cross-Domain Trust Agreement Integrity
      9.7.  Refresh Tokens
+     9.8.  Trust Across Multiple Trust Domains
    10. Privacy Considerations
    11. IANA Considerations
      11.1.  JWT Typ Registration
@@ -445,6 +447,39 @@ Table of Contents
    9.  The Requesting Workload calls the Protected Resource with the
        access token, completing the cross-domain portion of the
        transaction.
+
+3.3.  Chaining Across Multiple Trust Domains
+
+   Trust Domain A and Trust Domain B are roles when crossing from one
+   Trust Domain to another, not fixed positions in a deployment.  The
+   profile in this specification MAY be applied recursively, allowing a
+   single transaction to traverse any number of Trust Domains.
+
+   When the Requesting Workload calls the Protected Resource in Trust
+   Domain B (Step 9 of Figure 1), that call is an ordinary inbound
+   request at Trust Domain B's perimeter (Section 3.1).  The receiving
+   workload MAY exchange the inbound access token for a Txn-Token issued
+   by Trust Domain B's own TTS, following
+   [I-D.ietf-oauth-transaction-tokens].  If a workload in Trust Domain
+   B's Internal Call Chain subsequently needs to call a Protected
+   Resource in Trust Domain C, it applies this profile unchanged, with
+   Trust Domain B now in the role of Trust Domain A and Trust Domain C
+   in the role of Trust Domain B.
+
+   Each time a Trust Domain boundary is crossed, it is self-contained
+   and is governed solely by the Cross-Domain Trust Agreement between
+   the two Trust Domains directly involved.  The originating
+   Authorization Server applies its own claims transcription and
+   minimization policy Section 7, and no Txn-Token leaves its Trust
+   Domain.  Whether Authorization Server B propagates the txn claim it
+   receives (Section 7.1) into the access token it issues, and whether
+   Trust Domain B's TTS includes it in the Txn-Token it mints, are
+   deployment decisions.  Deployments requiring end-to-end correlation
+   SHOULD specify in the applicable Cross-Domain Trust Agreements how
+   the originating transaction identifier and any other context are
+   carried forward at each crossing.  Deployments seeking to limit
+   cross-domain linkability SHOULD instead generate independent
+   transaction identifiers in each Trust Domain (see Section 10).
 
 4.  Transaction Token as Subject Token
 
@@ -970,6 +1005,18 @@ Table of Contents
    Issuing a refresh token would decouple the access lifetime from the
    originating transaction's authorization context and create a
    persistent credential outside the control of Trust Domain A.
+
+9.8.  Trust Across Multiple Trust Domains
+
+   When this profile is applied recursively (Section 3.3), trust remains
+   strictly pairwise.  An Authorization Server accepts a JWT
+   Authorization Grant because it trusts the issuing Authorization
+   Server under their Cross-Domain Trust Agreement, not because it has
+   any relationship with Trust Domains further upstream.  Because
+   context propagation each time a Trust Domain boundary is crossed is a
+   deployment decision (Section 3.3), claims in a JWT Authorization
+   Grant may be derived from context that the issuing Trust Domain
+   itself received from an upstream Trust Domain.
 
 10.  Privacy Considerations
 

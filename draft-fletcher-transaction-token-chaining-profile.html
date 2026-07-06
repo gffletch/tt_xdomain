@@ -46,7 +46,7 @@ beyond the trust boundary.
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.1
+    wcwidth 0.8.2
 -->
 <link href="draft-fletcher-transaction-token-chaining-profile.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1065,11 +1065,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Txn-Token Chaining Profile</td>
-<td class="right">June 2026</td>
+<td class="right">July 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Fletcher, et al.</td>
-<td class="center">Expires 27 December 2026</td>
+<td class="center">Expires 7 January 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1082,12 +1082,12 @@ svg {
 <dd class="internet-draft">draft-fletcher-transaction-token-chaining-profile-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-06-25" class="published">25 June 2026</time>
+<time datetime="2026-07-06" class="published">6 July 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-12-27">27 December 2026</time></dd>
+<dd class="expires"><time datetime="2027-01-07">7 January 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1155,7 +1155,7 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 27 December 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 7 January 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1211,6 +1211,9 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-cross-domain-invocation" class="internal xref">Cross-Domain Invocation</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-chaining-across-multiple-tr" class="internal xref">Chaining Across Multiple Trust Domains</a></p>
 </li>
             </ul>
 </li>
@@ -1315,6 +1318,9 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.7">
                 <p id="section-toc.1-1.9.2.7.1"><a href="#section-9.7" class="auto internal xref">9.7</a>.  <a href="#name-refresh-tokens" class="internal xref">Refresh Tokens</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.8">
+                <p id="section-toc.1-1.9.2.8.1"><a href="#section-9.8" class="auto internal xref">9.8</a>.  <a href="#name-trust-across-multiple-trust" class="internal xref">Trust Across Multiple Trust Domains</a></p>
 </li>
             </ul>
 </li>
@@ -1623,7 +1629,7 @@ prior to any cross-domain token exchange under this profile.<a href="#section-2.
       <h2 id="name-overview">
 <a href="#section-3" class="section-number selfRef">3. </a><a href="#name-overview" class="section-name selfRef">Overview</a>
       </h2>
-<div id="transaction-token-context-within-a-trust-domain">
+<div id="txn-token-in-domain">
 <section id="section-3.1">
         <h3 id="name-transaction-token-context-w">
 <a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-transaction-token-context-w" class="section-name selfRef">Transaction Token Context Within a Trust Domain</a>
@@ -1758,6 +1764,16 @@ access token, completing the cross-domain portion of the
 transaction.<a href="#section-3.2-4.9.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
+</section>
+</div>
+<div id="chaining-across-multiple-trust-domains">
+<section id="section-3.3">
+        <h3 id="name-chaining-across-multiple-tr">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-chaining-across-multiple-tr" class="section-name selfRef">Chaining Across Multiple Trust Domains</a>
+        </h3>
+<p id="section-3.3-1">Trust Domain A and Trust Domain B are roles when crossing from one Trust Domain to another, not fixed positions in a deployment. The profile in this specification <span class="bcp14">MAY</span> be applied recursively, allowing a single transaction to traverse any number of Trust Domains.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">When the Requesting Workload calls the Protected Resource in Trust Domain B (Step 9 of Figure 1), that call is an ordinary inbound request at Trust Domain B's perimeter (<a href="#txn-token-in-domain" class="auto internal xref">Section 3.1</a>). The receiving workload <span class="bcp14">MAY</span> exchange the inbound access token for a Txn-Token issued by Trust Domain B's own TTS, following <span>[<a href="#I-D.ietf-oauth-transaction-tokens" class="cite xref">I-D.ietf-oauth-transaction-tokens</a>]</span>. If a workload in Trust Domain B's Internal Call Chain subsequently needs to call a Protected Resource in Trust Domain C, it applies this profile unchanged, with Trust Domain B now in the role of Trust Domain A and Trust Domain C in the role of Trust Domain B.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">Each time a Trust Domain boundary is crossed, it is self-contained and is governed solely by the Cross-Domain Trust Agreement between the two Trust Domains directly involved. The originating Authorization Server applies its own claims transcription and minimization policy <a href="#claims-transcription" class="auto internal xref">Section 7</a>, and no Txn-Token leaves its Trust Domain. Whether Authorization Server B propagates the txn claim it receives (<a href="#mandatory-transcription" class="auto internal xref">Section 7.1</a>) into the access token it issues, and whether Trust Domain B's TTS includes it in the Txn-Token it mints, are deployment decisions.  Deployments requiring end-to-end correlation <span class="bcp14">SHOULD</span> specify in the applicable Cross-Domain Trust Agreements how the originating transaction identifier and any other context are carried forward at each crossing. Deployments seeking to limit cross-domain linkability <span class="bcp14">SHOULD</span> instead generate independent transaction identifiers in each Trust Domain (see <a href="#privacy-considerations" class="auto internal xref">Section 10</a>).<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2356,7 +2372,7 @@ API endpoint.  These are distinct values serving distinct purposes.<a href="#sec
       </h2>
 <p id="section-7-1">This profile constrains and extends the claims transcription rules of
 Section 2.5 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> as follows.<a href="#section-7-1" class="pilcrow">¶</a></p>
-<div id="mandatory-transcriptions">
+<div id="mandatory-transcription">
 <section id="section-7.1">
         <h3 id="name-mandatory-transcriptions">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-mandatory-transcriptions" class="section-name selfRef">Mandatory Transcriptions</a>
@@ -2568,6 +2584,14 @@ and repeating the chaining flow is the correct renewal mechanism.
 Issuing a refresh token would decouple the access lifetime from the
 originating transaction's authorization context and create a
 persistent credential outside the control of Trust Domain A.<a href="#section-9.7-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="trust-across-multiple-trust-domains">
+<section id="section-9.8">
+        <h3 id="name-trust-across-multiple-trust">
+<a href="#section-9.8" class="section-number selfRef">9.8. </a><a href="#name-trust-across-multiple-trust" class="section-name selfRef">Trust Across Multiple Trust Domains</a>
+        </h3>
+<p id="section-9.8-1">When this profile is applied recursively (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), trust remains strictly pairwise. An Authorization Server accepts a JWT Authorization Grant because it trusts the issuing Authorization Server under their Cross-Domain Trust Agreement, not because it has any relationship with Trust Domains further upstream. Because context propagation each time a Trust Domain boundary is crossed is a deployment decision (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), claims in a JWT Authorization Grant may be derived from context that the issuing Trust Domain itself received from an upstream Trust Domain.<a href="#section-9.8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
