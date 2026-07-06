@@ -490,7 +490,7 @@ The steps are as follows:
    access token, completing the cross-domain portion of the
    transaction.
 
-## Chaining Across Multiple Trust Domains
+## Chaining Across Multiple Trust Domains {#chaining-across-multiple-trust-domains}
  
 Trust Domain A and Trust Domain B are roles when crossing from one Trust Domain to another, not fixed positions in a deployment. The profile in this specification MAY be applied recursively, allowing a single transaction to traverse any number of Trust Domains.
  
@@ -1075,6 +1075,9 @@ Issuing a refresh token would decouple the access lifetime from the
 originating transaction's authorization context and create a
 persistent credential outside the control of Trust Domain A.
 
+## Trust Across Multiple Trust Domains 
+ 
+When this profile is applied recursively ({{chaining-across-multiple-trust-domains}}), trust remains strictly pairwise. An Authorization Server accepts a JWT Authorization Grant because it trusts the issuing Authorization Server under their Cross-Domain Trust Agreement, not because it has any relationship with Trust Domains further upstream. Because context propagation each time a Trust Domain boundary is crossed is a deployment decision ({{chaining-across-multiple-trust-domains}}), claims in a JWT Authorization Grant may be derived from context that the issuing Trust Domain itself received from an upstream Trust Domain.
 
 # Privacy Considerations {#privacy-considerations}
 
