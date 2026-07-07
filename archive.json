@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-06-21T04:11:23.006382+00:00",
+  "timestamp": "2026-07-07T03:20:16.130873+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -207,6 +207,22 @@
       "updatedAt": "2026-05-30T10:51:32Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 15,
+      "id": "I_kwDOSYHu488AAAABH0FApQ",
+      "title": "Explicitly name the JWT authorization grant.",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/15",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We need to give it a name like ID-JAG to make communications easier. something like Txn-JAG, or TX-Token-JAG.",
+      "createdAt": "2026-07-06T12:56:25Z",
+      "updatedAt": "2026-07-06T12:56:25Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -377,6 +393,94 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 14,
+      "id": "PR_kwDOSYHu487uWD7_",
+      "title": "Explicitly describe Chaining across Multiple domains.",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/14",
+      "state": "MERGED",
+      "author": "PieterKas",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Adds a section clarifying that the profile applies recursively \u2014 a receiving Trust Domain may mint its own Txn-Token and repeat the flow toward a further Trust Domain \u2014 with each boundary crossing governed independently by its own Cross-Domain Trust Agreement, and propagation of transaction identifiers and other context left to deployment policy.",
+      "createdAt": "2026-07-06T12:31:45Z",
+      "updatedAt": "2026-07-06T20:19:17Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "eb7a55972f7fbb055644cc64569b11dd671c0fd1",
+      "headRepository": "PieterKas/tt_xdomain",
+      "headRefName": "patch-1",
+      "headRefOid": "9e6c92b82368a5afda22edd982334187ceeec72b",
+      "closedAt": "2026-07-06T20:18:51Z",
+      "mergedAt": "2026-07-06T20:18:51Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "869c7542b284cd406f625b5ffe1952953d6f8784"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOSYHu488AAAABFIVi_Q",
+          "commit": {
+            "abbreviatedOid": "721502a"
+          },
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "state": "DISMISSED",
+          "body": "",
+          "createdAt": "2026-07-06T19:51:49Z",
+          "updatedAt": "2026-07-06T19:56:36Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABFIYD0A",
+          "commit": {
+            "abbreviatedOid": "945921b"
+          },
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "state": "DISMISSED",
+          "body": "",
+          "createdAt": "2026-07-06T19:57:59Z",
+          "updatedAt": "2026-07-06T20:02:45Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABFIg-8w",
+          "commit": {
+            "abbreviatedOid": "9d89bda"
+          },
+          "author": "PieterKas",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-07-06T20:15:45Z",
+          "updatedAt": "2026-07-06T20:15:45Z",
+          "comments": [
+            {
+              "originalPosition": 14,
+              "body": "```suggestion\n   minimization ({{claims-transcription}}), and issues a signed JWT\n```",
+              "createdAt": "2026-07-06T20:15:45Z",
+              "updatedAt": "2026-07-06T20:15:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABFIiOpg",
+          "commit": {
+            "abbreviatedOid": "9e6c92b"
+          },
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-07-06T20:18:36Z",
+          "updatedAt": "2026-07-06T20:18:36Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
