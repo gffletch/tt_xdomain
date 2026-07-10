@@ -15,6 +15,7 @@
 /.vscode/
 /lib
 /node_modules/
+/reviews/
 /versioned/
 resume
 Gemfile.lock

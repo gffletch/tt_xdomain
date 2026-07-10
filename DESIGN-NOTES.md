@@ -236,6 +236,31 @@ before embedding it in the grant.
 
 ---
 
+### 10. Symmetric Domain Isolation — No Grant-to-Foreign-TTS / No Downstream Txn-Token Re-Minting
+
+**Decision:** This profile deliberately stops at obtaining an access token so
+the Requesting Workload can call a partner Protected Resource.  It does NOT
+present the JWT Authorization Grant to Trust Domain B's Transaction Token
+Service, and it does NOT define a mechanism for AS-A's grant to cause a native
+Txn-Token to be minted in Trust Domain B.
+
+**Rationale:** A Txn-Token is authoritative only within its issuing domain and
+carries that domain's internal context.  Decision #3 / the Claims Minimization
+section already forbid a Domain A Txn-Token from leaving Domain A; the same
+invariant must hold symmetrically for Domain B — **a Domain B Txn-Token MUST
+NOT leave Domain B.**  Allowing AS-A's grant to be presented to Domain B's TTS
+(the "Mode B / direct exchange" pattern in
+`draft-liu-oauth-cross-domain-txn-token`) risks a Domain A entity obtaining a
+native Domain B Txn-Token and thereby leaking Domain B's internal
+`req_wl`/`tctx`/`rctx` and topology across the boundary — especially when the
+grant is bearer (no `cnf`) and not single-use.  Keeping the downstream Txn-Token
+minting internal to Domain B (the access-token-mediated path) preserves
+isolation on both sides: no Domain-A-held credential ever reaches Domain B's
+TTS.  The full comparison and WG review text are kept as a local working note
+in `reviews/draft-liu-review-response.md` (git-ignored, not distributed).
+
+---
+
 ## Reference Specifications (with version notes)
 
 | Reference | Version used | Notes |
