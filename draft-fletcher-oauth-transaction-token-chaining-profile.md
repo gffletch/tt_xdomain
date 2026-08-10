@@ -174,7 +174,7 @@ Protocol Working Group mailing list (oauth@ietf.org), which is
 archived at <https://mailarchive.ietf.org/arch/browse/oauth/>.
 
 Source for this draft and an issue tracker can be found at
-<https://github.com/george-fletcher/draft-fletcher-transaction-token-chaining-profile>.
+<https://github.com/gffletch/tt_xdomain>.
 
 --- middle
 

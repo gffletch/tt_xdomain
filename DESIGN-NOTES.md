@@ -1,4 +1,4 @@
-# Design Notes: draft-fletcher-transaction-token-chaining-profile
+# Design Notes: draft-fletcher-oauth-transaction-token-chaining-profile
 
 This file records the design decisions, rationale, and open questions
 established during the initial drafting of this specification.  It is
@@ -9,24 +9,28 @@ and as an audit trail of why the draft is structured the way it is.
 
 ## Naming
 
-The correct IETF individual draft name is:
+The correct draft name is:
 
 ```
-draft-fletcher-transaction-token-chaining-profile
+draft-fletcher-oauth-transaction-token-chaining-profile
 ```
 
-Note that the working group prefix (`oauth`) is **not** used for
-individual submissions; that prefix is reserved for WG-adopted
-documents.  The `docname` field in the YAML front matter of the
-Markdown source must match this name exactly:
+The `docname` field in the YAML front matter of the Markdown source,
+and the Markdown filename itself, must match this name exactly:
 
 ```yaml
-docname: draft-fletcher-transaction-token-chaining-profile-latest
+docname: draft-fletcher-oauth-transaction-token-chaining-profile-latest
 ```
 
-The document was initially drafted with an incorrect `docname` of
-`draft-fletcher-oauth-transaction-token-chaining-profile-00`.
-This must be corrected before submission to the IETF Datatracker.
+**The `oauth` element is deliberate and is an exception to the usual
+individual-draft convention.**  Individual submissions normally carry
+no working group prefix — that prefix is ordinarily reserved for
+WG-adopted documents — but including `oauth` here is what causes the
+draft to be assigned to the OAuth working group.  Do not remove
+`oauth` from the name, and do not flag it as a naming error.
+
+See "Document Naming (RESOLVED 2026-08)" below for the history of this
+decision, which reversed the project's original position.
 
 ---
 
@@ -366,22 +370,21 @@ AS-A can be statically configured with the mapping from resource
 server hostname to AS-B issuer URL as part of the Cross-Domain Trust
 Agreement.
 
-### OQ-8: Docname Correction (Action Required Before Submission)
+### OQ-8: Document Naming (RESOLVED 2026-08)
 
-The `docname` field in the YAML front matter currently reads:
+**No longer an open question.**  This item originally called for the
+`oauth` element to be *removed* from the document name, on the grounds
+that individual IETF drafts do not carry the working group name in the
+author prefix.
 
-```
-draft-fletcher-oauth-transaction-token-chaining-profile-00
-```
+That position was reversed in August 2026.  The document was renamed
+to `draft-fletcher-oauth-transaction-token-chaining-profile` (branch
+`rename_spec`) because **including `oauth` is what causes the draft to
+be assigned to the OAuth working group.**  The general convention is
+real, but the WG-assignment behaviour takes precedence here.
 
-This must be corrected to:
-
-```
-draft-fletcher-transaction-token-chaining-profile-latest
-```
-
-Individual IETF drafts do not carry the working group name in the
-individual author prefix.
+The name is now settled; see the Naming section at the top of this
+file.  Do not reopen this or "correct" the name back.
 
 ---
 
@@ -412,3 +415,6 @@ implement both.
 | 2026-05 | Reference to `draft-parecki-oauth-identity-assertion-authz-grant` corrected to WG-adopted `draft-ietf-oauth-identity-assertion-authz-grant-03` |
 | 2026-05 | `audience`/`resource` parameter semantics fully specified and aligned with ID-JAG -03 convention; Token Exchange response section added; example request/response added |
 | 2026-05 | Complete rewrite to incorporate three Initiating Principal types (human user, internal system, automated workload); canonical mail-service/spam-rating example introduced; all three use cases updated; `Cross-Domain Trust Agreement` defined as term of art; subject identifier mapping section added; docname correction noted |
+| 2026-08 | Pieter Kasselman and Sean O'Dell added as authors; sections on chaining across multiple trust domains added |
+| 2026-08 | Document renamed to `draft-fletcher-oauth-transaction-token-chaining-profile` to secure OAuth WG assignment, reversing the earlier no-WG-prefix position (OQ-8) |
+| 2026-08 | Build fixes: duplicate BCP 14 boilerplate removed and `{::boilerplate bcp14-tagged}` moved into Conventions and Definitions; `RFC2119`/`RFC8174` dropped from the YAML `normative:` block; Document History brackets escaped |
