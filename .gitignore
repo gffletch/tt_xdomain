@@ -22,3 +22,12 @@ Gemfile.lock
 package-lock.json
 report.xml
 !requirements.txt
+
+# --- Local entries. NOT part of the i-d-template set. ---
+# `make update-readme` / `make setup-gitignore` regenerate this file by copying
+# lib/template/.gitignore over it, which silently drops anything below.
+# These are duplicated in .git/info/exclude so they survive that. If you edit
+# here, mirror the change there too.
+/reviews/
+CLAUDE.md
+resume
