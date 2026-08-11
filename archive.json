@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-07T03:20:16.130873+00:00",
+  "timestamp": "2026-08-11T01:40:55.123693+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -481,6 +481,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 16,
+      "id": "PR_kwDOSYHu4879JDZt",
+      "title": "renamed the doc to match OAuth wg conventions",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/16",
+      "state": "OPEN",
+      "author": "gffletch",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "renamed the doc to match OAuth wg conventions",
+      "createdAt": "2026-08-10T17:47:52Z",
+      "updatedAt": "2026-08-10T18:43:33Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "975bcb24f4684c2b70da6724f1a85334418f8566",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "rename_spec",
+      "headRefOid": "3156b0cdedadb46282c1c32aefd249d1a8332e20",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
