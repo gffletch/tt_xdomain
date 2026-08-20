@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-11T01:40:55.123693+00:00",
+  "timestamp": "2026-08-20T01:10:10.438181+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -221,6 +221,38 @@
       "body": "We need to give it a name like ID-JAG to make communications easier. something like Txn-JAG, or TX-Token-JAG.",
       "createdAt": "2026-07-06T12:56:25Z",
       "updatedAt": "2026-07-06T12:56:25Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 17,
+      "id": "I_kwDOSYHu488AAAABNOHTtw",
+      "title": "Consider direct JAG-to-Txn-Token exchange as an optional flow",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/17",
+      "state": "OPEN",
+      "author": "NiYuan224",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Following up on our earlier discussion at IETF 126, I would like to suggest a possible optimization to the flow defined in this profile.\n\nThe current profile uses the JAG to obtain an Access Token in the downstream trust domain. If the downstream workload then follows the normal Txn-Token procedure to obtain a local Txn-Token, the end-to-end sequence is:\n\n1. Workload (A) --[Txn-Token (A)]--> AS-A\n2. AS-A --[JAG]--> Workload (A)\n3. Workload (A) --[JAG]--> AS-B\n4. AS-B --[Access Token]--> Workload (A)\n5. Workload (A) --[Access Token]--> Endpoint (B)\n6. Endpoint (B) --[Access Token]--> TTS-B\n7. TTS-B --[Txn-Token (B)]--> Endpoint (B)\n8. Endpoint (B) --[Txn-Token (B)]--> Workload (B)\n\nThis involves three cross-domain hops in steps 3\u20135.\n\nWhen Domain B needs to continue the same workflow initiated in Domain A, it ultimately needs to obtain a local Txn-Token. In this case, is the intermediate Access Token exchange necessarily required?\n\nSection 5.1 of the Txn-Token specification allows the subject_token to be \"any other format that is understood by the TTS\". Could the JAG issued by AS-A therefore be directly accepted as a subject_token by TTS-B?\n\nThis would allow:\n\n3. Workload (A) --[JAG]--> Endpoint (B)\n4. Endpoint (B) --[JAG]--> TTS-B\n5. TTS-B --[Txn-Token (B)]--> Endpoint (B)\n6. Endpoint (B) --[Txn-Token (B)]--> Workload (B)\n\nIf TTS-B has the required trust relationship with AS-A and can validate the JAG, this would reduce the number of cross-domain hops from three to one and reduce latency by eliminating the intermediate Access Token exchange.\n\nImportantly, no Txn-Token crosses the trust-domain boundary. Txn-Token A and Txn-Token B remain within their respective trust domains, while the JAG carries the cross-domain authorization information. This aligns with the principle that Txn-Tokens must not be forwarded across trust-domain boundaries.\n\nWe explored this direct JAG-to-Txn-Token approach as Mode B in draft-liu-oauth-cross-domain-txn-token; its Mode A follows the same flow as this profile combined with the normal downstream Txn-Token procedure.\n\nWould this direct JAG-to-Txn-Token flow be worth considering as an optional optimization in this profile?",
+      "createdAt": "2026-08-18T13:13:12Z",
+      "updatedAt": "2026-08-18T13:13:12Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 18,
+      "id": "I_kwDOSYHu488AAAABNOO5OA",
+      "title": "Support tctx in txn_claims",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/18",
+      "state": "OPEN",
+      "author": "NiYuan224",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Following up on our earlier discussion at IETF 126,  `tctx` may be needed by the downstream domain to continue the same workflow.\n\nCould `tctx` therefore be explicitly specified as a Txn-Token claim that MAY be included in `txn_claims`, subject to minimization and privacy policy?",
+      "createdAt": "2026-08-18T13:25:58Z",
+      "updatedAt": "2026-08-18T13:25:58Z",
       "closedAt": null,
       "comments": []
     }
