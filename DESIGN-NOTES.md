@@ -1,4 +1,4 @@
-# Design Notes: draft-fletcher-oauth-transaction-token-chaining-profile
+# Design Notes: draft-fletcher-oauth-txn-token-chaining-profile
 
 This file records the design decisions, rationale, and open questions
 established during the initial drafting of this specification.  It is
@@ -12,14 +12,14 @@ and as an audit trail of why the draft is structured the way it is.
 The correct draft name is:
 
 ```
-draft-fletcher-oauth-transaction-token-chaining-profile
+draft-fletcher-oauth-txn-token-chaining-profile
 ```
 
 The `docname` field in the YAML front matter of the Markdown source,
 and the Markdown filename itself, must match this name exactly:
 
 ```yaml
-docname: draft-fletcher-oauth-transaction-token-chaining-profile-latest
+docname: draft-fletcher-oauth-txn-token-chaining-profile-latest
 ```
 
 **The `oauth` element is deliberate and is an exception to the usual
@@ -28,6 +28,12 @@ no working group prefix — that prefix is ordinarily reserved for
 WG-adopted documents — but including `oauth` here is what causes the
 draft to be assigned to the OAuth working group.  Do not remove
 `oauth` from the name, and do not flag it as a naming error.
+
+**`txn-token` is abbreviated, not spelled out.**  The IETF Datatracker
+limits a draft name to 50 characters;
+`draft-fletcher-oauth-transaction-token-chaining-profile` is 55 and is
+rejected at submission.  The abbreviated form is 47.  Do not expand
+`txn-token` back to `transaction-token`.
 
 See "Document Naming (RESOLVED 2026-08)" below for the history of this
 decision, which reversed the project's original position.
@@ -383,6 +389,11 @@ to `draft-fletcher-oauth-transaction-token-chaining-profile` (branch
 be assigned to the OAuth working group.**  The general convention is
 real, but the WG-assignment behaviour takes precedence here.
 
+That name was then shortened to
+`draft-fletcher-oauth-txn-token-chaining-profile` in September 2026
+(branch `shorten_spec_name`) to fit the Datatracker's 50-character
+limit on draft names.
+
 The name is now settled; see the Naming section at the top of this
 file.  Do not reopen this or "correct" the name back.
 
@@ -418,3 +429,4 @@ implement both.
 | 2026-08 | Pieter Kasselman and Sean O'Dell added as authors; sections on chaining across multiple trust domains added |
 | 2026-08 | Document renamed to `draft-fletcher-oauth-transaction-token-chaining-profile` to secure OAuth WG assignment, reversing the earlier no-WG-prefix position (OQ-8) |
 | 2026-08 | Build fixes: duplicate BCP 14 boilerplate removed and `{::boilerplate bcp14-tagged}` moved into Conventions and Definitions; `RFC2119`/`RFC8174` dropped from the YAML `normative:` block; Document History brackets escaped |
+| 2026-09 | Document renamed to `draft-fletcher-oauth-txn-token-chaining-profile` (47 characters) to fit the Datatracker's 50-character limit on draft names |

@@ -6,10 +6,10 @@ This is the working area for individual Internet-Drafts.
 
 ## Transaction Token Authorization Grant Profile for OAuth Identity and Authorization Chaining
 
-* [Editor's Copy](https://gffletch.github.io/tt_xdomain/#go.draft-fletcher-transaction-token-chaining-profile.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-fletcher-transaction-token-chaining-profile)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-fletcher-transaction-token-chaining-profile)
-* [Compare Editor's Copy to Individual Draft](https://gffletch.github.io/tt_xdomain/#go.draft-fletcher-transaction-token-chaining-profile.diff)
+* [Editor's Copy](https://gffletch.github.io/tt_xdomain/#go.draft-fletcher-oauth-txn-token-chaining-profile.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-fletcher-oauth-txn-token-chaining-profile)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-fletcher-oauth-txn-token-chaining-profile)
+* [Compare Editor's Copy to Individual Draft](https://gffletch.github.io/tt_xdomain/#go.draft-fletcher-oauth-txn-token-chaining-profile.diff)
 
 ## TODO - Your title
 

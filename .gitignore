@@ -17,7 +17,7 @@
 /node_modules/
 /versioned/
 archive.json
-draft-fletcher-oauth-transaction-token-chaining-profile.xml
+draft-fletcher-oauth-txn-token-chaining-profile.xml
 Gemfile.lock
 package-lock.json
 report.xml
