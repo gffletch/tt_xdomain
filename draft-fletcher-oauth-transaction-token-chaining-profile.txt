@@ -5,15 +5,15 @@
 Web Authorization Protocol                                   G. Fletcher
 Internet-Draft                                    Practical Identity LLC
 Intended status: Standards Track                            P. Kasselman
-Expires: 11 January 2027                                Defakto Security
+Expires: 13 March 2027                                  Defakto Security
                                                                S. O'Dell
                                                               CVS Health
-                                                            10 July 2026
+                                                        9 September 2026
 
 
   Transaction Token Authorization Grant Profile for OAuth Identity and
                          Authorization Chaining
-        draft-fletcher-transaction-token-chaining-profile-latest
+     draft-fletcher-oauth-transaction-token-chaining-profile-latest
 
 Abstract
 
@@ -45,9 +45,8 @@ Note to Readers
    (https://mailarchive.ietf.org/arch/browse/oauth/).
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/george-fletcher/draft-fletcher-transaction-token-
-   chaining-profile (https://github.com/george-fletcher/draft-fletcher-
-   transaction-token-chaining-profile).
+   https://github.com/gffletch/tt_xdomain (https://github.com/gffletch/
+   tt_xdomain).
 
 Status of This Memo
 
@@ -64,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 January 2027.
+   This Internet-Draft will expire on 13 March 2027.
 
 Copyright Notice
 
@@ -83,7 +82,6 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction
-     1.1.  Requirements Language
    2.  Conventions and Definitions
      2.1.  Roles
      2.2.  Terms
@@ -245,20 +243,12 @@ Table of Contents
    A detailed structural comparison of the two profiles appears in
    Appendix B.
 
-1.1.  Requirements Language
+2.  Conventions and Definitions
 
    The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
    "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
    "OPTIONAL" in this document are to be interpreted as described in
    BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
-   capitals, as shown here.
-
-2.  Conventions and Definitions
-
-   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-   "OPTIONAL" in this document are to be interpreted as described in BCP
-   14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
 2.1.  Roles
