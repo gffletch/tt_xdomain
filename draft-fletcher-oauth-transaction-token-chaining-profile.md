@@ -1,7 +1,7 @@
 ---
 title: "Transaction Token Authorization Grant Profile for OAuth Identity and Authorization Chaining"
 abbrev: "Txn-Token Chaining Profile"
-docname: draft-fletcher-transaction-token-chaining-profile-latest
+docname: draft-fletcher-oauth-transaction-token-chaining-profile-latest
 category: std
 submissiontype: IETF
 ipr: trust200902
@@ -35,8 +35,6 @@ author:
     email: sean.odell@cvshealth.com
 
 normative:
-  RFC2119:
-  RFC8174:
   RFC6749:
   RFC7519:
   RFC7521:
@@ -176,7 +174,7 @@ Protocol Working Group mailing list (oauth@ietf.org), which is
 archived at <https://mailarchive.ietf.org/arch/browse/oauth/>.
 
 Source for this draft and an issue tracker can be found at
-<https://github.com/george-fletcher/draft-fletcher-transaction-token-chaining-profile>.
+<https://github.com/gffletch/tt_xdomain>.
 
 --- middle
 
@@ -284,18 +282,10 @@ transaction within Trust Domain A.
 A detailed structural comparison of the two profiles appears in
 {{relationship-to-related-specifications}}.
 
-## Requirements Language
-
-{::boilerplate bcp14-tagged}
-
 
 # Conventions and Definitions
 
-The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
-"SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
-"OPTIONAL" in this document are to be interpreted as described in
-BCP 14 {{RFC2119}} {{RFC8174}} when, and only when, they appear in all
-capitals, as shown here.
+{::boilerplate bcp14-tagged}
 
 ## Roles
 
@@ -1333,7 +1323,7 @@ Michael Jenkins, Brian Campbell, and Aaron Parecki.
 
 # Document History
 {: numbered="false"}
-[[ To be removed from final specification ]]
+\[\[ To be removed from final specification \]\]
 
 ## Since Draft 01
 {:numbered="false"}

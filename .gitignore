@@ -1,3 +1,4 @@
+.tags
 *.html
 *.pdf
 *.redxml
@@ -5,25 +6,28 @@
 *.txt
 *.upload
 *~
-.tags
-/*-[0-9][0-9].xml
 /.*.mk
 /.gems/
 /.idea/
 /.refcache
 /.venv/
 /.vscode/
+/*-[0-9][0-9].xml
 /lib
 /node_modules/
-/reviews/
 /versioned/
-resume
-Gemfile.lock
 archive.json
-draft-fletcher-transaction-token-chaining-profile.xml
-draft-todo-yourname-protocol.xml
+draft-fletcher-oauth-transaction-token-chaining-profile.xml
+Gemfile.lock
 package-lock.json
 report.xml
 !requirements.txt
+
+# --- Local entries. NOT part of the i-d-template set. ---
+# `make update-readme` / `make setup-gitignore` regenerate this file by copying
+# lib/template/.gitignore over it, which silently drops anything below.
+# These are duplicated in .git/info/exclude so they survive that. If you edit
+# here, mirror the change there too.
+/reviews/
 CLAUDE.md
 resume
