@@ -1,4 +1,3 @@
-
 .tags
 *.html
 *.pdf
@@ -18,11 +17,7 @@
 /node_modules/
 /reviews/
 /versioned/
-# --- Local entries. NOT part of the i-d-template set. ---
-# `make update-readme` / `make setup-gitignore` regenerate this file by copying
-# here, mirror the change there too.
-# lib/template/.gitignore over it, which silently drops anything below.
-# These are duplicated in .git/info/exclude so they survive that. If you edit
+# Local entries, not from i-d-template: /reviews/, CLAUDE.md, resume. setup-gitignore merges and re-sorts, so they survive but scatter; also mirrored in .git/info/exclude.
 archive.json
 CLAUDE.md
 draft-fletcher-oauth-txn-token-chaining-profile.xml

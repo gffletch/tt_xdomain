@@ -1,3 +1,6 @@
 # Automatically generated CODEOWNERS
 # Regenerate with `make update-codeowners`
 draft-fletcher-oauth-txn-token-chaining-profile.md george@practicalidentity.com pieter@defakto.security sean.odell@cvshealth.com
+# Required reviewers. Hand-added: `make update-codeowners` does not generate
+# this rule and will drop it. Last match wins, so this governs every file.
+* @gffletch @PieterKas
