@@ -5,15 +5,15 @@
 Web Authorization Protocol                                   G. Fletcher
 Internet-Draft                                    Practical Identity LLC
 Intended status: Standards Track                            P. Kasselman
-Expires: 11 February 2027                               Defakto Security
+Expires: 13 March 2027                                  Defakto Security
                                                                S. O'Dell
                                                               CVS Health
-                                                          10 August 2026
+                                                        9 September 2026
 
 
   Transaction Token Authorization Grant Profile for OAuth Identity and
                          Authorization Chaining
-     draft-fletcher-oauth-transaction-token-chaining-profile-latest
+         draft-fletcher-oauth-txn-token-chaining-profile-latest
 
 Abstract
 
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 February 2027.
+   This Internet-Draft will expire on 13 March 2027.
 
 Copyright Notice
 
