@@ -38,6 +38,48 @@ rejected at submission.  The abbreviated form is 47.  Do not expand
 See "Document Naming (RESOLVED 2026-08)" below for the history of this
 decision, which reversed the project's original position.
 
+### Version Continuity Across the Rename
+
+**Version numbering continues across the rename; it does not restart
+at -00.**  Versions -00, -01, and -02 were submitted to the
+Datatracker under the original name
+`draft-fletcher-transaction-token-chaining-profile`.  The next
+submission is **-03**, and it is the first under
+`draft-fletcher-oauth-txn-token-chaining-profile`.  The intermediate
+name `draft-fletcher-oauth-transaction-token-chaining-profile` was
+never published and must not appear in any release tag.
+
+Two consequences to keep in mind:
+
+- **Release tags.**  A release tag is the document name plus the
+  two-digit version, so the next tag is
+  `draft-fletcher-oauth-txn-token-chaining-profile-03`.  The tags for
+  -00 through -02 remain under the old name; that is correct and they
+  should not be renamed or recreated.
+
+- **The Replaces relationship must be set by hand for -03.**
+  `replaces()` in `lib/upload.mk` returns early unless the tag ends in
+  `-00`, so the automatic linkage only ever fires on a first
+  submission.  Because -03 is the first version under the new name but
+  is not a -00, nothing will connect it to the earlier drafts
+  automatically.  Set Replaces to
+  `draft-fletcher-transaction-token-chaining-profile` on the
+  Datatracker document page after submitting.
+
+### Document History Conventions
+
+In the draft's Document History section, a `## Since Draft NN` heading
+lists the changes made **after** version NN was published — that is,
+the changes that appear in the version being prepared.  Work in
+progress for -03 therefore goes under `## Since Draft 02`.
+
+The headings in -00 through -02 were off by one: the section labelled
+`Since Draft 01` in both -01 and -02 actually described the changes
+that shipped *in* -01, and -02's own changes were never recorded at
+all.  Both were corrected while preparing -03, so the published -01
+and -02 on the Datatracker do not match the current file.  This is
+expected; do not "restore" the old headings to match them.
+
 ---
 
 ## What This Draft Is
@@ -430,3 +472,4 @@ implement both.
 | 2026-08 | Document renamed to `draft-fletcher-oauth-transaction-token-chaining-profile` to secure OAuth WG assignment, reversing the earlier no-WG-prefix position (OQ-8) |
 | 2026-08 | Build fixes: duplicate BCP 14 boilerplate removed and `{::boilerplate bcp14-tagged}` moved into Conventions and Definitions; `RFC2119`/`RFC8174` dropped from the YAML `normative:` block; Document History brackets escaped |
 | 2026-09 | Document renamed to `draft-fletcher-oauth-txn-token-chaining-profile` (47 characters) to fit the Datatracker's 50-character limit on draft names |
+| 2026-09 | Document History corrected while preparing -03: headings relabelled to the "changes after version NN" convention, and the -02 entry backfilled (it had shipped with no history entry of its own) |

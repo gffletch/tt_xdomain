@@ -1325,7 +1325,26 @@ Michael Jenkins, Brian Campbell, and Aaron Parecki.
 {: numbered="false"}
 \[\[ To be removed from final specification \]\]
 
+## Since Draft 02
+{:numbered="false"}
+
+* Renamed the draft to
+  `draft-fletcher-oauth-txn-token-chaining-profile`
+* Corrected the source and issue tracker URL to the repository for
+  this draft
+* Consolidated the BCP 14 requirements language into
+  {{conventions-and-definitions}}
+
 ## Since Draft 01
+{:numbered="false"}
+
+* Added {{chaining-across-multiple-trust-domains}} describing
+  recursive application of this profile across more than two Trust
+  Domains
+* Added {{trust-across-multiple-trust-domains}} to the Security
+  Considerations
+
+## Since Draft 00
 {:numbered="false"}
 
 * Added Pieter Kasselman and Sean O'Dell as authors
