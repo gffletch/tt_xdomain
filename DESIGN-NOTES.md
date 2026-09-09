@@ -94,10 +94,14 @@ headings refer to versions of
 `draft-fletcher-transaction-token-chaining-profile`, while future
 headings will reuse those same numbers for versions of
 `draft-fletcher-oauth-txn-token-chaining-profile`.  Any heading naming
-a bare version number is therefore unsafe on its own.  The Document
-History section carries a note identifying which document the
-pre-rename entries belong to; keep that note, and qualify future
-headings by name rather than letting the two sequences collide.
+a bare version number is therefore unsafe on its own.
+
+**Pending:** the Document History section has not yet been restructured
+for this.  Its `Since Draft 00` / `01` / `02` headings still carry bare
+numbers referring to the pre-rename document.  The section is to be
+hand-edited once the new name is published, to identify which document
+those entries belong to and to qualify headings by name so the two
+sequences do not collide.
 
 ---
 
