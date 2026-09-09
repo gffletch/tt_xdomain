@@ -137,7 +137,9 @@ Table of Contents
      B.1.  Identity Assertion JWT Authorization Grant
    Acknowledgements
    Document History
+     Since Draft 02
      Since Draft 01
+     Since Draft 00
    Authors' Addresses
 
 1.  Introduction
@@ -1363,7 +1365,24 @@ Document History
 
    [[ To be removed from final specification ]]
 
+Since Draft 02
+
+   *  Renamed the draft to draft-fletcher-oauth-txn-token-chaining-
+      profile
+
+   *  Corrected the source and issue tracker URL to the repository for
+      this draft
+
+   *  Consolidated the BCP 14 requirements language into Section 2
+
 Since Draft 01
+
+   *  Added Section 3.3 describing recursive application of this profile
+      across more than two Trust Domains
+
+   *  Added Section 9.8 to the Security Considerations
+
+Since Draft 00
 
    *  Added Pieter Kasselman and Sean O'Dell as authors
 
