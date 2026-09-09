@@ -1,6 +1,3 @@
 # Automatically generated CODEOWNERS
 # Regenerate with `make update-codeowners`
-draft-fletcher-oauth-txn-token-chaining-profile.md george@practicalidentity.com
-draft-todo-yourname-protocol.md gffletch@aol.com
-# Required reviewers
-* @gffletch @PieterKas
+draft-fletcher-oauth-txn-token-chaining-profile.md george@practicalidentity.com pieter@defakto.security sean.odell@cvshealth.com
