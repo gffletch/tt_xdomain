@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-10T03:17:23.114737+00:00",
+  "timestamp": "2026-09-13T03:23:24.849594+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -573,26 +573,42 @@
       "id": "PR_kwDOSYHu488AAAABC5Z5YQ",
       "title": "Shorten spec name",
       "url": "https://github.com/gffletch/tt_xdomain/pull/19",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "gffletch",
       "authorAssociation": "OWNER",
       "assignees": [],
       "labels": [],
       "body": "Datatracker only allows 50 character draft names. draft-fletcher-oauth-transaction-token-chaining-profile is 55. This PR shortens the name and cleaned up some other configuration settings for the repository.",
       "createdAt": "2026-09-09T21:04:16Z",
-      "updatedAt": "2026-09-09T21:48:05Z",
+      "updatedAt": "2026-09-10T16:36:28Z",
       "baseRepository": "gffletch/tt_xdomain",
       "baseRefName": "main",
       "baseRefOid": "58047c7cce7338719167ffe12a9759c5b1954fc2",
       "headRepository": "gffletch/tt_xdomain",
       "headRefName": "shorten_spec_name",
       "headRefOid": "ac0a068839137398397e82f297efb695117414bb",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-09-10T16:35:59Z",
+      "mergedAt": "2026-09-10T16:35:59Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "5efef9b8cd29f4e367c7eb2fb7de7ab18aa7d996"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOSYHu488AAAABM-bhPQ",
+          "commit": {
+            "abbreviatedOid": "ac0a068"
+          },
+          "author": "PieterKas",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-09-10T10:08:47Z",
+          "updatedAt": "2026-09-10T10:08:47Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
