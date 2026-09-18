@@ -1,5 +1,5 @@
 ---
-title: "Transaction Token Authorization Grant Profile for OAuth Identity and Authorization Chaining"
+title: "Transaction Token JWT Authorization Grant Profile for OAuth Identity and Authorization Chaining"
 abbrev: "Txn-Token Chaining Profile"
 docname: draft-fletcher-oauth-txn-token-chaining-profile-latest
 category: std
@@ -259,11 +259,11 @@ Txn-Token as the `subject_token` in the Token Exchange request
 described in Section 2.3 of {{I-D.ietf-oauth-identity-chaining}}.
 The Txn-Token is consumed by the Authorization Server of Trust Domain
 A, which validates it, applies claims transcription and minimization
-policy, and issues a JWT Authorization Grant targeted at the
-Authorization Server of Trust Domain B.  The JWT Authorization Grant
-crosses the trust boundary carrying only the context that Trust
-Domain B is authorized to see.  The Txn-Token itself never leaves
-Trust Domain A.
+policy, and issues a Transaction Token JWT Authorization Grant
+(Txn-Token-JAG), targeted at the Authorization Server of Trust
+Domain B.  The Txn-Token-JAG crosses the trust boundary carrying
+only the context that Trust Domain B is authorized to see.  The
+Txn-Token itself never leaves Trust Domain A.
 
 This profile is complementary to the Identity Assertion JWT
 Authorization Grant profile
@@ -319,12 +319,12 @@ Authorization Server of Trust Domain A (AS-A):
 : The OAuth 2.0 Authorization Server within Trust Domain A that
   receives the Token Exchange request from the Requesting Workload,
   validates the presented Txn-Token, applies claims transcription and
-  minimization policy, and issues the JWT Authorization Grant targeted
+  minimization policy, and issues the Txn-Token-JAG targeted
   at AS-B.
 
 Authorization Server of Trust Domain B (AS-B):
 : The OAuth 2.0 Authorization Server within Trust Domain B that
-  receives the JWT Authorization Grant from the Requesting Workload
+  receives the Txn-Token-JAG from the Requesting Workload
   and issues an access token for the Protected Resource.
 
 Protected Resource:
@@ -465,18 +465,18 @@ The steps are as follows:
 
 6. AS-A validates the Txn-Token, applies subject
    identifier mapping ({{subject-identifier-mapping}}) and claims
-   minimization ({{claims-transcription}}), and issues a signed JWT
-   Authorization Grant.  The Txn-Token is consumed entirely within
+   minimization ({{claims-transcription}}), and issues a signed
+   Txn-Token-JAG.  The Txn-Token is consumed entirely within
    Trust Domain A and is not forwarded.
 
-7. The Requesting Workload presents the JWT Authorization Grant to
+8. The Requesting Workload presents the Txn-Token-JAG to
    AS-B using the JWT Profile for OAuth 2.0 Authorization Grants
    {{RFC7523}}.
 
-8. AS-B validates the JWT Authorization Grant and issues an access
+9. AS-B validates the Txn-Token-JAG and issues an access
    token for the Protected Resource.
 
-9. The Requesting Workload calls the Protected Resource with the
+10. The Requesting Workload calls the Protected Resource with the
    access token, completing the cross-domain portion of the
    transaction.
 
@@ -578,7 +578,7 @@ be conflated.
 
 `audience`:
 : REQUIRED.  The `issuer` identifier of AS-B ({{RFC8414}} Section 2).
-  Becomes the `aud` claim of the JWT Authorization Grant.
+  Becomes the `aud` claim of the Txn-Token-JAG.
   Implementations MUST use this parameter to identify AS-B and MUST
   NOT pass the AS-B issuer URL as `resource`.
 
@@ -586,7 +586,7 @@ be conflated.
 : OPTIONAL.  A URI identifying the Protected Resource (resource
   server) in Trust Domain B, as defined in {{RFC8707}} Section 2.
   When present, AS-A SHOULD propagate this value into the `resource`
-  claim of the JWT Authorization Grant.
+  claim of the Txn-Token-JAG.
 
 ### Remaining Parameters
 
@@ -605,7 +605,7 @@ be conflated.
 `requested_token_type`:
 : OPTIONAL.  When present, the value MUST be
   `urn:ietf:params:oauth:token-type:jwt`.  If absent, AS-A MUST
-  still produce a JWT Authorization Grant conforming to this profile
+  still produce a Txn-Token-JAG conforming to this profile
   when the other parameters conform to this profile.
 
 `scope`:
@@ -644,12 +644,12 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
 ### Token Exchange Response
 
 If the request is valid and the Requesting Workload is authorized to
-receive a JWT Authorization Grant for the indicated audience, AS-A
+receive a Txn-Token-JAG for the indicated audience, AS-A
 returns a Token Exchange response as defined in Section 2.2 of
 {{RFC8693}}.
 
 `access_token`:
-: REQUIRED.  The JWT Authorization Grant.  (Token Exchange uses the
+: REQUIRED.  The Txn-Token-JAG.  (Token Exchange uses the
   `access_token` field for the returned token for historical
   compatibility reasons; this is not an OAuth access token.)
 
@@ -661,7 +661,7 @@ returns a Token Exchange response as defined in Section 2.2 of
 : REQUIRED.  The value MUST be `N_A`.
 
 `expires_in`:
-: RECOMMENDED.  The lifetime of the JWT Authorization Grant in
+: RECOMMENDED.  The lifetime of the Txn-Token-JAG in
   seconds.  This value SHOULD reflect the `exp` claim of the
   returned grant JWT and SHOULD be short (see
   {{jwt-claims-requirements}}).
@@ -678,7 +678,7 @@ Content-Type: application/json
 Cache-Control: no-cache, no-store
 
 {
-  "access_token": "eyJ...<JWT Authorization Grant>...",
+  "access_token": "eyJ...<Txn-Token-JAG>...",
   "issued_token_type": "urn:ietf:params:oauth:token-type:jwt",
   "token_type": "N_A",
   "expires_in": 60
@@ -717,7 +717,7 @@ AS-A MUST perform the following steps:
 6. If the `resource` parameter is present, validate that it
    identifies a Protected Resource within Trust Domain B consistent
    with the indicated AS-B.  AS-A SHOULD propagate the `resource`
-   value into the `resource` claim of the JWT Authorization Grant.
+   value into the `resource` claim of the Txn-Token-JAG.
 
 7. Validate that the requested `scope`, if present, does not exceed
    the `scope` claim of the Txn-Token.  AS-A MUST NOT issue a JWT
@@ -731,11 +731,11 @@ AS-A MUST perform the following steps:
 9. Apply claims transcription and minimization policy as described in
    {{claims-transcription}}.
 
-10. Construct and sign the JWT Authorization Grant as described in
+10. Construct and sign the Txn-Token-JAG as described in
     {{jwt-authorization-grant}}, setting the `aud` claim to the AS-B
     issuer identifier resolved in step 5.
 
-11. Return the JWT Authorization Grant in the Token Exchange response
+11. Return the Txn-Token-JAG in the Token Exchange response
     as described in {{token-exchange-request-parameters}}.
 
 ## AS-B Processing Rules
@@ -745,7 +745,7 @@ to this profile, AS-B MUST perform the following steps in addition
 to the processing rules specified in Section 2.4.2 of
 {{I-D.ietf-oauth-identity-chaining}}:
 
-1. Validate the `typ` header of the JWT Authorization Grant.  The
+1. Validate the `typ` header of the Txn-Token-JAG.  The
    value MUST be `txn-chain+jwt` as defined in {{jwt-authorization-grant}}.
 
 2. Validate that the `aud` claim matches AS-B's own issuer identifier.
@@ -772,16 +772,16 @@ to the processing rules specified in Section 2.4.2 of
    the requested scope.
 
 7. Issue an access token constrained by the `scope` and, if present,
-   the `resource` claim in the JWT Authorization Grant.  AS-B SHOULD
+   the `resource` claim in the Txn-Token-JAG.  AS-B SHOULD
    NOT issue refresh tokens, consistent with Section 5.4 of
    {{I-D.ietf-oauth-identity-chaining}}.
 
 
-# JWT Authorization Grant {#jwt-authorization-grant}
+# Transaction Token JWT Authorization Grant {#jwt-authorization-grant}
 
 ## Grant Format
 
-The JWT Authorization Grant produced by AS-A in response to a Token
+The Transaction Token JWT Authorization Grant (Txn-Token-JAG) produced by AS-A in response to a Token
 Exchange request conforming to this profile is a JWT {{RFC7519}}
 that MUST conform to the JWT Authorization Grant requirements
 specified in Section 2.3.3 of {{I-D.ietf-oauth-identity-chaining}}.
@@ -860,7 +860,7 @@ cnf:
   the confirmation method claim conveying the Requesting Workload's
   public key, as defined in {{RFC7800}}.
 
-### Example JWT Authorization Grant
+### Example Txn-Token-JAG
 
 The following is a non-normative example corresponding to the mail
 service scenario in {{token-exchange-request-parameters}}.  The
@@ -914,17 +914,17 @@ Section 2.5 of {{I-D.ietf-oauth-identity-chaining}} as follows.
 
 ## Mandatory Transcriptions {#mandatory-transcription}
 
-AS-A MUST derive the `sub` claim of the JWT Authorization Grant from
+AS-A MUST derive the `sub` claim of the Txn-Token-JAG from
 the `sub` claim of the Txn-Token, applying the subject identifier
 mapping defined in {{subject-identifier-mapping}}.
 
 AS-A MUST include the `txn` claim from the Txn-Token as the `txn`
-claim in the JWT Authorization Grant, preserving the transaction
+claim in the Txn-Token-JAG, preserving the transaction
 correlation identifier across the domain boundary.
 
 ## Constrained Scope Transcription
 
-The scope in the JWT Authorization Grant MUST be the intersection of
+The scope in the Txn-Token-JAG MUST be the intersection of
 the Txn-Token's `scope` claim and the `scope` parameter of the Token
 Exchange request (if present).  AS-A MUST NOT expand scope beyond the
 Txn-Token's scope under any circumstances.
@@ -944,10 +944,10 @@ deny the Token Exchange request.
 ## Claims Minimization
 
 Txn-Tokens MUST NOT be forwarded across trust boundaries.
-The JWT Authorization Grant is the only artifact that crosses the
+The Txn-Token-JAG is the only artifact that crosses the
 boundary, and AS-A MUST apply strict claims minimization.
 
-The optional `txn_claims` object in the JWT Authorization Grant MAY
+The optional `txn_claims` object in the Txn-Token-JAG MAY
 carry a curated subset of Txn-Token claims that are relevant to
 AS-B's authorization policy.  AS-A MUST apply the following
 minimization rules:
@@ -1024,9 +1024,9 @@ encrypted and the Requesting Workload MUST be authenticated (e.g.,
 via mutual TLS; see also {{client-authentication}}).
 Txn-Token lifetimes SHOULD be short.
 
-## JWT Authorization Grant Replay Prevention
+## Txn-Token-JAG Replay Prevention
 
-The JWT Authorization Grant is a bearer token.  AS-B MUST enforce
+The Txn-Token-JAG is a bearer token.  AS-B MUST enforce
 single-use semantics on the `jti` claim.  AS-A SHOULD set a short
 validity lifetime (see {{jwt-claims-requirements}}).  Additional
 guidance is provided in Section 5.5 of
@@ -1034,7 +1034,7 @@ guidance is provided in Section 5.5 of
 
 ## Scope Boundary Enforcement
 
-AS-A MUST enforce that the JWT Authorization Grant scope does not
+AS-A MUST enforce that the Txn-Token-JAG scope does not
 exceed the Txn-Token's scope.  AS-B MUST independently enforce that
 the access token it issues does not convey scope exceeding the JWT
 Authorization Grant.  These controls together prevent the chaining
@@ -1045,11 +1045,11 @@ originating transaction's authorized scope.
 
 Operators MUST ensure that:
 
-- AS-A issues JWT Authorization Grants only for AS-B instances with
+- AS-A issues Txn-Token-JAGs only for AS-B instances with
   which a bilateral Cross-Domain Trust Agreement has been explicitly
   established and is actively maintained.
 
-- AS-B accepts JWT Authorization Grants only from AS-A instances
+- AS-B accepts Txn-Token-JAGs only from AS-A instances
   listed in its trusted issuers configuration.
 
 - The Cross-Domain Trust Agreement, including subject identifier
@@ -1067,7 +1067,7 @@ persistent credential outside the control of Trust Domain A.
 
 ## Trust Across Multiple Trust Domains
 
-When this profile is applied recursively ({{chaining-across-multiple-trust-domains}}), trust remains strictly pairwise. An Authorization Server accepts a JWT Authorization Grant because it trusts the issuing Authorization Server under their Cross-Domain Trust Agreement, not because it has any relationship with Trust Domains further upstream. Because context propagation each time a Trust Domain boundary is crossed is a deployment decision ({{chaining-across-multiple-trust-domains}}), claims in a JWT Authorization Grant may be derived from context that the issuing Trust Domain itself received from an upstream Trust Domain.
+When this profile is applied recursively ({{chaining-across-multiple-trust-domains}}), trust remains strictly pairwise. An Authorization Server accepts a Txn-Token-JAG because it trusts the issuing Authorization Server under their Cross-Domain Trust Agreement, not because it has any relationship with Trust Domains further upstream. Because context propagation each time a Trust Domain boundary is crossed is a deployment decision ({{chaining-across-multiple-trust-domains}}), claims in a Txn-Token-JAG may be derived from context that the issuing Trust Domain itself received from an upstream Trust Domain.
 
 # Privacy Considerations {#privacy-considerations}
 
@@ -1078,7 +1078,7 @@ address, IP address) that may be subject to applicable privacy
 regulations.
 
 AS-A MUST apply claims minimization ({{claims-transcription}})
-before issuing a JWT Authorization Grant.  Specifically:
+before issuing a Txn-Token-JAG.  Specifically:
 
 - Only identity claims necessary for AS-B to resolve the subject and
   apply authorization policy SHOULD be included in `txn_claims`.
@@ -1118,7 +1118,7 @@ in the "JSON Web Token Claims" registry (maintained by IANA):
 
 - Claim Name: `txn_claims`
 - Claim Description: Transcribed claims from a Transaction Token,
-  included in a JWT Authorization Grant to convey cross-domain
+  included in a Txn-Token-JAG to convey cross-domain
   authorization context
 - Change Controller: IETF
 - Specification Document(s): {{claims-transcription}} of this
@@ -1153,7 +1153,7 @@ chain.
 To enrich the watch list entry with current market data, the
 portfolio service must call a market-data API operated by a partner
 financial data provider in Trust Domain B.  The portfolio service
-exchanges the Txn-Token for a JWT Authorization Grant using this
+exchanges the Txn-Token for a Txn-Token-JAG using this
 profile.  AS-A maps the user's enterprise identifier to a
 cross-domain user identifier agreed with the partner (e.g., the
 user's email address or a pairwise identifier), and includes a
@@ -1206,13 +1206,13 @@ set to `telemetry-aggregation`, and no user context in `rctx`.
 
 To complete the aggregation, the job must query a third-party
 analytics API in Trust Domain B.  The job exchanges the Txn-Token
-for a JWT Authorization Grant using this profile.  AS-A maps the
+for a Txn-Token-JAG using this profile.  AS-A maps the
 SPIFFE workload URI to a cross-domain workload identifier agreed with
 the analytics provider, and includes `scope: telemetry-aggregation`
 in `txn_claims`.
 
 The analytics provider's authorization server issues a scoped access
-token.  The `txn` claim in the JWT Authorization Grant allows the
+token.  The `txn` claim in the Txn-Token-JAG allows the
 analytics provider to correlate API calls to the originating job run
 for billing and audit purposes, without receiving the internal SPIFFE
 URI or other Trust Domain A infrastructure details.
@@ -1267,7 +1267,7 @@ Trust Relationship Basis:
   client relationship with AS-B.  This profile does not require a
   pre-registered `client_id` at AS-B; the Requesting Workload's
   identity is conveyed through client authentication to AS-A and the
-  subject mapping in the JWT Authorization Grant.
+  subject mapping in the Txn-Token-JAG.
 
 Multi-Tenancy:
 : The ID-JAG profile defines `tenant`, `aud_tenant`, and `aud_sub`
@@ -1281,7 +1281,7 @@ Rich Authorization Requests (RAR):
   claim ({{RFC9396}}) in the grant.  This profile does not currently
   define RAR integration; a future revision MAY define how
   `authorization_details` from a Txn-Token are transcribed into the
-  JWT Authorization Grant.
+  Txn-Token-JAG.
 
 SAML 2.0 Interoperability:
 : The ID-JAG profile includes SAML 2.0 identity assertion
