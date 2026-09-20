@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-15T03:35:38.924543+00:00",
+  "timestamp": "2026-09-20T03:36:38.984587+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -279,6 +279,22 @@
       "body": "Following up on our earlier discussion at IETF 126,  `tctx` may be needed by the downstream domain to continue the same workflow.\n\nCould `tctx` therefore be explicitly specified as a Txn-Token claim that MAY be included in `txn_claims`, subject to minimization and privacy policy?",
       "createdAt": "2026-08-18T13:25:58Z",
       "updatedAt": "2026-09-09T13:13:16Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 20,
+      "id": "I_kwDOSYHu488AAAABR5wSLg",
+      "title": "\u00a77.4 permits fine-grained transaction constraints to be dropped or altered across the boundary",
+      "url": "https://github.com/gffletch/tt_xdomain/issues/20",
+      "state": "OPEN",
+      "author": "arjun2075",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "\nCounterpart issue on the other composition draft, now filed: NiYuan224/draft-liu-oauth-cross-domain-txn-token#3\n\nReading draft-fletcher-oauth-txn-token-chaining-profile-00. One observation on claims transcription, plus proposed text. I might be misreading the interaction between \u00a77.2, \u00a77.4 and Appendix B.1 \u2014 if the intent is already that fine-grained constraints are redaction-only, this reduces to making that explicit.\nObservation\nThe profile's narrowing rules govern the coarse scope-string channel. \u00a77.2 requires the grant's scope to be the intersection of the Txn-Token's scope and the requested scope, and \u00a79.5 has AS-A and AS-B each enforce non-expansion of scope. \u00a77.1 makes sub and txn mandatory transcriptions.\n\u00a77.4 then enumerates what txn_claims may carry: scope SHOULD be included where meaningful to AS-B, rctx MAY be included in minimized form, internal call-chain claims MUST NOT appear, and supplementary identity claims MAY appear where the Cross-Domain Trust Agreement permits.\ntctx is not mentioned anywhere in \u00a77. This matters because tctx is where the base specification puts the authorization details that the TTS determines for the transaction \u2014 the fields asserted as immutable through the Call Chain \u2014 as distinct from rctx, which carries environmental values about the request. So the claim class that expresses what operation was authorized has no transcription rule in this profile, while the claim class expressing where the request came from does.\nTwo consequences:\n\t1.\tA conformant AS-A may issue a JAG whose txn_claims omits tctx entirely. \u00a77.2 and \u00a79.5 are satisfied because scope is unchanged. AS-B issues an access token per \u00a75.2(7) constrained by scope and resource, neither of which expresses the specific operation. The Protected Resource cannot reconstruct the authorized operation from any normative artifact in this profile.\n\t2.\tWhere tctx is carried, nothing in \u00a77 constrains its values, so a conformant AS-A may forward altered ones.\nA worked example of the second case appears in a second composition draft: draft-liu-oauth-cross-domain-txn-token-00 \u00a74.1.1.2 permits the transcribing AS to add, remove or change the workflow-related claims, and its \u00a74.3 protects txn and evolves req_wl but sets no rule for tctx values. Its Figure 4 carries tctx = {action: BUY, ticker: MSFT, quantity: 100} with scope: trade.stocks; scope is unchanged across every figure in that draft while the quantity is free to move. I have opened a corresponding issue there.\nThis is a spec-text observation about composed mechanisms, not a claim about any implementation or deployment, and not a claim that the base specifications are defective.\nWhy here rather than the base spec\noauth-wg/oauth-transaction-tokens#118 was closed without defining a mechanism for including a RAR object in a Txn-Token, and the WG position as I understand it is that rctx and tctx contents are deployment-defined within a trust domain. That position is coherent inside one trust domain. This profile is the document where a Txn-Token's context crosses out of it, so it seems the right place for a transcription rule. Appendix B.1 already reserves RAR authorization_details transcription as future work; this issue is a request to bring that forward, and to cover the non-RAR case too, since a tctx carrying plain claims raises the same question.\nProposed changes\n\t1.\tNew \u00a77.5, Transaction Context Transcription:\n\t\u2022\tWhere the Txn-Token's tctx carries claims that constrain the operation being authorized (including an RFC 9396 authorization_details object), AS-A MUST transcribe them into txn_claims when the Protected Resource's authorization decision depends on them.\n\t\u2022\tAS-A MUST NOT alter the value of any such claim it forwards. Omission under \u00a77.4 minimization is the only permitted transformation.\n\t\u2022\tAS-A MUST NOT introduce claims into txn_claims asserting authority broader than the Txn-Token asserts.\n\t\u2022\tWhere a constraint cannot be forwarded under the Cross-Domain Trust Agreement, AS-A SHOULD deny the Token Exchange request rather than issue a grant without it.\n\t\u2022\tWhere such claims are present, AS-B MUST constrain the issued access token by them, or deny.\n\t2.\t\u00a77.4 \u2014 add tctx to the enumerated list, cross-referencing \u00a77.5, so the omission is not read as silence.\n\t3.\t\u00a79.5 \u2014 extend Scope Boundary Enforcement to note that scope non-expansion does not by itself prevent the authorized operation from changing, since the two travel in different channels.\n\t4.\tAppendix B.1 \u2014 once \u00a77.5 exists, the RAR line can point to it.\nRelated\n\t\u2022\t#18 proposes tctx MAY appear in txn_claims. That is permission to carry; this issue concerns what may happen to the values once carried, and what happens when they are absent. The two fit together \u2014 #18 opens the channel, \u00a77.5 would constrain it.\nI have negative conformance vectors covering the issuance, token-exchange and cross-domain transitions, and would be glad to contribute \u00a77.5 text or test cases if useful.",
+      "createdAt": "2026-09-18T06:23:26Z",
+      "updatedAt": "2026-09-18T06:41:54Z",
       "closedAt": null,
       "comments": []
     }
@@ -623,6 +639,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 21,
+      "id": "PR_kwDOSYHu488AAAABEHCbig",
+      "title": "Update title and terminology to Txn-Token-JAG",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/21",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "See issue #15 ",
+      "createdAt": "2026-09-18T16:30:39Z",
+      "updatedAt": "2026-09-18T16:30:40Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "5efef9b8cd29f4e367c7eb2fb7de7ab18aa7d996",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "PieterKas-patch-1",
+      "headRefOid": "f05aa727246e0bf15b6bc8b0fc0bc66d50902415",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
