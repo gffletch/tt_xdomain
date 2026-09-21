@@ -473,7 +473,7 @@ The steps are as follows:
    AS-B using the JWT Profile for OAuth 2.0 Authorization Grants
    {{RFC7523}}.
 
-9. AS-B validates the Txn-Token-JAG and issues an access
+8. AS-B validates the Txn-Token-JAG and issues an access
    token for the Protected Resource.
 
 10. The Requesting Workload calls the Protected Resource with the
