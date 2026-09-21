@@ -469,7 +469,7 @@ The steps are as follows:
    Txn-Token-JAG.  The Txn-Token is consumed entirely within
    Trust Domain A and is not forwarded.
 
-8. The Requesting Workload presents the Txn-Token-JAG to
+7. The Requesting Workload presents the Txn-Token-JAG to
    AS-B using the JWT Profile for OAuth 2.0 Authorization Grants
    {{RFC7523}}.
 
