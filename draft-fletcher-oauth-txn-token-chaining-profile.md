@@ -476,7 +476,7 @@ The steps are as follows:
 8. AS-B validates the Txn-Token-JAG and issues an access
    token for the Protected Resource.
 
-10. The Requesting Workload calls the Protected Resource with the
+9. The Requesting Workload calls the Protected Resource with the
    access token, completing the cross-domain portion of the
    transaction.
 
