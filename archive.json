@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-20T03:36:38.984587+00:00",
+  "timestamp": "2026-09-22T03:30:24.188657+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -238,7 +238,7 @@
       "labels": [],
       "body": "Following up on our earlier discussion at IETF 126, I would like to suggest a possible optimization to the flow defined in this profile.\n\nThe current profile uses the JAG to obtain an Access Token in the downstream trust domain. If the downstream workload then follows the normal Txn-Token procedure to obtain a local Txn-Token, the end-to-end sequence is:\n\n1. Workload (A) --[Txn-Token (A)]--> AS-A\n2. AS-A --[JAG]--> Workload (A)\n3. Workload (A) --[JAG]--> AS-B\n4. AS-B --[Access Token]--> Workload (A)\n5. Workload (A) --[Access Token]--> Endpoint (B)\n6. Endpoint (B) --[Access Token]--> TTS-B\n7. TTS-B --[Txn-Token (B)]--> Endpoint (B)\n8. Endpoint (B) --[Txn-Token (B)]--> Workload (B)\n\nThis involves three cross-domain hops in steps 3\u20135.\n\nWhen Domain B needs to continue the same workflow initiated in Domain A, it ultimately needs to obtain a local Txn-Token. In this case, is the intermediate Access Token exchange necessarily required?\n\nSection 5.1 of the Txn-Token specification allows the subject_token to be \"any other format that is understood by the TTS\". Could the JAG issued by AS-A therefore be directly accepted as a subject_token by TTS-B?\n\nThis would allow:\n\n3. Workload (A) --[JAG]--> Endpoint (B)\n4. Endpoint (B) --[JAG]--> TTS-B\n5. TTS-B --[Txn-Token (B)]--> Endpoint (B)\n6. Endpoint (B) --[Txn-Token (B)]--> Workload (B)\n\nIf TTS-B has the required trust relationship with AS-A and can validate the JAG, this would reduce the number of cross-domain hops from three to one and reduce latency by eliminating the intermediate Access Token exchange.\n\nImportantly, no Txn-Token crosses the trust-domain boundary. Txn-Token A and Txn-Token B remain within their respective trust domains, while the JAG carries the cross-domain authorization information. This aligns with the principle that Txn-Tokens must not be forwarded across trust-domain boundaries.\n\nWe explored this direct JAG-to-Txn-Token approach as Mode B in draft-liu-oauth-cross-domain-txn-token; its Mode A follows the same flow as this profile combined with the normal downstream Txn-Token procedure.\n\nWould this direct JAG-to-Txn-Token flow be worth considering as an optional optimization in this profile?",
       "createdAt": "2026-08-18T13:13:12Z",
-      "updatedAt": "2026-09-14T11:59:32Z",
+      "updatedAt": "2026-09-20T11:54:05Z",
       "closedAt": null,
       "comments": [
         {
@@ -261,6 +261,13 @@
           "body": "Apart from @gffletch concerns, I believe there is a more fundamental issue with your proposal.\n\nIn an OAuth eco-system, resources in Domain B are protected by the Authorization Server in Domain B and requires a valid OAuth Access Token for access, not a JAG. Using a JAG as you propose above is inappropriate and consequently unsafe since the JAG is issued by the Authorization Server in Domain A. The Authorization Server in Domain A is not responsible for controlling access to resources in Domain B.\n\nGiven that the flows proposed above removes the OAuth Authorisation Server in Trust Domain B from the access decision for Resources in Domain B your proposal is unsafe (a JAG is not an OAuth Access Token).",
           "createdAt": "2026-09-14T11:59:32Z",
           "updatedAt": "2026-09-14T11:59:32Z"
+        },
+        {
+          "author": "NiYuan224",
+          "authorAssociation": "NONE",
+          "body": "Thanks @PieterKas\uff0cI understand your point about keeping the two roles clear: AS-B controls access to resources in Domain B, while TTS-B issues the local Txn-Token.\n\nMy concern is that introducing the intermediate Access Token adds one additional exchange and two additional cross-domain hops, which reduces efficiency.  Moreover, It may introduce a reusable cross-domain token without the JAG\u2019s explicit short-lifetime and single-use constraints. If that Access Token is only used to obtain a local Txn-Token, as illustrated in the \u201cChaining Across Multiple Trust Domains\u201d section, could this unnecessarily increase the opportunity for reuse or broaden the exposure surface? \n\nA similar concern was previously raised in https://github.com/oauth-wg/oauth-transaction-tokens/issues/62, where it was noted that \u201ccreating long-living Access Tokens just for the purpose of exchanging them for short-lived Txn-Tokens and then throwing them away can be considered wasteful (energy costs),\u201d and that such a long-lived Access Token \u201ccould leak and another party could use them to create Txn-Tokens or access resources the Access Token was meant for.\u201d\n\nWith AS-B and TTS-B retaining their respective roles, could this profile define an optional domain-local interaction where AS-B makes the authorization decision and provides the approved authorization context to TTS-B for local Txn-Token issuance? This could avoid the intermediate Access Token while preserving the existing role separation, with AS-B still receiving the JAG and authorizing access in Domain B.\n",
+          "createdAt": "2026-09-20T11:54:05Z",
+          "updatedAt": "2026-09-20T11:54:05Z"
         }
       ]
     },
@@ -652,19 +659,133 @@
       "labels": [],
       "body": "See issue #15 ",
       "createdAt": "2026-09-18T16:30:39Z",
-      "updatedAt": "2026-09-18T16:30:40Z",
+      "updatedAt": "2026-09-21T10:42:08Z",
       "baseRepository": "gffletch/tt_xdomain",
       "baseRefName": "main",
       "baseRefOid": "5efef9b8cd29f4e367c7eb2fb7de7ab18aa7d996",
       "headRepository": "gffletch/tt_xdomain",
       "headRefName": "PieterKas-patch-1",
-      "headRefOid": "f05aa727246e0bf15b6bc8b0fc0bc66d50902415",
+      "headRefOid": "924fefd927e200816e682c33fe55895c0a1bbc07",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOSYHu488AAAABOaijpg",
+          "commit": {
+            "abbreviatedOid": "f05aa72"
+          },
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-21T00:42:56Z",
+          "updatedAt": "2026-09-21T00:42:56Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "Why did the number change from 7 to 8?",
+              "createdAt": "2026-09-21T00:42:56Z",
+              "updatedAt": "2026-09-21T00:42:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABOai6gA",
+          "commit": {
+            "abbreviatedOid": "f05aa72"
+          },
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "state": "COMMENTED",
+          "body": "This all looks good. My only question is whether the numbering changing is intentional or not?",
+          "createdAt": "2026-09-21T00:44:42Z",
+          "updatedAt": "2026-09-21T00:44:42Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABOdtOIg",
+          "commit": {
+            "abbreviatedOid": "f05aa72"
+          },
+          "author": "PieterKas",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-21T10:40:09Z",
+          "updatedAt": "2026-09-21T10:40:09Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "Thanks for catching that - It may have been my editor (this was not a Clause assisted change, so can't even blame AI).  I don't recall manually changing anything.",
+              "createdAt": "2026-09-21T10:40:09Z",
+              "updatedAt": "2026-09-21T10:40:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABOdtXSw",
+          "commit": {
+            "abbreviatedOid": "f05aa72"
+          },
+          "author": "PieterKas",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-21T10:40:21Z",
+          "updatedAt": "2026-09-21T10:40:21Z",
+          "comments": [
+            {
+              "originalPosition": 50,
+              "body": "```suggestion\n7. The Requesting Workload presents the Txn-Token-JAG to\n```",
+              "createdAt": "2026-09-21T10:40:21Z",
+              "updatedAt": "2026-09-21T10:40:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABOdtxBA",
+          "commit": {
+            "abbreviatedOid": "b45946b"
+          },
+          "author": "PieterKas",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-21T10:40:53Z",
+          "updatedAt": "2026-09-21T10:40:53Z",
+          "comments": [
+            {
+              "originalPosition": 55,
+              "body": "```suggestion\n8. AS-B validates the Txn-Token-JAG and issues an access\n```",
+              "createdAt": "2026-09-21T10:40:53Z",
+              "updatedAt": "2026-09-21T10:40:53Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABOduHkQ",
+          "commit": {
+            "abbreviatedOid": "5f7cce7"
+          },
+          "author": "PieterKas",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-21T10:41:21Z",
+          "updatedAt": "2026-09-21T10:41:21Z",
+          "comments": [
+            {
+              "originalPosition": 59,
+              "body": "```suggestion\n9. The Requesting Workload calls the Protected Resource with the\n```",
+              "createdAt": "2026-09-21T10:41:21Z",
+              "updatedAt": "2026-09-21T10:41:21Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
