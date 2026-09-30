@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta content="Common,Latin" name="scripts">
 <meta content="initial-scale=1.0" name="viewport">
-<title>Transaction Token Authorization Grant Profile for OAuth Identity and Authorization Chaining</title>
+<title>Transaction Token JWT Authorization Grant Profile for OAuth Identity and Authorization Chaining</title>
 <meta content="George Fletcher" name="author">
 <meta content="Pieter Kasselman" name="author">
 <meta content="Sean O'Dell" name="author">
@@ -26,7 +26,7 @@ enabling an access token to be issued for a partner service,
 without exposing internal trust-domain credentials or token formats
 beyond the trust boundary. 
     " name="description">
-<meta content="xml2rfc 3.34.0" name="generator">
+<meta content="xml2rfc 3.34.1" name="generator">
 <meta content="oauth" name="keyword">
 <meta content="transaction tokens" name="keyword">
 <meta content="identity chaining" name="keyword">
@@ -34,19 +34,19 @@ beyond the trust boundary.
 <meta content="trust domain" name="keyword">
 <meta content="draft-fletcher-oauth-txn-token-chaining-profile-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.34.0
+  xml2rfc 3.34.1
     Python 3.14.7
-    ConfigArgParse 1.7.5
+    ConfigArgParse 1.7.7
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.11.7
+    platformdirs 4.11.10
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.3
+    wcwidth 0.8.4
 -->
 <link href="draft-fletcher-oauth-txn-token-chaining-profile.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1066,7 +1066,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Fletcher, et al.</td>
-<td class="center">Expires 14 March 2027</td>
+<td class="center">Expires 3 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1079,12 +1079,12 @@ svg {
 <dd class="internet-draft">draft-fletcher-oauth-txn-token-chaining-profile-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-09-10" class="published">10 September 2026</time>
+<time datetime="2026-09-30" class="published">30 September 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-03-14">14 March 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-03">3 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1102,7 +1102,7 @@ svg {
 </dd>
 </dl>
 </div>
-<h1 id="title">Transaction Token Authorization Grant Profile for OAuth Identity and Authorization Chaining</h1>
+<h1 id="title">Transaction Token JWT Authorization Grant Profile for OAuth Identity and Authorization Chaining</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
 <p id="section-abstract-1">This specification defines a profile of the OAuth Identity and
@@ -1152,7 +1152,7 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 14 March 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 3 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1249,7 +1249,7 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6">
-            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-jwt-authorization-grant" class="internal xref">JWT Authorization Grant</a></p>
+            <p id="section-toc.1-1.6.1"><a href="#section-6" class="auto internal xref">6</a>.  <a href="#name-transaction-token-jwt-autho" class="internal xref">Transaction Token JWT Authorization Grant</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1">
                 <p id="section-toc.1-1.6.2.1.1"><a href="#section-6.1" class="auto internal xref">6.1</a>.  <a href="#name-grant-format" class="internal xref">Grant Format</a></p>
@@ -1261,7 +1261,7 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
                     <p id="section-toc.1-1.6.2.1.2.2.1"><a href="#section-6.1.2" class="auto internal xref">6.1.2</a>.  <a href="#name-jwt-claims-requirements" class="internal xref">JWT Claims Requirements</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.1.2.3">
-                    <p id="section-toc.1-1.6.2.1.2.3.1"><a href="#section-6.1.3" class="auto internal xref">6.1.3</a>.  <a href="#name-example-jwt-authorization-g" class="internal xref">Example JWT Authorization Grant</a></p>
+                    <p id="section-toc.1-1.6.2.1.2.3.1"><a href="#section-6.1.3" class="auto internal xref">6.1.3</a>.  <a href="#name-example-txn-token-jag" class="internal xref">Example Txn-Token-JAG</a></p>
 </li>
                 </ul>
 </li>
@@ -1300,7 +1300,7 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
                 <p id="section-toc.1-1.9.2.3.1"><a href="#section-9.3" class="auto internal xref">9.3</a>.  <a href="#name-txn-token-confidentiality" class="internal xref">Txn-Token Confidentiality</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.4">
-                <p id="section-toc.1-1.9.2.4.1"><a href="#section-9.4" class="auto internal xref">9.4</a>.  <a href="#name-jwt-authorization-grant-rep" class="internal xref">JWT Authorization Grant Replay Prevention</a></p>
+                <p id="section-toc.1-1.9.2.4.1"><a href="#section-9.4" class="auto internal xref">9.4</a>.  <a href="#name-txn-token-jag-replay-preven" class="internal xref">Txn-Token-JAG Replay Prevention</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.5">
                 <p id="section-toc.1-1.9.2.5.1"><a href="#section-9.5" class="auto internal xref">9.5</a>.  <a href="#name-scope-boundary-enforcement" class="internal xref">Scope Boundary Enforcement</a></p>
@@ -1473,11 +1473,11 @@ Txn-Token as the <code>subject_token</code> in the Token Exchange request
 described in Section 2.3 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.
 The Txn-Token is consumed by the Authorization Server of Trust Domain
 A, which validates it, applies claims transcription and minimization
-policy, and issues a JWT Authorization Grant targeted at the
-Authorization Server of Trust Domain B.  The JWT Authorization Grant
-crosses the trust boundary carrying only the context that Trust
-Domain B is authorized to see.  The Txn-Token itself never leaves
-Trust Domain A.<a href="#section-1-8" class="pilcrow">¶</a></p>
+policy, and issues a Transaction Token JWT Authorization Grant
+(Txn-Token-JAG), targeted at the Authorization Server of Trust
+Domain B.  The Txn-Token-JAG crosses the trust boundary carrying
+only the context that Trust Domain B is authorized to see.  The
+Txn-Token itself never leaves Trust Domain A.<a href="#section-1-8" class="pilcrow">¶</a></p>
 <p id="section-1-9">This profile is complementary to the Identity Assertion JWT
 Authorization Grant profile
 <span>[<a href="#I-D.ietf-oauth-identity-assertion-authz-grant" class="cite xref">I-D.ietf-oauth-identity-assertion-authz-grant</a>]</span>, which targets
@@ -1546,14 +1546,14 @@ the same Trust Domain.<a href="#section-2.1-2.6.1" class="pilcrow">¶</a></p>
             <p id="section-2.1-2.8.1">The OAuth 2.0 Authorization Server within Trust Domain A that
 receives the Token Exchange request from the Requesting Workload,
 validates the presented Txn-Token, applies claims transcription and
-minimization policy, and issues the JWT Authorization Grant targeted
+minimization policy, and issues the Txn-Token-JAG targeted
 at AS-B.<a href="#section-2.1-2.8.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="section-2.1-2.9">Authorization Server of Trust Domain B (AS-B):</dt>
           <dd style="margin-left: 1.5em" id="section-2.1-2.10">
             <p id="section-2.1-2.10.1">The OAuth 2.0 Authorization Server within Trust Domain B that
-receives the JWT Authorization Grant from the Requesting Workload
+receives the Txn-Token-JAG from the Requesting Workload
 and issues an access token for the Protected Resource.<a href="#section-2.1-2.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
@@ -1731,17 +1731,17 @@ parameter.<a href="#section-3.2-4.5.1" class="pilcrow">¶</a></p>
           <li id="section-3.2-4.6">
             <p id="section-3.2-4.6.1">AS-A validates the Txn-Token, applies subject
 identifier mapping (<a href="#subject-identifier-mapping" class="auto internal xref">Section 7.3</a>) and claims
-minimization (<a href="#claims-transcription" class="auto internal xref">Section 7</a>), and issues a signed JWT
-Authorization Grant.  The Txn-Token is consumed entirely within
+minimization (<a href="#claims-transcription" class="auto internal xref">Section 7</a>), and issues a signed
+Txn-Token-JAG.  The Txn-Token is consumed entirely within
 Trust Domain A and is not forwarded.<a href="#section-3.2-4.6.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.2-4.7">
-            <p id="section-3.2-4.7.1">The Requesting Workload presents the JWT Authorization Grant to
+            <p id="section-3.2-4.7.1">The Requesting Workload presents the Txn-Token-JAG to
 AS-B using the JWT Profile for OAuth 2.0 Authorization Grants
 <span>[<a href="#RFC7523" class="cite xref">RFC7523</a>]</span>.<a href="#section-3.2-4.7.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.2-4.8">
-            <p id="section-3.2-4.8.1">AS-B validates the JWT Authorization Grant and issues an access
+            <p id="section-3.2-4.8.1">AS-B validates the Txn-Token-JAG and issues an access
 token for the Protected Resource.<a href="#section-3.2-4.8.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-3.2-4.9">
@@ -1880,7 +1880,7 @@ be conflated.<a href="#section-4.3.1-1" class="pilcrow">¶</a></p>
 <code>audience</code>:</dt>
             <dd style="margin-left: 1.5em" id="section-4.3.1-2.2">
               <p id="section-4.3.1-2.2.1"><span class="bcp14">REQUIRED</span>.  The <code>issuer</code> identifier of AS-B (<span>[<a href="#RFC8414" class="cite xref">RFC8414</a>]</span> Section 2).
-Becomes the <code>aud</code> claim of the JWT Authorization Grant.
+Becomes the <code>aud</code> claim of the Txn-Token-JAG.
 Implementations <span class="bcp14">MUST</span> use this parameter to identify AS-B and <span class="bcp14">MUST NOT</span> pass the AS-B issuer URL as <code>resource</code>.<a href="#section-4.3.1-2.2.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
@@ -1890,7 +1890,7 @@ Implementations <span class="bcp14">MUST</span> use this parameter to identify A
               <p id="section-4.3.1-2.4.1"><span class="bcp14">OPTIONAL</span>.  A URI identifying the Protected Resource (resource
 server) in Trust Domain B, as defined in <span>[<a href="#RFC8707" class="cite xref">RFC8707</a>]</span> Section 2.
 When present, AS-A <span class="bcp14">SHOULD</span> propagate this value into the <code>resource</code>
-claim of the JWT Authorization Grant.<a href="#section-4.3.1-2.4.1" class="pilcrow">¶</a></p>
+claim of the Txn-Token-JAG.<a href="#section-4.3.1-2.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 </dl>
@@ -1928,7 +1928,7 @@ claim of the JWT Authorization Grant.<a href="#section-4.3.1-2.4.1" class="pilcr
             <dd style="margin-left: 1.5em" id="section-4.3.2-1.8">
               <p id="section-4.3.2-1.8.1"><span class="bcp14">OPTIONAL</span>.  When present, the value <span class="bcp14">MUST</span> be
 <code>urn:ietf:params:oauth:token-type:jwt</code>.  If absent, AS-A <span class="bcp14">MUST</span>
-still produce a JWT Authorization Grant conforming to this profile
+still produce a Txn-Token-JAG conforming to this profile
 when the other parameters conform to this profile.<a href="#section-4.3.2-1.8.1" class="pilcrow">¶</a></p>
 </dd>
             <dd class="break"></dd>
@@ -1981,14 +1981,14 @@ grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Atoken-exchange
 <a href="#section-4.3.4" class="section-number selfRef">4.3.4. </a><a href="#name-token-exchange-response" class="section-name selfRef">Token Exchange Response</a>
           </h4>
 <p id="section-4.3.4-1">If the request is valid and the Requesting Workload is authorized to
-receive a JWT Authorization Grant for the indicated audience, AS-A
+receive a Txn-Token-JAG for the indicated audience, AS-A
 returns a Token Exchange response as defined in Section 2.2 of
 <span>[<a href="#RFC8693" class="cite xref">RFC8693</a>]</span>.<a href="#section-4.3.4-1" class="pilcrow">¶</a></p>
 <span class="break"></span><dl class="dlParallel" id="section-4.3.4-2">
             <dt id="section-4.3.4-2.1">
 <code>access_token</code>:</dt>
             <dd style="margin-left: 1.5em" id="section-4.3.4-2.2">
-              <p id="section-4.3.4-2.2.1"><span class="bcp14">REQUIRED</span>.  The JWT Authorization Grant.  (Token Exchange uses the
+              <p id="section-4.3.4-2.2.1"><span class="bcp14">REQUIRED</span>.  The Txn-Token-JAG.  (Token Exchange uses the
 <code>access_token</code> field for the returned token for historical
 compatibility reasons; this is not an OAuth access token.)<a href="#section-4.3.4-2.2.1" class="pilcrow">¶</a></p>
 </dd>
@@ -2009,7 +2009,7 @@ compatibility reasons; this is not an OAuth access token.)<a href="#section-4.3.
 <dt id="section-4.3.4-2.7">
 <code>expires_in</code>:</dt>
             <dd style="margin-left: 1.5em" id="section-4.3.4-2.8">
-              <p id="section-4.3.4-2.8.1"><span class="bcp14">RECOMMENDED</span>.  The lifetime of the JWT Authorization Grant in
+              <p id="section-4.3.4-2.8.1"><span class="bcp14">RECOMMENDED</span>.  The lifetime of the Txn-Token-JAG in
 seconds.  This value <span class="bcp14">SHOULD</span> reflect the <code>exp</code> claim of the
 returned grant JWT and <span class="bcp14">SHOULD</span> be short (see
 <a href="#jwt-claims-requirements" class="auto internal xref">Section 6.1.2</a>).<a href="#section-4.3.4-2.8.1" class="pilcrow">¶</a></p>
@@ -2031,7 +2031,7 @@ Content-Type: application/json
 Cache-Control: no-cache, no-store
 
 {
-  "access_token": "eyJ...&lt;JWT Authorization Grant&gt;...",
+  "access_token": "eyJ...&lt;Txn-Token-JAG&gt;...",
   "issued_token_type": "urn:ietf:params:oauth:token-type:jwt",
   "token_type": "N_A",
   "expires_in": 60
@@ -2086,7 +2086,7 @@ by policy, AS-A <span class="bcp14">MUST</span> return an error per Section 2.2.
             <p id="section-5.1-2.6.1">If the <code>resource</code> parameter is present, validate that it
 identifies a Protected Resource within Trust Domain B consistent
 with the indicated AS-B.  AS-A <span class="bcp14">SHOULD</span> propagate the <code>resource</code>
-value into the <code>resource</code> claim of the JWT Authorization Grant.<a href="#section-5.1-2.6.1" class="pilcrow">¶</a></p>
+value into the <code>resource</code> claim of the Txn-Token-JAG.<a href="#section-5.1-2.6.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.1-2.7">
             <p id="section-5.1-2.7.1">Validate that the requested <code>scope</code>, if present, does not exceed
@@ -2104,12 +2104,12 @@ AS-A <span class="bcp14">MUST</span> return an error.<a href="#section-5.1-2.8.1
 <a href="#claims-transcription" class="auto internal xref">Section 7</a>.<a href="#section-5.1-2.9.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.1-2.10">
-            <p id="section-5.1-2.10.1">Construct and sign the JWT Authorization Grant as described in
+            <p id="section-5.1-2.10.1">Construct and sign the Txn-Token-JAG as described in
 <a href="#jwt-authorization-grant" class="auto internal xref">Section 6</a>, setting the <code>aud</code> claim to the AS-B
 issuer identifier resolved in step 5.<a href="#section-5.1-2.10.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.1-2.11">
-            <p id="section-5.1-2.11.1">Return the JWT Authorization Grant in the Token Exchange response
+            <p id="section-5.1-2.11.1">Return the Txn-Token-JAG in the Token Exchange response
 as described in <a href="#token-exchange-request-parameters" class="auto internal xref">Section 4.3</a>.<a href="#section-5.1-2.11.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
@@ -2126,7 +2126,7 @@ to the processing rules specified in Section 2.4.2 of
 <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <ol start="1" type="1" class="normal type-1" id="section-5.2-2">
 <li id="section-5.2-2.1">
-            <p id="section-5.2-2.1.1">Validate the <code>typ</code> header of the JWT Authorization Grant.  The
+            <p id="section-5.2-2.1.1">Validate the <code>typ</code> header of the Txn-Token-JAG.  The
 value <span class="bcp14">MUST</span> be <code>txn-chain+jwt</code> as defined in <a href="#jwt-authorization-grant" class="auto internal xref">Section 6</a>.<a href="#section-5.2-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.2-2.2">
@@ -2159,7 +2159,7 @@ the requested scope.<a href="#section-5.2-2.6.1" class="pilcrow">¶</a></p>
 </li>
           <li id="section-5.2-2.7">
             <p id="section-5.2-2.7.1">Issue an access token constrained by the <code>scope</code> and, if present,
-the <code>resource</code> claim in the JWT Authorization Grant.  AS-B <span class="bcp14">SHOULD NOT</span> issue refresh tokens, consistent with Section 5.4 of
+the <code>resource</code> claim in the Txn-Token-JAG.  AS-B <span class="bcp14">SHOULD NOT</span> issue refresh tokens, consistent with Section 5.4 of
 <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.<a href="#section-5.2-2.7.1" class="pilcrow">¶</a></p>
 </li>
         </ol>
@@ -2169,15 +2169,15 @@ the <code>resource</code> claim in the JWT Authorization Grant.  AS-B <span clas
 </div>
 <div id="jwt-authorization-grant">
 <section id="section-6">
-      <h2 id="name-jwt-authorization-grant">
-<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-jwt-authorization-grant" class="section-name selfRef">JWT Authorization Grant</a>
+      <h2 id="name-transaction-token-jwt-autho">
+<a href="#section-6" class="section-number selfRef">6. </a><a href="#name-transaction-token-jwt-autho" class="section-name selfRef">Transaction Token JWT Authorization Grant</a>
       </h2>
 <div id="grant-format">
 <section id="section-6.1">
         <h3 id="name-grant-format">
 <a href="#section-6.1" class="section-number selfRef">6.1. </a><a href="#name-grant-format" class="section-name selfRef">Grant Format</a>
         </h3>
-<p id="section-6.1-1">The JWT Authorization Grant produced by AS-A in response to a Token
+<p id="section-6.1-1">The Transaction Token JWT Authorization Grant (Txn-Token-JAG) produced by AS-A in response to a Token
 Exchange request conforming to this profile is a JWT <span>[<a href="#RFC7519" class="cite xref">RFC7519</a>]</span>
 that <span class="bcp14">MUST</span> conform to the JWT Authorization Grant requirements
 specified in Section 2.3.3 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span>.<a href="#section-6.1-1" class="pilcrow">¶</a></p>
@@ -2298,10 +2298,10 @@ public key, as defined in <span>[<a href="#RFC7800" class="cite xref">RFC7800</a
 </dl>
 </section>
 </div>
-<div id="example-jwt-authorization-grant">
+<div id="example-txn-token-jag">
 <section id="section-6.1.3">
-          <h4 id="name-example-jwt-authorization-g">
-<a href="#section-6.1.3" class="section-number selfRef">6.1.3. </a><a href="#name-example-jwt-authorization-g" class="section-name selfRef">Example JWT Authorization Grant</a>
+          <h4 id="name-example-txn-token-jag">
+<a href="#section-6.1.3" class="section-number selfRef">6.1.3. </a><a href="#name-example-txn-token-jag" class="section-name selfRef">Example Txn-Token-JAG</a>
           </h4>
 <p id="section-6.1.3-1">The following is a non-normative example corresponding to the mail
 service scenario in <a href="#token-exchange-request-parameters" class="auto internal xref">Section 4.3</a>.  The
@@ -2363,11 +2363,11 @@ Section 2.5 of <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xr
         <h3 id="name-mandatory-transcriptions">
 <a href="#section-7.1" class="section-number selfRef">7.1. </a><a href="#name-mandatory-transcriptions" class="section-name selfRef">Mandatory Transcriptions</a>
         </h3>
-<p id="section-7.1-1">AS-A <span class="bcp14">MUST</span> derive the <code>sub</code> claim of the JWT Authorization Grant from
+<p id="section-7.1-1">AS-A <span class="bcp14">MUST</span> derive the <code>sub</code> claim of the Txn-Token-JAG from
 the <code>sub</code> claim of the Txn-Token, applying the subject identifier
 mapping defined in <a href="#subject-identifier-mapping" class="auto internal xref">Section 7.3</a>.<a href="#section-7.1-1" class="pilcrow">¶</a></p>
 <p id="section-7.1-2">AS-A <span class="bcp14">MUST</span> include the <code>txn</code> claim from the Txn-Token as the <code>txn</code>
-claim in the JWT Authorization Grant, preserving the transaction
+claim in the Txn-Token-JAG, preserving the transaction
 correlation identifier across the domain boundary.<a href="#section-7.1-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2376,7 +2376,7 @@ correlation identifier across the domain boundary.<a href="#section-7.1-2" class
         <h3 id="name-constrained-scope-transcrip">
 <a href="#section-7.2" class="section-number selfRef">7.2. </a><a href="#name-constrained-scope-transcrip" class="section-name selfRef">Constrained Scope Transcription</a>
         </h3>
-<p id="section-7.2-1">The scope in the JWT Authorization Grant <span class="bcp14">MUST</span> be the intersection of
+<p id="section-7.2-1">The scope in the Txn-Token-JAG <span class="bcp14">MUST</span> be the intersection of
 the Txn-Token's <code>scope</code> claim and the <code>scope</code> parameter of the Token
 Exchange request (if present).  AS-A <span class="bcp14">MUST NOT</span> expand scope beyond the
 Txn-Token's scope under any circumstances.<a href="#section-7.2-1" class="pilcrow">¶</a></p>
@@ -2404,9 +2404,9 @@ deny the Token Exchange request.<a href="#section-7.3-1" class="pilcrow">¶</a><
 <a href="#section-7.4" class="section-number selfRef">7.4. </a><a href="#name-claims-minimization" class="section-name selfRef">Claims Minimization</a>
         </h3>
 <p id="section-7.4-1">Txn-Tokens <span class="bcp14">MUST NOT</span> be forwarded across trust boundaries.
-The JWT Authorization Grant is the only artifact that crosses the
+The Txn-Token-JAG is the only artifact that crosses the
 boundary, and AS-A <span class="bcp14">MUST</span> apply strict claims minimization.<a href="#section-7.4-1" class="pilcrow">¶</a></p>
-<p id="section-7.4-2">The optional <code>txn_claims</code> object in the JWT Authorization Grant <span class="bcp14">MAY</span>
+<p id="section-7.4-2">The optional <code>txn_claims</code> object in the Txn-Token-JAG <span class="bcp14">MAY</span>
 carry a curated subset of Txn-Token claims that are relevant to
 AS-B's authorization policy.  AS-A <span class="bcp14">MUST</span> apply the following
 minimization rules:<a href="#section-7.4-2" class="pilcrow">¶</a></p>
@@ -2510,12 +2510,12 @@ via mutual TLS; see also <a href="#client-authentication" class="auto internal x
 Txn-Token lifetimes <span class="bcp14">SHOULD</span> be short.<a href="#section-9.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="jwt-authorization-grant-replay-prevention">
+<div id="txn-token-jag-replay-prevention">
 <section id="section-9.4">
-        <h3 id="name-jwt-authorization-grant-rep">
-<a href="#section-9.4" class="section-number selfRef">9.4. </a><a href="#name-jwt-authorization-grant-rep" class="section-name selfRef">JWT Authorization Grant Replay Prevention</a>
+        <h3 id="name-txn-token-jag-replay-preven">
+<a href="#section-9.4" class="section-number selfRef">9.4. </a><a href="#name-txn-token-jag-replay-preven" class="section-name selfRef">Txn-Token-JAG Replay Prevention</a>
         </h3>
-<p id="section-9.4-1">The JWT Authorization Grant is a bearer token.  AS-B <span class="bcp14">MUST</span> enforce
+<p id="section-9.4-1">The Txn-Token-JAG is a bearer token.  AS-B <span class="bcp14">MUST</span> enforce
 single-use semantics on the <code>jti</code> claim.  AS-A <span class="bcp14">SHOULD</span> set a short
 validity lifetime (see <a href="#jwt-claims-requirements" class="auto internal xref">Section 6.1.2</a>).  Additional
 guidance is provided in Section 5.5 of
@@ -2527,7 +2527,7 @@ guidance is provided in Section 5.5 of
         <h3 id="name-scope-boundary-enforcement">
 <a href="#section-9.5" class="section-number selfRef">9.5. </a><a href="#name-scope-boundary-enforcement" class="section-name selfRef">Scope Boundary Enforcement</a>
         </h3>
-<p id="section-9.5-1">AS-A <span class="bcp14">MUST</span> enforce that the JWT Authorization Grant scope does not
+<p id="section-9.5-1">AS-A <span class="bcp14">MUST</span> enforce that the Txn-Token-JAG scope does not
 exceed the Txn-Token's scope.  AS-B <span class="bcp14">MUST</span> independently enforce that
 the access token it issues does not convey scope exceeding the JWT
 Authorization Grant.  These controls together prevent the chaining
@@ -2543,12 +2543,12 @@ originating transaction's authorized scope.<a href="#section-9.5-1" class="pilcr
 <p id="section-9.6-1">Operators <span class="bcp14">MUST</span> ensure that:<a href="#section-9.6-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-9.6-2.1">
-            <p id="section-9.6-2.1.1">AS-A issues JWT Authorization Grants only for AS-B instances with
+            <p id="section-9.6-2.1.1">AS-A issues Txn-Token-JAGs only for AS-B instances with
 which a bilateral Cross-Domain Trust Agreement has been explicitly
 established and is actively maintained.<a href="#section-9.6-2.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-9.6-2.2">
-            <p id="section-9.6-2.2.1">AS-B accepts JWT Authorization Grants only from AS-A instances
+            <p id="section-9.6-2.2.1">AS-B accepts Txn-Token-JAGs only from AS-A instances
 listed in its trusted issuers configuration.<a href="#section-9.6-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-9.6-2.3">
@@ -2577,7 +2577,7 @@ persistent credential outside the control of Trust Domain A.<a href="#section-9.
         <h3 id="name-trust-across-multiple-trust">
 <a href="#section-9.8" class="section-number selfRef">9.8. </a><a href="#name-trust-across-multiple-trust" class="section-name selfRef">Trust Across Multiple Trust Domains</a>
         </h3>
-<p id="section-9.8-1">When this profile is applied recursively (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), trust remains strictly pairwise. An Authorization Server accepts a JWT Authorization Grant because it trusts the issuing Authorization Server under their Cross-Domain Trust Agreement, not because it has any relationship with Trust Domains further upstream. Because context propagation each time a Trust Domain boundary is crossed is a deployment decision (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), claims in a JWT Authorization Grant may be derived from context that the issuing Trust Domain itself received from an upstream Trust Domain.<a href="#section-9.8-1" class="pilcrow">¶</a></p>
+<p id="section-9.8-1">When this profile is applied recursively (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), trust remains strictly pairwise. An Authorization Server accepts a Txn-Token-JAG because it trusts the issuing Authorization Server under their Cross-Domain Trust Agreement, not because it has any relationship with Trust Domains further upstream. Because context propagation each time a Trust Domain boundary is crossed is a deployment decision (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), claims in a Txn-Token-JAG may be derived from context that the issuing Trust Domain itself received from an upstream Trust Domain.<a href="#section-9.8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2593,7 +2593,7 @@ human-user-initiated transactions (e.g., user identifier, email
 address, IP address) that may be subject to applicable privacy
 regulations.<a href="#section-10-1" class="pilcrow">¶</a></p>
 <p id="section-10-2">AS-A <span class="bcp14">MUST</span> apply claims minimization (<a href="#claims-transcription" class="auto internal xref">Section 7</a>)
-before issuing a JWT Authorization Grant.  Specifically:<a href="#section-10-2" class="pilcrow">¶</a></p>
+before issuing a Txn-Token-JAG.  Specifically:<a href="#section-10-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10-3.1">
           <p id="section-10-3.1.1">Only identity claims necessary for AS-B to resolve the subject and
@@ -2659,7 +2659,7 @@ in the "JSON Web Token Claims" registry (maintained by IANA):<a href="#section-1
 </li>
           <li class="normal" id="section-11.2-2.2">
             <p id="section-11.2-2.2.1">Claim Description: Transcribed claims from a Transaction Token,
-included in a JWT Authorization Grant to convey cross-domain
+included in a Txn-Token-JAG to convey cross-domain
 authorization context<a href="#section-11.2-2.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="section-11.2-2.3">
@@ -2808,7 +2808,7 @@ chain.<a href="#appendix-A.1-2" class="pilcrow">¶</a></p>
 <p id="appendix-A.1-3">To enrich the watch list entry with current market data, the
 portfolio service must call a market-data API operated by a partner
 financial data provider in Trust Domain B.  The portfolio service
-exchanges the Txn-Token for a JWT Authorization Grant using this
+exchanges the Txn-Token for a Txn-Token-JAG using this
 profile.  AS-A maps the user's enterprise identifier to a
 cross-domain user identifier agreed with the partner (e.g., the
 user's email address or a pairwise identifier), and includes a
@@ -2864,12 +2864,12 @@ URI (<code>spiffe://enterprise.example/telemetry/nightly-agg</code>), <code>scop
 set to <code>telemetry-aggregation</code>, and no user context in <code>rctx</code>.<a href="#appendix-A.3-1" class="pilcrow">¶</a></p>
 <p id="appendix-A.3-2">To complete the aggregation, the job must query a third-party
 analytics API in Trust Domain B.  The job exchanges the Txn-Token
-for a JWT Authorization Grant using this profile.  AS-A maps the
+for a Txn-Token-JAG using this profile.  AS-A maps the
 SPIFFE workload URI to a cross-domain workload identifier agreed with
 the analytics provider, and includes <code>scope: telemetry-aggregation</code>
 in <code>txn_claims</code>.<a href="#appendix-A.3-2" class="pilcrow">¶</a></p>
 <p id="appendix-A.3-3">The analytics provider's authorization server issues a scoped access
-token.  The <code>txn</code> claim in the JWT Authorization Grant allows the
+token.  The <code>txn</code> claim in the Txn-Token-JAG allows the
 analytics provider to correlate API calls to the originating job run
 for billing and audit purposes, without receiving the internal SPIFFE
 URI or other Trust Domain A infrastructure details.<a href="#appendix-A.3-3" class="pilcrow">¶</a></p>
@@ -2941,7 +2941,7 @@ This is appropriate where the application has a pre-registered
 client relationship with AS-B.  This profile does not require a
 pre-registered <code>client_id</code> at AS-B; the Requesting Workload's
 identity is conveyed through client authentication to AS-A and the
-subject mapping in the JWT Authorization Grant.<a href="#appendix-B.1-3.10.1" class="pilcrow">¶</a></p>
+subject mapping in the Txn-Token-JAG.<a href="#appendix-B.1-3.10.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="appendix-B.1-3.11">Multi-Tenancy:</dt>
@@ -2959,7 +2959,7 @@ boundaries rather than tenant partitions within a shared platform.<a href="#appe
 claim (<span>[<a href="#RFC9396" class="cite xref">RFC9396</a>]</span>) in the grant.  This profile does not currently
 define RAR integration; a future revision <span class="bcp14">MAY</span> define how
 <code>authorization_details</code> from a Txn-Token are transcribed into the
-JWT Authorization Grant.<a href="#appendix-B.1-3.14.1" class="pilcrow">¶</a></p>
+Txn-Token-JAG.<a href="#appendix-B.1-3.14.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
 <dt id="appendix-B.1-3.15">SAML 2.0 Interoperability:</dt>
