@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-22T03:30:24.188657+00:00",
+  "timestamp": "2026-10-01T04:22:53.495205+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -285,9 +285,17 @@
       "labels": [],
       "body": "Following up on our earlier discussion at IETF 126,  `tctx` may be needed by the downstream domain to continue the same workflow.\n\nCould `tctx` therefore be explicitly specified as a Txn-Token claim that MAY be included in `txn_claims`, subject to minimization and privacy policy?",
       "createdAt": "2026-08-18T13:25:58Z",
-      "updatedAt": "2026-09-09T13:13:16Z",
+      "updatedAt": "2026-09-30T12:23:40Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "PieterKas",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, I think it makes sense to be explicit about this, along with data minimisation.",
+          "createdAt": "2026-09-30T12:23:40Z",
+          "updatedAt": "2026-09-30T12:23:40Z"
+        }
+      ]
     },
     {
       "number": 20,
@@ -652,24 +660,26 @@
       "id": "PR_kwDOSYHu488AAAABEHCbig",
       "title": "Update title and terminology to Txn-Token-JAG",
       "url": "https://github.com/gffletch/tt_xdomain/pull/21",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "PieterKas",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "See issue #15 ",
       "createdAt": "2026-09-18T16:30:39Z",
-      "updatedAt": "2026-09-21T10:42:08Z",
+      "updatedAt": "2026-09-30T13:05:43Z",
       "baseRepository": "gffletch/tt_xdomain",
       "baseRefName": "main",
       "baseRefOid": "5efef9b8cd29f4e367c7eb2fb7de7ab18aa7d996",
       "headRepository": "gffletch/tt_xdomain",
       "headRefName": "PieterKas-patch-1",
       "headRefOid": "924fefd927e200816e682c33fe55895c0a1bbc07",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-09-30T13:05:42Z",
+      "mergedAt": "2026-09-30T13:05:42Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "786b93e1cc1d660e5a55ebf0350ec1b9fd6cd333"
+      },
       "comments": [],
       "reviews": [
         {
@@ -784,6 +794,19 @@
               "updatedAt": "2026-09-21T10:41:21Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABP981SQ",
+          "commit": {
+            "abbreviatedOid": "924fefd"
+          },
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-09-30T13:05:34Z",
+          "updatedAt": "2026-09-30T13:05:34Z",
+          "comments": []
         }
       ]
     }
