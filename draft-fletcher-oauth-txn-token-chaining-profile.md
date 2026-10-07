@@ -384,10 +384,9 @@ a Txn-Token from the TTS, presenting whatever inbound credential or
 context is available.  The TTS validates the inbound context and
 mints a Txn-Token that captures the Initiating Principal's identity
 (which may be a user identity, a system identity, or a workload
-identity), the purpose of the transaction (`scope`), and relevant
-request parameters (`rctx`).  The Txn-Token is propagated to all
-downstream workloads within Trust Domain A that participate in
-processing the transaction.
+identity), the purpose of the transaction (`scope`), the
+environmental context of the request (`rctx`), and the authorization
+details the TTS determined for the transaction (`tctx`).
 
 ## Cross-Domain Invocation
 
@@ -560,7 +559,6 @@ Principal type the Txn-Token represents.  AS-A MUST map the `sub`
 claim to an identifier appropriate for Trust Domain B, applying the
 mapping logic defined in the Cross-Domain Trust Agreement for the
 Initiating Principal type in question.
-
 
 ## Token Exchange Request Parameters {#token-exchange-request-parameters}
 
@@ -965,6 +963,16 @@ Requester Context (`rctx`):
   network addresses, intermediate workload identifiers, and
   internal infrastructure topology details MUST be omitted.
 
+Transaction Context (`tctx`):Transaction Context (`tctx`):
+: MAY be included in a minimized form.  Individual fields such as the
+  item being purchased, its quantity and unit price MAY be included
+  only where they are required to authorize or perform the
+  transaction in Trust Domain B.  Fields that Trust Domain B does not
+  require MUST be omitted, including other parameters of the same
+  transaction, internal authorization model artifacts such as policy
+  or entitlement identifiers, and classifications computed about the
+  Initiating Principal within Trust Domain A.
+
 Internal Call Chain:
 : Claims that record intermediate workloads or the internal call
   chain within Trust Domain A MUST NOT be included in `txn_claims`.
@@ -1041,6 +1049,10 @@ Authorization Grant.  These controls together prevent the chaining
 mechanism from being used to escalate privileges beyond the
 originating transaction's authorized scope.
 
+## Transaction Context Minimization {#tctx-minimization}
+
+AS-A is responsible for reducing the transaction context carried in a Txn-Token-JAG to the fields Trust Domain B is allowed to access ({{claims-minimization}}). Transcribing `tctx` without removing unnecessary claims risks disclosing internal detail of Trust Domain A's transaction processing, infrastructure, customer and domain specific information that is not needed for authorization or transaction processing in Trust Domain B. The specific claims that may be transcribed are deployment-specific and out of scope for this specification.
+
 ## Cross-Domain Trust Agreement Integrity
 
 Operators MUST ensure that:
@@ -1080,13 +1092,14 @@ regulations.
 AS-A MUST apply claims minimization ({{claims-transcription}})
 before issuing a Txn-Token-JAG.  Specifically:
 
-- Only identity claims necessary for AS-B to resolve the subject and
-  apply authorization policy SHOULD be included in `txn_claims`.
+- Identity claims that are not needed for AS-B to resolve the subject or apply authorization policy SHOULD NOT be included in `txn_claims`.
+
+- Transaction claims that are not needed to authorize or complete the transaction in Trust Domain B SHOULD NOT be included in `txn_claims`, since such claims may identify the Initiating Principal by correlation with information AS-B already holds, even where the subject identifier is pairwise.
 
 - Claims that could be used to reconstruct internal activity patterns
   within Trust Domain A MUST NOT be included.
 
-- The Cross-Domain Trust Agreement MUST specify which identity claims
+- The Cross-Domain Trust Agreement MUST specify which claims
   AS-A is permitted to disclose to AS-B, consistent with the data
   handling and privacy policies of both organizations.
 
@@ -1156,8 +1169,9 @@ financial data provider in Trust Domain B.  The portfolio service
 exchanges the Txn-Token for a Txn-Token-JAG using this
 profile.  AS-A maps the user's enterprise identifier to a
 cross-domain user identifier agreed with the partner (e.g., the
-user's email address or a pairwise identifier), and includes a
-minimized `txn_claims` carrying `scope: watchlist-update`.
+user's email address or a pairwise identifier), and includes a minimized `txn_claims` carrying
+`scope: watchlist-update` and the `ticker` field from `tctx`, which
+the market data provider requires in order to return a quote.
 
 The partner's authorization server issues an access token that
 identifies the user (enabling per-user rate limiting and audit
@@ -1187,7 +1201,10 @@ Authorization Grant using this profile.  AS-A maps the system
 identity to the cross-domain service identifier agreed with the spam
 service, and includes a minimized `txn_claims` carrying
 `scope: mail-delivery` and `rctx.smtp_from` (the envelope sender
-address, stripped of internal routing metadata).
+address, stripped of internal routing metadata). The Txn-Token's
+`tctx` carries the internal routing parameters the TTS determined
+for the delivery; the spam service requires none of them, and they
+are not transcribed.
 
 The spam service's authorization server issues an access token for
 the spam-rating API.  The spam service can apply per-sender and
@@ -1321,6 +1338,8 @@ Identity and Authorization Chaining Across Domains specification was
 authored by Arndt Schwenkschuster, Pieter Kasselman, Kelley Burgin,
 Michael Jenkins, Brian Campbell, and Aaron Parecki.
 
+The authors would like to thank Ni Yuan for their review and providing feedback on this specification.
+
 # Document History
 {: numbered="false"}
 \[\[ To be removed from final specification \]\]
@@ -1332,9 +1351,9 @@ Michael Jenkins, Brian Campbell, and Aaron Parecki.
   `draft-fletcher-oauth-txn-token-chaining-profile`
 * Corrected the source and issue tracker URL to the repository for
   this draft
-* Consolidated the BCP 14 requirements language into
-  {{conventions-and-definitions}}
-
+* Consolidated the BCP 14 requirements language into {{conventions-and-definitions}}
+* Made inclusion of transaction context explicit, along with needs for data minimisation, security considerations and privacy considerations (see https://github.com/gffletch/tt_xdomain/issues/18)
+  
 ## Since Draft 01
 {:numbered="false"}
 
