@@ -1353,7 +1353,6 @@ The authors would like to thank Ni Yuan for their review and providing feedback 
   this draft
 * Consolidated the BCP 14 requirements language into {{conventions-and-definitions}}
 * Made inclusion of transaction context explicit, along with needs for data minimisation, security considerations and privacy considerations (see https://github.com/gffletch/tt_xdomain/issues/18)
-  
 ## Since Draft 01
 {:numbered="false"}
 
