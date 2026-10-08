@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-04T04:31:06.748794+00:00",
+  "timestamp": "2026-10-08T04:42:35.567367+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -813,6 +813,79 @@
           "body": "",
           "createdAt": "2026-09-30T13:05:34Z",
           "updatedAt": "2026-09-30T13:05:34Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "id": "PR_kwDOSYHu488AAAABHGzuNQ",
+      "title": "Revise transaction context and claims minimization",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/22",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Updated transaction context details and claims minimization requirements in the OAuth Txn-Token Chaining Profile. See issue #18",
+      "createdAt": "2026-10-07T11:20:06Z",
+      "updatedAt": "2026-10-07T19:58:59Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "786b93e1cc1d660e5a55ebf0350ec1b9fd6cd333",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "PieterKas-patch-2",
+      "headRefOid": "6d945ec55a223bf9f8f87f75a80cd3b92d2715d2",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOSYHu488AAAABRFcY9Q",
+          "commit": {
+            "abbreviatedOid": "247acdb"
+          },
+          "author": "github-actions",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-07T11:20:40Z",
+          "updatedAt": "2026-10-07T11:20:40Z",
+          "comments": [
+            {
+              "originalPosition": 110,
+              "body": "````suggestion\n\n````",
+              "createdAt": "2026-10-07T11:20:40Z",
+              "updatedAt": "2026-10-07T11:20:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABRHkZuw",
+          "commit": {
+            "abbreviatedOid": "247acdb"
+          },
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "state": "DISMISSED",
+          "body": "",
+          "createdAt": "2026-10-07T14:22:46Z",
+          "updatedAt": "2026-10-07T15:30:15Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABRLQ45Q",
+          "commit": {
+            "abbreviatedOid": "6d945ec"
+          },
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-07T19:58:59Z",
+          "updatedAt": "2026-10-07T19:58:59Z",
           "comments": []
         }
       ]
