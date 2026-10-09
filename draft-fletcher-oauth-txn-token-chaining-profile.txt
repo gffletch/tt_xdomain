@@ -5,10 +5,10 @@
 Web Authorization Protocol                                   G. Fletcher
 Internet-Draft                                    Practical Identity LLC
 Intended status: Standards Track                            P. Kasselman
-Expires: 3 April 2027                                   Defakto Security
+Expires: 12 April 2027                                  Defakto Security
                                                                S. O'Dell
                                                               CVS Health
-                                                       30 September 2026
+                                                          9 October 2026
 
 
 Transaction Token JWT Authorization Grant Profile for OAuth Identity and
@@ -63,7 +63,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 April 2027.
+   This Internet-Draft will expire on 12 April 2027.
 
 Copyright Notice
 
@@ -118,9 +118,10 @@ Table of Contents
      9.3.  Txn-Token Confidentiality
      9.4.  Txn-Token-JAG Replay Prevention
      9.5.  Scope Boundary Enforcement
-     9.6.  Cross-Domain Trust Agreement Integrity
-     9.7.  Refresh Tokens
-     9.8.  Trust Across Multiple Trust Domains
+     9.6.  Transaction Context Minimization
+     9.7.  Cross-Domain Trust Agreement Integrity
+     9.8.  Refresh Tokens
+     9.9.  Trust Across Multiple Trust Domains
    10. Privacy Considerations
    11. IANA Considerations
      11.1.  JWT Typ Registration
@@ -344,9 +345,8 @@ Table of Contents
    context and mints a Txn-Token that captures the Initiating
    Principal's identity (which may be a user identity, a system
    identity, or a workload identity), the purpose of the transaction
-   (scope), and relevant request parameters (rctx).  The Txn-Token is
-   propagated to all downstream workloads within Trust Domain A that
-   participate in processing the transaction.
+   (scope), the environmental context of the request (rctx), and the
+   authorization details the TTS determined for the transaction (tctx).
 
 3.2.  Cross-Domain Invocation
 
@@ -901,6 +901,16 @@ Table of Contents
       workload identifiers, and internal infrastructure topology details
       MUST be omitted.
 
+   Transaction Context (tctx):Transaction Context (tctx):  MAY be
+      included in a minimized form.  Individual fields such as the item
+      being purchased, its quantity and unit price MAY be included only
+      where they are required to authorize or perform the transaction in
+      Trust Domain B.  Fields that Trust Domain B does not require MUST
+      be omitted, including other parameters of the same transaction,
+      internal authorization model artifacts such as policy or
+      entitlement identifiers, and classifications computed about the
+      Initiating Principal within Trust Domain A.
+
    Internal Call Chain:  Claims that record intermediate workloads or
       the internal call chain within Trust Domain A MUST NOT be included
       in txn_claims.
@@ -972,7 +982,18 @@ Table of Contents
    being used to escalate privileges beyond the originating
    transaction's authorized scope.
 
-9.6.  Cross-Domain Trust Agreement Integrity
+9.6.  Transaction Context Minimization
+
+   AS-A is responsible for reducing the transaction context carried in a
+   Txn-Token-JAG to the fields Trust Domain B is allowed to access
+   (Section 7.4).  Transcribing tctx without removing unnecessary claims
+   risks disclosing internal detail of Trust Domain A's transaction
+   processing, infrastructure, customer and domain specific information
+   that is not needed for authorization or transaction processing in
+   Trust Domain B.  The specific claims that may be transcribed are
+   deployment-specific and out of scope for this specification.
+
+9.7.  Cross-Domain Trust Agreement Integrity
 
    Operators MUST ensure that:
 
@@ -987,7 +1008,7 @@ Table of Contents
       mappings and permitted txn_claims, is reviewed whenever the
       participating services or their authorization policies change.
 
-9.7.  Refresh Tokens
+9.8.  Refresh Tokens
 
    AS-B SHOULD NOT issue refresh tokens.  Because Txn-Tokens are short-
    lived and transaction-specific, re-obtaining a new Txn-Token and
@@ -996,7 +1017,7 @@ Table of Contents
    originating transaction's authorization context and create a
    persistent credential outside the control of Trust Domain A.
 
-9.8.  Trust Across Multiple Trust Domains
+9.9.  Trust Across Multiple Trust Domains
 
    When this profile is applied recursively (Section 3.3), trust remains
    strictly pairwise.  An Authorization Server accepts a Txn-Token-JAG
@@ -1018,15 +1039,22 @@ Table of Contents
    AS-A MUST apply claims minimization (Section 7) before issuing a Txn-
    Token-JAG.  Specifically:
 
-   *  Only identity claims necessary for AS-B to resolve the subject and
-      apply authorization policy SHOULD be included in txn_claims.
+   *  Identity claims that are not needed for AS-B to resolve the
+      subject or apply authorization policy SHOULD NOT be included in
+      txn_claims.
+
+   *  Transaction claims that are not needed to authorize or complete
+      the transaction in Trust Domain B SHOULD NOT be included in
+      txn_claims, since such claims may identify the Initiating
+      Principal by correlation with information AS-B already holds, even
+      where the subject identifier is pairwise.
 
    *  Claims that could be used to reconstruct internal activity
       patterns within Trust Domain A MUST NOT be included.
 
-   *  The Cross-Domain Trust Agreement MUST specify which identity
-      claims AS-A is permitted to disclose to AS-B, consistent with the
-      data handling and privacy policies of both organizations.
+   *  The Cross-Domain Trust Agreement MUST specify which claims AS-A is
+      permitted to disclose to AS-B, consistent with the data handling
+      and privacy policies of both organizations.
 
    The txn claim enables end-to-end transaction correlation across the
    domain boundary.  Operators SHOULD evaluate whether the auditability
@@ -1205,7 +1233,8 @@ A.1.  User-Initiated External API Call Requiring a Partner Service
    maps the user's enterprise identifier to a cross-domain user
    identifier agreed with the partner (e.g., the user's email address or
    a pairwise identifier), and includes a minimized txn_claims carrying
-   scope: watchlist-update.
+   scope: watchlist-update and the ticker field from tctx, which the
+   market data provider requires in order to return a quote.
 
    The partner's authorization server issues an access token that
    identifies the user (enabling per-user rate limiting and audit
@@ -1235,7 +1264,9 @@ A.2.  System-Initiated Event Requiring a Partner Service
    identity to the cross-domain service identifier agreed with the spam
    service, and includes a minimized txn_claims carrying scope: mail-
    delivery and rctx.smtp_from (the envelope sender address, stripped of
-   internal routing metadata).
+   internal routing metadata).  The Txn-Token's tctx carries the
+   internal routing parameters the TTS determined for the delivery; the
+   spam service requires none of them, and they are not transcribed.
 
    The spam service's authorization server issues an access token for
    the spam-rating API.  The spam service can apply per-sender and per-
@@ -1358,6 +1389,9 @@ Acknowledgements
    authored by Arndt Schwenkschuster, Pieter Kasselman, Kelley Burgin,
    Michael Jenkins, Brian Campbell, and Aaron Parecki.
 
+   The authors would like to thank Ni Yuan for their review and
+   providing feedback on this specification.
+
 Document History
 
    [[ To be removed from final specification ]]
@@ -1372,12 +1406,17 @@ Since Draft 02
 
    *  Consolidated the BCP 14 requirements language into Section 2
 
+   *  Made inclusion of transaction context explicit, along with needs
+      for data minimisation, security considerations and privacy
+      considerations (see https://github.com/gffletch/tt_xdomain/
+      issues/18)
+
 Since Draft 01
 
    *  Added Section 3.3 describing recursive application of this profile
       across more than two Trust Domains
 
-   *  Added Section 9.8 to the Security Considerations
+   *  Added Section 9.9 to the Security Considerations
 
 Since Draft 00
 

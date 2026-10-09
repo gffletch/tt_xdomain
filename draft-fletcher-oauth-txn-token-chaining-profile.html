@@ -35,18 +35,18 @@ beyond the trust boundary.
 <meta content="draft-fletcher-oauth-txn-token-chaining-profile-latest" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.34.1
-    Python 3.14.7
-    ConfigArgParse 1.7.7
+    Python 3.14.8
+    ConfigArgParse 1.8.0
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.11.10
+    platformdirs 4.12.2
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.4
+    wcwidth 0.9.1
 -->
 <link href="draft-fletcher-oauth-txn-token-chaining-profile.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1062,11 +1062,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">Txn-Token Chaining Profile</td>
-<td class="right">September 2026</td>
+<td class="right">October 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Fletcher, et al.</td>
-<td class="center">Expires 3 April 2027</td>
+<td class="center">Expires 12 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1079,12 +1079,12 @@ svg {
 <dd class="internet-draft">draft-fletcher-oauth-txn-token-chaining-profile-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-09-30" class="published">30 September 2026</time>
+<time datetime="2026-10-09" class="published">9 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-04-03">3 April 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-12">12 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1152,7 +1152,7 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 12 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1306,13 +1306,16 @@ archived at <a href="https://mailarchive.ietf.org/arch/browse/oauth/">https://ma
                 <p id="section-toc.1-1.9.2.5.1"><a href="#section-9.5" class="auto internal xref">9.5</a>.  <a href="#name-scope-boundary-enforcement" class="internal xref">Scope Boundary Enforcement</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.6">
-                <p id="section-toc.1-1.9.2.6.1"><a href="#section-9.6" class="auto internal xref">9.6</a>.  <a href="#name-cross-domain-trust-agreemen" class="internal xref">Cross-Domain Trust Agreement Integrity</a></p>
+                <p id="section-toc.1-1.9.2.6.1"><a href="#section-9.6" class="auto internal xref">9.6</a>.  <a href="#name-transaction-context-minimiz" class="internal xref">Transaction Context Minimization</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.7">
-                <p id="section-toc.1-1.9.2.7.1"><a href="#section-9.7" class="auto internal xref">9.7</a>.  <a href="#name-refresh-tokens" class="internal xref">Refresh Tokens</a></p>
+                <p id="section-toc.1-1.9.2.7.1"><a href="#section-9.7" class="auto internal xref">9.7</a>.  <a href="#name-cross-domain-trust-agreemen" class="internal xref">Cross-Domain Trust Agreement Integrity</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.8">
-                <p id="section-toc.1-1.9.2.8.1"><a href="#section-9.8" class="auto internal xref">9.8</a>.  <a href="#name-trust-across-multiple-trust" class="internal xref">Trust Across Multiple Trust Domains</a></p>
+                <p id="section-toc.1-1.9.2.8.1"><a href="#section-9.8" class="auto internal xref">9.8</a>.  <a href="#name-refresh-tokens" class="internal xref">Refresh Tokens</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.9.2.9">
+                <p id="section-toc.1-1.9.2.9.1"><a href="#section-9.9" class="auto internal xref">9.9</a>.  <a href="#name-trust-across-multiple-trust" class="internal xref">Trust Across Multiple Trust Domains</a></p>
 </li>
             </ul>
 </li>
@@ -1635,10 +1638,9 @@ a Txn-Token from the TTS, presenting whatever inbound credential or
 context is available.  The TTS validates the inbound context and
 mints a Txn-Token that captures the Initiating Principal's identity
 (which may be a user identity, a system identity, or a workload
-identity), the purpose of the transaction (<code>scope</code>), and relevant
-request parameters (<code>rctx</code>).  The Txn-Token is propagated to all
-downstream workloads within Trust Domain A that participate in
-processing the transaction.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+identity), the purpose of the transaction (<code>scope</code>), the
+environmental context of the request (<code>rctx</code>), and the authorization
+details the TTS determined for the transaction (<code>tctx</code>).<a href="#section-3.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="cross-domain-invocation">
@@ -2428,18 +2430,30 @@ network addresses, intermediate workload identifiers, and
 internal infrastructure topology details <span class="bcp14">MUST</span> be omitted.<a href="#section-7.4-3.4.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.4-3.5">Internal Call Chain:</dt>
+<dt id="section-7.4-3.5">Transaction Context (<code>tctx</code>):Transaction Context (<code>tctx</code>):</dt>
           <dd style="margin-left: 1.5em" id="section-7.4-3.6">
-            <p id="section-7.4-3.6.1">Claims that record intermediate workloads or the internal call
-chain within Trust Domain A <span class="bcp14">MUST NOT</span> be included in <code>txn_claims</code>.<a href="#section-7.4-3.6.1" class="pilcrow">¶</a></p>
+            <p id="section-7.4-3.6.1"><span class="bcp14">MAY</span> be included in a minimized form.  Individual fields such as the
+item being purchased, its quantity and unit price <span class="bcp14">MAY</span> be included
+only where they are required to authorize or perform the
+transaction in Trust Domain B.  Fields that Trust Domain B does not
+require <span class="bcp14">MUST</span> be omitted, including other parameters of the same
+transaction, internal authorization model artifacts such as policy
+or entitlement identifiers, and classifications computed about the
+Initiating Principal within Trust Domain A.<a href="#section-7.4-3.6.1" class="pilcrow">¶</a></p>
 </dd>
           <dd class="break"></dd>
-<dt id="section-7.4-3.7">Supplementary Identity Claims:</dt>
+<dt id="section-7.4-3.7">Internal Call Chain:</dt>
           <dd style="margin-left: 1.5em" id="section-7.4-3.8">
-            <p id="section-7.4-3.8.1">For human user Initiating Principals, claims such as <code>email</code> <span class="bcp14">MAY</span>
+            <p id="section-7.4-3.8.1">Claims that record intermediate workloads or the internal call
+chain within Trust Domain A <span class="bcp14">MUST NOT</span> be included in <code>txn_claims</code>.<a href="#section-7.4-3.8.1" class="pilcrow">¶</a></p>
+</dd>
+          <dd class="break"></dd>
+<dt id="section-7.4-3.9">Supplementary Identity Claims:</dt>
+          <dd style="margin-left: 1.5em" id="section-7.4-3.10">
+            <p id="section-7.4-3.10.1">For human user Initiating Principals, claims such as <code>email</code> <span class="bcp14">MAY</span>
 be included in <code>txn_claims</code> if the Cross-Domain Trust Agreement
 explicitly permits their disclosure and AS-B requires them for
-subject resolution.<a href="#section-7.4-3.8.1" class="pilcrow">¶</a></p>
+subject resolution.<a href="#section-7.4-3.10.1" class="pilcrow">¶</a></p>
 </dd>
         <dd class="break"></dd>
 </dl>
@@ -2535,49 +2549,57 @@ mechanism from being used to escalate privileges beyond the
 originating transaction's authorized scope.<a href="#section-9.5-1" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="cross-domain-trust-agreement-integrity">
+<div id="tctx-minimization">
 <section id="section-9.6">
-        <h3 id="name-cross-domain-trust-agreemen">
-<a href="#section-9.6" class="section-number selfRef">9.6. </a><a href="#name-cross-domain-trust-agreemen" class="section-name selfRef">Cross-Domain Trust Agreement Integrity</a>
+        <h3 id="name-transaction-context-minimiz">
+<a href="#section-9.6" class="section-number selfRef">9.6. </a><a href="#name-transaction-context-minimiz" class="section-name selfRef">Transaction Context Minimization</a>
         </h3>
-<p id="section-9.6-1">Operators <span class="bcp14">MUST</span> ensure that:<a href="#section-9.6-1" class="pilcrow">¶</a></p>
+<p id="section-9.6-1">AS-A is responsible for reducing the transaction context carried in a Txn-Token-JAG to the fields Trust Domain B is allowed to access (<a href="#claims-minimization" class="auto internal xref">Section 7.4</a>). Transcribing <code>tctx</code> without removing unnecessary claims risks disclosing internal detail of Trust Domain A's transaction processing, infrastructure, customer and domain specific information that is not needed for authorization or transaction processing in Trust Domain B. The specific claims that may be transcribed are deployment-specific and out of scope for this specification.<a href="#section-9.6-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="cross-domain-trust-agreement-integrity">
+<section id="section-9.7">
+        <h3 id="name-cross-domain-trust-agreemen">
+<a href="#section-9.7" class="section-number selfRef">9.7. </a><a href="#name-cross-domain-trust-agreemen" class="section-name selfRef">Cross-Domain Trust Agreement Integrity</a>
+        </h3>
+<p id="section-9.7-1">Operators <span class="bcp14">MUST</span> ensure that:<a href="#section-9.7-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-9.6-2.1">
-            <p id="section-9.6-2.1.1">AS-A issues Txn-Token-JAGs only for AS-B instances with
+<li class="normal" id="section-9.7-2.1">
+            <p id="section-9.7-2.1.1">AS-A issues Txn-Token-JAGs only for AS-B instances with
 which a bilateral Cross-Domain Trust Agreement has been explicitly
-established and is actively maintained.<a href="#section-9.6-2.1.1" class="pilcrow">¶</a></p>
+established and is actively maintained.<a href="#section-9.7-2.1.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-9.6-2.2">
-            <p id="section-9.6-2.2.1">AS-B accepts Txn-Token-JAGs only from AS-A instances
-listed in its trusted issuers configuration.<a href="#section-9.6-2.2.1" class="pilcrow">¶</a></p>
+          <li class="normal" id="section-9.7-2.2">
+            <p id="section-9.7-2.2.1">AS-B accepts Txn-Token-JAGs only from AS-A instances
+listed in its trusted issuers configuration.<a href="#section-9.7-2.2.1" class="pilcrow">¶</a></p>
 </li>
-          <li class="normal" id="section-9.6-2.3">
-            <p id="section-9.6-2.3.1">The Cross-Domain Trust Agreement, including subject identifier
+          <li class="normal" id="section-9.7-2.3">
+            <p id="section-9.7-2.3.1">The Cross-Domain Trust Agreement, including subject identifier
 mappings and permitted <code>txn_claims</code>, is reviewed whenever the
-participating services or their authorization policies change.<a href="#section-9.6-2.3.1" class="pilcrow">¶</a></p>
+participating services or their authorization policies change.<a href="#section-9.7-2.3.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
 </div>
 <div id="refresh-tokens">
-<section id="section-9.7">
+<section id="section-9.8">
         <h3 id="name-refresh-tokens">
-<a href="#section-9.7" class="section-number selfRef">9.7. </a><a href="#name-refresh-tokens" class="section-name selfRef">Refresh Tokens</a>
+<a href="#section-9.8" class="section-number selfRef">9.8. </a><a href="#name-refresh-tokens" class="section-name selfRef">Refresh Tokens</a>
         </h3>
-<p id="section-9.7-1">AS-B <span class="bcp14">SHOULD NOT</span> issue refresh tokens.  Because Txn-Tokens are
+<p id="section-9.8-1">AS-B <span class="bcp14">SHOULD NOT</span> issue refresh tokens.  Because Txn-Tokens are
 short-lived and transaction-specific, re-obtaining a new Txn-Token
 and repeating the chaining flow is the correct renewal mechanism.
 Issuing a refresh token would decouple the access lifetime from the
 originating transaction's authorization context and create a
-persistent credential outside the control of Trust Domain A.<a href="#section-9.7-1" class="pilcrow">¶</a></p>
+persistent credential outside the control of Trust Domain A.<a href="#section-9.8-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="trust-across-multiple-trust-domains">
-<section id="section-9.8">
+<section id="section-9.9">
         <h3 id="name-trust-across-multiple-trust">
-<a href="#section-9.8" class="section-number selfRef">9.8. </a><a href="#name-trust-across-multiple-trust" class="section-name selfRef">Trust Across Multiple Trust Domains</a>
+<a href="#section-9.9" class="section-number selfRef">9.9. </a><a href="#name-trust-across-multiple-trust" class="section-name selfRef">Trust Across Multiple Trust Domains</a>
         </h3>
-<p id="section-9.8-1">When this profile is applied recursively (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), trust remains strictly pairwise. An Authorization Server accepts a Txn-Token-JAG because it trusts the issuing Authorization Server under their Cross-Domain Trust Agreement, not because it has any relationship with Trust Domains further upstream. Because context propagation each time a Trust Domain boundary is crossed is a deployment decision (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), claims in a Txn-Token-JAG may be derived from context that the issuing Trust Domain itself received from an upstream Trust Domain.<a href="#section-9.8-1" class="pilcrow">¶</a></p>
+<p id="section-9.9-1">When this profile is applied recursively (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), trust remains strictly pairwise. An Authorization Server accepts a Txn-Token-JAG because it trusts the issuing Authorization Server under their Cross-Domain Trust Agreement, not because it has any relationship with Trust Domains further upstream. Because context propagation each time a Trust Domain boundary is crossed is a deployment decision (<a href="#chaining-across-multiple-trust-domains" class="auto internal xref">Section 3.3</a>), claims in a Txn-Token-JAG may be derived from context that the issuing Trust Domain itself received from an upstream Trust Domain.<a href="#section-9.9-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2596,17 +2618,19 @@ regulations.<a href="#section-10-1" class="pilcrow">¶</a></p>
 before issuing a Txn-Token-JAG.  Specifically:<a href="#section-10-2" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-10-3.1">
-          <p id="section-10-3.1.1">Only identity claims necessary for AS-B to resolve the subject and
-apply authorization policy <span class="bcp14">SHOULD</span> be included in <code>txn_claims</code>.<a href="#section-10-3.1.1" class="pilcrow">¶</a></p>
+          <p id="section-10-3.1.1">Identity claims that are not needed for AS-B to resolve the subject or apply authorization policy <span class="bcp14">SHOULD NOT</span> be included in <code>txn_claims</code>.<a href="#section-10-3.1.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-3.2">
-          <p id="section-10-3.2.1">Claims that could be used to reconstruct internal activity patterns
-within Trust Domain A <span class="bcp14">MUST NOT</span> be included.<a href="#section-10-3.2.1" class="pilcrow">¶</a></p>
+          <p id="section-10-3.2.1">Transaction claims that are not needed to authorize or complete the transaction in Trust Domain B <span class="bcp14">SHOULD NOT</span> be included in <code>txn_claims</code>, since such claims may identify the Initiating Principal by correlation with information AS-B already holds, even where the subject identifier is pairwise.<a href="#section-10-3.2.1" class="pilcrow">¶</a></p>
 </li>
         <li class="normal" id="section-10-3.3">
-          <p id="section-10-3.3.1">The Cross-Domain Trust Agreement <span class="bcp14">MUST</span> specify which identity claims
+          <p id="section-10-3.3.1">Claims that could be used to reconstruct internal activity patterns
+within Trust Domain A <span class="bcp14">MUST NOT</span> be included.<a href="#section-10-3.3.1" class="pilcrow">¶</a></p>
+</li>
+        <li class="normal" id="section-10-3.4">
+          <p id="section-10-3.4.1">The Cross-Domain Trust Agreement <span class="bcp14">MUST</span> specify which claims
 AS-A is permitted to disclose to AS-B, consistent with the data
-handling and privacy policies of both organizations.<a href="#section-10-3.3.1" class="pilcrow">¶</a></p>
+handling and privacy policies of both organizations.<a href="#section-10-3.4.1" class="pilcrow">¶</a></p>
 </li>
       </ul>
 <p id="section-10-4">The <code>txn</code> claim enables end-to-end transaction correlation across the
@@ -2811,8 +2835,9 @@ financial data provider in Trust Domain B.  The portfolio service
 exchanges the Txn-Token for a Txn-Token-JAG using this
 profile.  AS-A maps the user's enterprise identifier to a
 cross-domain user identifier agreed with the partner (e.g., the
-user's email address or a pairwise identifier), and includes a
-minimized <code>txn_claims</code> carrying <code>scope: watchlist-update</code>.<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
+user's email address or a pairwise identifier), and includes a minimized <code>txn_claims</code> carrying
+<code>scope: watchlist-update</code> and the <code>ticker</code> field from <code>tctx</code>, which
+the market data provider requires in order to return a quote.<a href="#appendix-A.1-3" class="pilcrow">¶</a></p>
 <p id="appendix-A.1-4">The partner's authorization server issues an access token that
 identifies the user (enabling per-user rate limiting and audit
 logging at the partner) without receiving the enterprise's internal
@@ -2843,7 +2868,10 @@ Authorization Grant using this profile.  AS-A maps the system
 identity to the cross-domain service identifier agreed with the spam
 service, and includes a minimized <code>txn_claims</code> carrying
 <code>scope: mail-delivery</code> and <code>rctx.smtp_from</code> (the envelope sender
-address, stripped of internal routing metadata).<a href="#appendix-A.2-3" class="pilcrow">¶</a></p>
+address, stripped of internal routing metadata). The Txn-Token's
+<code>tctx</code> carries the internal routing parameters the TTS determined
+for the delivery; the spam service requires none of them, and they
+are not transcribed.<a href="#appendix-A.2-3" class="pilcrow">¶</a></p>
 <p id="appendix-A.2-4">The spam service's authorization server issues an access token for
 the spam-rating API.  The spam service can apply per-sender and
 per-recipient policy based on <code>txn_claims</code>, enabling personalized
@@ -3007,6 +3035,7 @@ Tulshibagwale, George Fletcher, and Pieter Kasselman.  The OAuth
 Identity and Authorization Chaining Across Domains specification was
 authored by Arndt Schwenkschuster, Pieter Kasselman, Kelley Burgin,
 Michael Jenkins, Brian Campbell, and Aaron Parecki.<a href="#appendix-C-2" class="pilcrow">¶</a></p>
+<p id="appendix-C-3">The authors would like to thank Ni Yuan for their review and providing feedback on this specification.<a href="#appendix-C-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="document-history">
@@ -3030,8 +3059,10 @@ Michael Jenkins, Brian Campbell, and Aaron Parecki.<a href="#appendix-C-2" class
 this draft<a href="#appendix-D.1-1.2.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.3">
-            <p id="appendix-D.1-1.3.1">Consolidated the BCP 14 requirements language into
-<a href="#conventions-and-definitions" class="auto internal xref">Section 2</a><a href="#appendix-D.1-1.3.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.3.1">Consolidated the BCP 14 requirements language into <a href="#conventions-and-definitions" class="auto internal xref">Section 2</a><a href="#appendix-D.1-1.3.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-D.1-1.4">
+            <p id="appendix-D.1-1.4.1">Made inclusion of transaction context explicit, along with needs for data minimisation, security considerations and privacy considerations (see https://github.com/gffletch/tt_xdomain/issues/18)<a href="#appendix-D.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>
@@ -3048,7 +3079,7 @@ recursive application of this profile across more than two Trust
 Domains<a href="#appendix-D.2-1.1.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.2-1.2">
-            <p id="appendix-D.2-1.2.1">Added <a href="#trust-across-multiple-trust-domains" class="auto internal xref">Section 9.8</a> to the Security
+            <p id="appendix-D.2-1.2.1">Added <a href="#trust-across-multiple-trust-domains" class="auto internal xref">Section 9.9</a> to the Security
 Considerations<a href="#appendix-D.2-1.2.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
