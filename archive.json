@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-08T04:42:35.567367+00:00",
+  "timestamp": "2026-10-11T04:14:44.403913+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -822,24 +822,26 @@
       "id": "PR_kwDOSYHu488AAAABHGzuNQ",
       "title": "Revise transaction context and claims minimization",
       "url": "https://github.com/gffletch/tt_xdomain/pull/22",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "PieterKas",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Updated transaction context details and claims minimization requirements in the OAuth Txn-Token Chaining Profile. See issue #18",
       "createdAt": "2026-10-07T11:20:06Z",
-      "updatedAt": "2026-10-07T19:58:59Z",
+      "updatedAt": "2026-10-09T15:59:07Z",
       "baseRepository": "gffletch/tt_xdomain",
       "baseRefName": "main",
       "baseRefOid": "786b93e1cc1d660e5a55ebf0350ec1b9fd6cd333",
       "headRepository": "gffletch/tt_xdomain",
       "headRefName": "PieterKas-patch-2",
-      "headRefOid": "6d945ec55a223bf9f8f87f75a80cd3b92d2715d2",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "3a0b4d459b9ca3bd31643f1e6432504fc4bf5507",
+      "closedAt": "2026-10-09T15:59:07Z",
+      "mergedAt": "2026-10-09T15:59:07Z",
+      "mergedBy": "gffletch",
+      "mergeCommit": {
+        "oid": "d8f1d4520977f4981cc3d394d5e2d3fa76c352bf"
+      },
       "comments": [],
       "reviews": [
         {
@@ -848,7 +850,7 @@
             "abbreviatedOid": "247acdb"
           },
           "author": "github-actions",
-          "authorAssociation": "NONE",
+          "authorAssociation": "CONTRIBUTOR",
           "state": "COMMENTED",
           "body": "",
           "createdAt": "2026-10-07T11:20:40Z",
@@ -882,10 +884,43 @@
           },
           "author": "gffletch",
           "authorAssociation": "OWNER",
-          "state": "APPROVED",
+          "state": "DISMISSED",
           "body": "",
           "createdAt": "2026-10-07T19:58:59Z",
-          "updatedAt": "2026-10-07T19:58:59Z",
+          "updatedAt": "2026-10-09T14:05:54Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABRhsS8A",
+          "commit": {
+            "abbreviatedOid": "6d945ec"
+          },
+          "author": "PieterKas",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-09T14:05:44Z",
+          "updatedAt": "2026-10-09T14:05:45Z",
+          "comments": [
+            {
+              "originalPosition": 109,
+              "body": "```suggestion\n* Consolidated the BCP 14 requirements language into {{conventions-and-definitions}}\n* Made inclusion of transaction context explicit, along with needs for data minimisation, security considerations and privacy considerations (see https://github.com/gffletch/tt_xdomain/issues/18)\n\n```",
+              "createdAt": "2026-10-09T14:05:45Z",
+              "updatedAt": "2026-10-09T14:05:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOSYHu488AAAABRi6T3g",
+          "commit": {
+            "abbreviatedOid": "3a0b4d4"
+          },
+          "author": "gffletch",
+          "authorAssociation": "OWNER",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-09T15:58:57Z",
+          "updatedAt": "2026-10-09T15:58:57Z",
           "comments": []
         }
       ]
