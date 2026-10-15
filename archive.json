@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-11T04:14:44.403913+00:00",
+  "timestamp": "2026-10-15T03:23:32.865052+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -213,15 +213,15 @@
       "id": "I_kwDOSYHu488AAAABH0FApQ",
       "title": "Explicitly name the JWT authorization grant.",
       "url": "https://github.com/gffletch/tt_xdomain/issues/15",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "PieterKas",
-      "authorAssociation": "CONTRIBUTOR",
+      "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "We need to give it a name like ID-JAG to make communications easier. something like Txn-JAG, or TX-Token-JAG.",
       "createdAt": "2026-07-06T12:56:25Z",
-      "updatedAt": "2026-07-06T12:56:25Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-14T13:03:39Z",
+      "closedAt": "2026-10-14T13:03:39Z",
       "comments": []
     },
     {
@@ -283,7 +283,7 @@
       "id": "I_kwDOSYHu488AAAABNOO5OA",
       "title": "Support tctx in txn_claims",
       "url": "https://github.com/gffletch/tt_xdomain/issues/18",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "NiYuan224",
       "authorAssociation": "NONE",
       "assignees": [
@@ -292,8 +292,8 @@
       "labels": [],
       "body": "Following up on our earlier discussion at IETF 126,  `tctx` may be needed by the downstream domain to continue the same workflow.\n\nCould `tctx` therefore be explicitly specified as a Txn-Token claim that MAY be included in `txn_claims`, subject to minimization and privacy policy?",
       "createdAt": "2026-08-18T13:25:58Z",
-      "updatedAt": "2026-09-30T12:23:40Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-14T13:04:22Z",
+      "closedAt": "2026-10-14T13:04:22Z",
       "comments": [
         {
           "author": "PieterKas",
