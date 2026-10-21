@@ -858,7 +858,7 @@ cnf:
   the confirmation method claim conveying the Requesting Workload's
   public key, as defined in {{RFC7800}}.
 
-A Txn-Token-JAG MAY contain additional claims, including registered claims not listed here and claims specific to a deployment. Claims a recipient does not understand are ignored, and their presence is not a validation failure, in accordance with Section 4 of {{RFC7519}}.
+A Txn-Token-JAG MAY contain additional claims, including registered claims not listed here and claims specific to a deployment. Claims a recipient does not understand are ignored in accordance with Section 4 of {{RFC7519}}.
 
 ### Example Txn-Token-JAG
 
