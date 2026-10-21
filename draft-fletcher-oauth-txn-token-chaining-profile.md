@@ -858,6 +858,8 @@ cnf:
   the confirmation method claim conveying the Requesting Workload's
   public key, as defined in {{RFC7800}}.
 
+A Txn-Token-JAG MAY contain additional claims, including registered claims not listed here and claims specific to a deployment. Claims a recipient does not understand are ignored, and their presence is not a validation failure, in accordance with Section 4 of {{RFC7519}}.
+
 ### Example Txn-Token-JAG
 
 The following is a non-normative example corresponding to the mail
@@ -1353,6 +1355,7 @@ The authors would like to thank Ni Yuan for their review and providing feedback 
   this draft
 * Consolidated the BCP 14 requirements language into {{conventions-and-definitions}}
 * Made inclusion of transaction context explicit, along with needs for data minimisation, security considerations and privacy considerations (see https://github.com/gffletch/tt_xdomain/issues/18)
+* Clarified that additional claims are permitted (see issue https://github.com/gffletch/tt_xdomain/issues/4)
 
 ## Since Draft 01
 {:numbered="false"}
