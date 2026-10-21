@@ -805,8 +805,8 @@ Table of Contents
 
    A Txn-Token-JAG MAY contain additional claims, including registered
    claims not listed here and claims specific to a deployment.  Claims a
-   recipient does not understand are ignored, and their presence is not
-   a validation failure, in accordance with Section 4 of [RFC7519].
+   recipient does not understand are ignored in accordance with
+   Section 4 of [RFC7519].
 
 6.1.3.  Example Txn-Token-JAG
 
