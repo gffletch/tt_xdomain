@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-15T03:23:32.865052+00:00",
+  "timestamp": "2026-10-22T03:27:56.716757+00:00",
   "repo": "gffletch/tt_xdomain",
   "labels": [
     {
@@ -200,11 +200,13 @@
       "state": "OPEN",
       "author": "gffletch",
       "authorAssociation": "OWNER",
-      "assignees": [],
+      "assignees": [
+        "gffletch"
+      ],
       "labels": [],
       "body": "Feedback from presenting the draft at the OAuth Security Workshop:\n* Describing the processing rules for allowing the transaction token to be a subject_token is sufficient\n* Descriptions of cross-domain trust agreements is probably at the incorrect layer and should really be part of the base identity chaining draft\n* Descriptions of different types of principals in transaction tokens probably should live in the transaction token specification",
       "createdAt": "2026-05-30T10:51:32Z",
-      "updatedAt": "2026-05-30T10:51:32Z",
+      "updatedAt": "2026-10-21T12:55:02Z",
       "closedAt": null,
       "comments": []
     },
@@ -316,9 +318,24 @@
       "labels": [],
       "body": "\nCounterpart issue on the other composition draft, now filed: NiYuan224/draft-liu-oauth-cross-domain-txn-token#3\n\nReading draft-fletcher-oauth-txn-token-chaining-profile-00. One observation on claims transcription, plus proposed text. I might be misreading the interaction between \u00a77.2, \u00a77.4 and Appendix B.1 \u2014 if the intent is already that fine-grained constraints are redaction-only, this reduces to making that explicit.\nObservation\nThe profile's narrowing rules govern the coarse scope-string channel. \u00a77.2 requires the grant's scope to be the intersection of the Txn-Token's scope and the requested scope, and \u00a79.5 has AS-A and AS-B each enforce non-expansion of scope. \u00a77.1 makes sub and txn mandatory transcriptions.\n\u00a77.4 then enumerates what txn_claims may carry: scope SHOULD be included where meaningful to AS-B, rctx MAY be included in minimized form, internal call-chain claims MUST NOT appear, and supplementary identity claims MAY appear where the Cross-Domain Trust Agreement permits.\ntctx is not mentioned anywhere in \u00a77. This matters because tctx is where the base specification puts the authorization details that the TTS determines for the transaction \u2014 the fields asserted as immutable through the Call Chain \u2014 as distinct from rctx, which carries environmental values about the request. So the claim class that expresses what operation was authorized has no transcription rule in this profile, while the claim class expressing where the request came from does.\nTwo consequences:\n\t1.\tA conformant AS-A may issue a JAG whose txn_claims omits tctx entirely. \u00a77.2 and \u00a79.5 are satisfied because scope is unchanged. AS-B issues an access token per \u00a75.2(7) constrained by scope and resource, neither of which expresses the specific operation. The Protected Resource cannot reconstruct the authorized operation from any normative artifact in this profile.\n\t2.\tWhere tctx is carried, nothing in \u00a77 constrains its values, so a conformant AS-A may forward altered ones.\nA worked example of the second case appears in a second composition draft: draft-liu-oauth-cross-domain-txn-token-00 \u00a74.1.1.2 permits the transcribing AS to add, remove or change the workflow-related claims, and its \u00a74.3 protects txn and evolves req_wl but sets no rule for tctx values. Its Figure 4 carries tctx = {action: BUY, ticker: MSFT, quantity: 100} with scope: trade.stocks; scope is unchanged across every figure in that draft while the quantity is free to move. I have opened a corresponding issue there.\nThis is a spec-text observation about composed mechanisms, not a claim about any implementation or deployment, and not a claim that the base specifications are defective.\nWhy here rather than the base spec\noauth-wg/oauth-transaction-tokens#118 was closed without defining a mechanism for including a RAR object in a Txn-Token, and the WG position as I understand it is that rctx and tctx contents are deployment-defined within a trust domain. That position is coherent inside one trust domain. This profile is the document where a Txn-Token's context crosses out of it, so it seems the right place for a transcription rule. Appendix B.1 already reserves RAR authorization_details transcription as future work; this issue is a request to bring that forward, and to cover the non-RAR case too, since a tctx carrying plain claims raises the same question.\nProposed changes\n\t1.\tNew \u00a77.5, Transaction Context Transcription:\n\t\u2022\tWhere the Txn-Token's tctx carries claims that constrain the operation being authorized (including an RFC 9396 authorization_details object), AS-A MUST transcribe them into txn_claims when the Protected Resource's authorization decision depends on them.\n\t\u2022\tAS-A MUST NOT alter the value of any such claim it forwards. Omission under \u00a77.4 minimization is the only permitted transformation.\n\t\u2022\tAS-A MUST NOT introduce claims into txn_claims asserting authority broader than the Txn-Token asserts.\n\t\u2022\tWhere a constraint cannot be forwarded under the Cross-Domain Trust Agreement, AS-A SHOULD deny the Token Exchange request rather than issue a grant without it.\n\t\u2022\tWhere such claims are present, AS-B MUST constrain the issued access token by them, or deny.\n\t2.\t\u00a77.4 \u2014 add tctx to the enumerated list, cross-referencing \u00a77.5, so the omission is not read as silence.\n\t3.\t\u00a79.5 \u2014 extend Scope Boundary Enforcement to note that scope non-expansion does not by itself prevent the authorized operation from changing, since the two travel in different channels.\n\t4.\tAppendix B.1 \u2014 once \u00a77.5 exists, the RAR line can point to it.\nRelated\n\t\u2022\t#18 proposes tctx MAY appear in txn_claims. That is permission to carry; this issue concerns what may happen to the values once carried, and what happens when they are absent. The two fit together \u2014 #18 opens the channel, \u00a77.5 would constrain it.\nI have negative conformance vectors covering the issuance, token-exchange and cross-domain transitions, and would be glad to contribute \u00a77.5 text or test cases if useful.",
       "createdAt": "2026-09-18T06:23:26Z",
-      "updatedAt": "2026-09-18T06:41:54Z",
+      "updatedAt": "2026-10-21T13:54:06Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "PieterKas",
+          "authorAssociation": "COLLABORATOR",
+          "body": "tctx is now covered in the editor\u2019s copy. \u00a77.4 has a transaction context entry in the claims minimization list, and there is a new security considerations subsection on transaction context minimization. That addresses the enumeration part of point 2, and #18 along with it.\n\nOn point 1, the profile does not require AS-A to transcribe tctx, and that is deliberate. Which fields cross the boundary is set by the Cross-Domain Trust Agreement between the two organisations. \u00a77.4 constrains the direction that matters \u2014 fields Trust Domain B does not need are omitted \u2014 but it does not oblige AS-A to forward the rest, because a profile is not the right place to override a bilateral agreement it is not party to. The draft states that the specific claims are deployment-specific and out of scope for the specification.\n\nOn point 2, we do not intend to require that forwarded tctx values be unchanged, and we think that requirement would be wrong rather than merely difficult to enforce.\n\nThe profile is recursive (\u00a73.3). Where a chain continues past Trust Domain B, B\u2019s own TTS mints a new Txn-Token for B\u2019s internal call chain, and that token\u2019s tctx is determined by B\u2019s TTS from B\u2019s authorization model. Freezing values across the boundary would make Trust Domain A\u2019s internal authorization vocabulary normative inside Trust Domain B, which contradicts the base specification\u2019s scoping of Txn-Tokens to a single trust domain. The base specification also allows tctx contents to be computed internally or derived from parameters the TTS receives, so a receiving domain that amends or further redacts context is operating within the model.\n\nRedaction is itself a change of value. \u00a77.4 already requires minimization, and the example in Appendix A.2 strips internal routing metadata from a forwarded value. A rule permitting omission but not alteration needs a usable line between dropping a field and narrowing one, and we do not think one exists.",
+          "createdAt": "2026-10-21T12:00:22Z",
+          "updatedAt": "2026-10-21T12:00:22Z"
+        },
+        {
+          "author": "arjun2075",
+          "authorAssociation": "NONE",
+          "body": "Thanks, Pieter. I appreciate the detailed explanation and the updates to \u00a77.4 and the Transaction Context Minimization security subsection.\n\nI agree with the architectural distinction. Each trust domain has its own authorization model, and the receiving TTS must remain free to derive its local tctx. Mandatory forwarding or requiring unchanged values across domains would be too restrictive. I would not pursue those requirements further.\n\nAfter reviewing the updated source, I have one narrower question about authorization failure behavior.\n\n\u00a77.4 already recommends that the Cross-Domain Trust Agreement define permitted txn_claims and their expected semantics. What seems worth clarifying is how the receiving domain handles missing or unmappable context when its own authorization policy depends on that information.\n\nFor example, suppose Domain B\u2019s authorization policy requires a mapped max_quantity constraint. If the corresponding context is omitted or cannot be translated, the absence of that constraint should not silently result in an unrestricted authorization decision.\n\nThis does not mean Domain B must adopt Domain A\u2019s authorization semantics. Domain B remains free to derive its own context and authorize independently under its local policy. The concern arises only when information that Domain B actually requires to evaluate that policy is unavailable.\n\nWould a short addition to the security considerations be appropriate?\n\nWhere a receiving domain\u2019s authorization policy relies on transaction-context claims obtained through cross-domain exchange, the Cross-Domain Trust Agreement should specify the expected claim semantics and the handling of omitted, redacted, or unmappable information. Implementations should not interpret missing information as satisfying an authorization condition that requires that information. If the required condition cannot be established, the affected authorization request should be denied unless independently sufficient authorization can be established under the receiving domain\u2019s own policy.\n\nI think this complements the existing minimization guidance without imposing a shared authorization vocabulary, mandatory claim forwarding, or value immutability across trust domains.\n\nHappy to provide a focused positive/negative example if that would help.",
+          "createdAt": "2026-10-21T13:54:05Z",
+          "updatedAt": "2026-10-21T13:54:05Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -924,6 +941,58 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 23,
+      "id": "PR_kwDOSYHu488AAAABJx9v3g",
+      "title": "Clarify allowance of additional claims in Txn-Token-JAG",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/23",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Clarified that additional claims are permitted in Txn-Token-JAG. See issue #4",
+      "createdAt": "2026-10-21T12:12:33Z",
+      "updatedAt": "2026-10-21T12:15:07Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "d8f1d4520977f4981cc3d394d5e2d3fa76c352bf",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "PieterKas-patch-3",
+      "headRefOid": "3ee7389b2a86b765383cccfa405b658ce9d45604",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 24,
+      "id": "PR_kwDOSYHu488AAAABJyKgww",
+      "title": "Update draft to include AIMS draft reference",
+      "url": "https://github.com/gffletch/tt_xdomain/pull/24",
+      "state": "OPEN",
+      "author": "PieterKas",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Added reference to the AIMS draft that depends on this specification. See issue #6 ",
+      "createdAt": "2026-10-21T12:29:18Z",
+      "updatedAt": "2026-10-21T12:29:20Z",
+      "baseRepository": "gffletch/tt_xdomain",
+      "baseRefName": "main",
+      "baseRefOid": "d8f1d4520977f4981cc3d394d5e2d3fa76c352bf",
+      "headRepository": "gffletch/tt_xdomain",
+      "headRefName": "PieterKas-patch-4",
+      "headRefOid": "e6ede5e491b97465e0340665f61a139eee7d5cc6",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
