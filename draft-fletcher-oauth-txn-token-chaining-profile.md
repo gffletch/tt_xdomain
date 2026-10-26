@@ -144,6 +144,7 @@ informative:
     date: 2026
     seriesinfo:
       Internet-Draft: draft-ietf-oauth-identity-assertion-authz-grant-03
+  I-D.ietf-wimse-aims:
 
 --- abstract
 
@@ -164,6 +165,8 @@ Grant that carries the necessary context across a trust boundary,
 enabling an access token to be issued for a partner service,
 without exposing internal trust-domain credentials or token formats
 beyond the trust boundary.
+
+Agentic systems are one class of deployment that depends on this capability. The AI Identity Management System {{I-D.ietf-wimse-aims}} describes AI agents as workloads that use Transaction Tokens to carry authorization context between the services implementing a task, and that frequently need to reach resources protected by an authorization server in another trust domain. Its treatment of cross-domain access directs such an agent to use {{I-D.ietf-oauth-identity-chaining}} or a profile of it as defined in this document.
 
 --- note_Note_to_Readers
 
@@ -1355,6 +1358,7 @@ The authors would like to thank Ni Yuan for their review and providing feedback 
   this draft
 * Consolidated the BCP 14 requirements language into {{conventions-and-definitions}}
 * Made inclusion of transaction context explicit, along with needs for data minimisation, security considerations and privacy considerations (see https://github.com/gffletch/tt_xdomain/issues/18)
+* Refer to the AIMS draft, which depends on this specification (see https://github.com/gffletch/tt_xdomain/issues/6).
 * Clarified that additional claims are permitted (see issue https://github.com/gffletch/tt_xdomain/issues/4)
 
 ## Since Draft 01
