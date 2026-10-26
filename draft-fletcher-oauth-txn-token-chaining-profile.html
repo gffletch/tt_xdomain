@@ -25,6 +25,7 @@ Grant that carries the necessary context across a trust boundary,
 enabling an access token to be issued for a partner service,
 without exposing internal trust-domain credentials or token formats
 beyond the trust boundary. 
+       Agentic systems are one class of deployment that depends on this capability. The AI Identity Management System   describes AI agents as workloads that use Transaction Tokens to carry authorization context between the services implementing a task, and that frequently need to reach resources protected by an authorization server in another trust domain. Its treatment of cross-domain access directs such an agent to use   or a profile of it as defined in this document. 
     " name="description">
 <meta content="xml2rfc 3.34.1" name="generator">
 <meta content="oauth" name="keyword">
@@ -1121,6 +1122,7 @@ Grant that carries the necessary context across a trust boundary,
 enabling an access token to be issued for a partner service,
 without exposing internal trust-domain credentials or token formats
 beyond the trust boundary.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-3">Agentic systems are one class of deployment that depends on this capability. The AI Identity Management System <span>[<a href="#I-D.ietf-wimse-aims" class="cite xref">I-D.ietf-wimse-aims</a>]</span> describes AI agents as workloads that use Transaction Tokens to carry authorization context between the services implementing a task, and that frequently need to reach resources protected by an authorization server in another trust domain. Its treatment of cross-domain access directs such an agent to use <span>[<a href="#I-D.ietf-oauth-identity-chaining" class="cite xref">I-D.ietf-oauth-identity-chaining</a>]</span> or a profile of it as defined in this document.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
 </section>
 <section class="note" id="section-note.1">
       <h2 id="name-note-to-readers">
@@ -2783,6 +2785,10 @@ document<a href="#section-11.2-2.4.1" class="pilcrow">¶</a></p>
         <dd>
 <span class="refAuthor">Parecki, A.</span>, <span class="refAuthor">McGuinness, K.</span>, and <span class="refAuthor">B. Campbell</span>, <span class="refTitle">"Identity Assertion JWT Authorization Grant"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-oauth-identity-assertion-authz-grant-03</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/">https://datatracker.ietf.org/doc/draft-ietf-oauth-identity-assertion-authz-grant/</a>&gt;</span>. </dd>
 <dd class="break"></dd>
+<dt id="I-D.ietf-wimse-aims">[I-D.ietf-wimse-aims]</dt>
+        <dd>
+<span class="refAuthor">Kasselman, P.</span>, <span class="refAuthor">Lombardo, J.</span>, <span class="refAuthor">Rosomakho, Y.</span>, <span class="refAuthor">Campbell, B.</span>, <span class="refAuthor">Steele, N.</span>, and <span class="refAuthor">A. Parecki</span>, <span class="refTitle">"AI Identity Management System"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-wimse-aims-00</span>, <time datetime="2026-09-15" class="refDate">15 September 2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/html/draft-ietf-wimse-aims-00">https://datatracker.ietf.org/doc/html/draft-ietf-wimse-aims-00</a>&gt;</span>. </dd>
+<dd class="break"></dd>
 <dt id="I-D.ietf-wimse-arch">[I-D.ietf-wimse-arch]</dt>
         <dd>
 <span class="refAuthor">Salowey, J.</span>, <span class="refAuthor">Rosomakho, Y.</span>, and <span class="refAuthor">H. Tschofenig</span>, <span class="refTitle">"Workload Identity in a Multi System Environment (WIMSE) Architecture"</span>, <span class="refContent">Work in Progress</span>, <span class="seriesInfo">Internet-Draft, draft-ietf-wimse-arch-07</span>, <time datetime="2026" class="refDate">2026</time>, <span>&lt;<a href="https://datatracker.ietf.org/doc/draft-ietf-wimse-arch/">https://datatracker.ietf.org/doc/draft-ietf-wimse-arch/</a>&gt;</span>. </dd>
@@ -3066,7 +3072,10 @@ this draft<a href="#appendix-D.1-1.2.1" class="pilcrow">¶</a></p>
             <p id="appendix-D.1-1.4.1">Made inclusion of transaction context explicit, along with needs for data minimisation, security considerations and privacy considerations (see https://github.com/gffletch/tt_xdomain/issues/18)<a href="#appendix-D.1-1.4.1" class="pilcrow">¶</a></p>
 </li>
           <li class="normal" id="appendix-D.1-1.5">
-            <p id="appendix-D.1-1.5.1">Clarified that additional claims are permitted (see issue https://github.com/gffletch/tt_xdomain/issues/4)<a href="#appendix-D.1-1.5.1" class="pilcrow">¶</a></p>
+            <p id="appendix-D.1-1.5.1">Refer to the AIMS draft, which depends on this specification (see https://github.com/gffletch/tt_xdomain/issues/6).<a href="#appendix-D.1-1.5.1" class="pilcrow">¶</a></p>
+</li>
+          <li class="normal" id="appendix-D.1-1.6">
+            <p id="appendix-D.1-1.6.1">Clarified that additional claims are permitted (see issue https://github.com/gffletch/tt_xdomain/issues/4)<a href="#appendix-D.1-1.6.1" class="pilcrow">¶</a></p>
 </li>
         </ul>
 </section>

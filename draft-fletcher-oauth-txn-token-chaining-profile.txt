@@ -35,6 +35,15 @@ Abstract
    exposing internal trust-domain credentials or token formats beyond
    the trust boundary.
 
+   Agentic systems are one class of deployment that depends on this
+   capability.  The AI Identity Management System [I-D.ietf-wimse-aims]
+   describes AI agents as workloads that use Transaction Tokens to carry
+   authorization context between the services implementing a task, and
+   that frequently need to reach resources protected by an authorization
+   server in another trust domain.  Its treatment of cross-domain access
+   directs such an agent to use [I-D.ietf-oauth-identity-chaining] or a
+   profile of it as defined in this document.
+
 Note to Readers
 
    _RFC EDITOR: please remove this section before publication_
@@ -1187,6 +1196,14 @@ Table of Contents
               grant-03, 2026, <https://datatracker.ietf.org/doc/draft-
               ietf-oauth-identity-assertion-authz-grant/>.
 
+   [I-D.ietf-wimse-aims]
+              Kasselman, P., Lombardo, J., Rosomakho, Y., Campbell, B.,
+              Steele, N., and A. Parecki, "AI Identity Management
+              System", Work in Progress, Internet-Draft, draft-ietf-
+              wimse-aims-00, 15 September 2026,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-wimse-
+              aims-00>.
+
    [I-D.ietf-wimse-arch]
               Salowey, J., Rosomakho, Y., and H. Tschofenig, "Workload
               Identity in a Multi System Environment (WIMSE)
@@ -1415,6 +1432,9 @@ Since Draft 02
       for data minimisation, security considerations and privacy
       considerations (see https://github.com/gffletch/tt_xdomain/
       issues/18)
+
+   *  Refer to the AIMS draft, which depends on this specification (see
+      https://github.com/gffletch/tt_xdomain/issues/6).
 
    *  Clarified that additional claims are permitted (see issue
       https://github.com/gffletch/tt_xdomain/issues/4)
