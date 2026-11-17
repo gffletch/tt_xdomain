@@ -41,38 +41,35 @@ decision, which reversed the project's original position.
 ### Version Numbering Restarts at the Rename
 
 **A new document name is a new Datatracker document, so version
-numbering restarts at -00.**  Versions -00, -01, and -02 were
+numbering restarted at -00.**  Versions -00, -01, and -02 were
 submitted under the original name
-`draft-fletcher-transaction-token-chaining-profile`.  The next
-submission is **-00 under
-`draft-fletcher-oauth-txn-token-chaining-profile`**, linked back to
-its predecessor by a Replaces relationship rather than by continuing
-the version sequence.  The intermediate name
+`draft-fletcher-transaction-token-chaining-profile`.  Under the
+current name, -00 was published on 2026-09-10 and -01 on 2026-10-26;
+the next submission is **-02**.  The new -00 is linked back to its
+predecessor by a Replaces relationship rather than by continuing the
+version sequence.  The intermediate name
 `draft-fletcher-oauth-transaction-token-chaining-profile` was never
 published and must not appear in any release tag.
 
 Two consequences to keep in mind:
 
 - **Release tags.**  A release tag is the document name plus the
-  two-digit version, so the next tag is
-  `draft-fletcher-oauth-txn-token-chaining-profile-00`.  The tags for
-  -00 through -02 remain under the old name; that is correct and they
-  should not be renamed or recreated.  Note that this means two
-  distinct tags end in `-00`.
+  two-digit version (e.g.
+  `draft-fletcher-oauth-txn-token-chaining-profile-01`).  The tags for
+  -00 through -02 under the old name remain; that is correct and they
+  should not be renamed or recreated.  Two distinct tags end in `-00`,
+  and two end in `-01`.
 
-- **The Replaces relationship is set automatically, and the chain has
-  been verified.**  `replaces()` in `lib/upload.mk` fires only when the
-  tag ends in `-00`, which this one does.  It walks the
-  `git log --follow` rename chain and picks the first previous name
-  that has a release tag in the repo.  That chain is
+- **The Replaces relationship was set automatically.**  `replaces()`
+  in `lib/upload.mk` fires only when the tag ends in `-00`.  It walks
+  the `git log --follow` rename chain and picks the first previous
+  name that has a release tag in the repo.  That chain is
   `...-oauth-txn-token-...` → `...-oauth-transaction-token-...` →
   `...-transaction-token-...`; the middle name carries no tag, so it is
   skipped and the relationship resolves to
-  `draft-fletcher-transaction-token-chaining-profile`.  This is
-  correct.  Do not create a tag under the intermediate name — doing so
-  would hijack the relationship, which is exactly what a stale tag from
-  the failed August release did before it was deleted.  The value is
-  editable on the Datatracker document page if it ever does go wrong.
+  `draft-fletcher-transaction-token-chaining-profile`.  Do not create a
+  tag under the intermediate name.  The value is editable on the
+  Datatracker document page if it ever needs correcting.
 
 ### Document History Conventions
 
@@ -98,10 +95,11 @@ a bare version number is therefore unsafe on its own.
 
 **Pending:** the Document History section has not yet been restructured
 for this.  Its `Since Draft 00` / `01` / `02` headings still carry bare
-numbers referring to the pre-rename document.  The section is to be
-hand-edited once the new name is published, to identify which document
-those entries belong to and to qualify headings by name so the two
-sequences do not collide.
+numbers referring to the pre-rename document, and the new-name -01 was
+published with its own changes listed under `Since Draft 02`.  The
+section is to be hand-edited by the author before the next submission,
+to identify which document each entry belongs to and to qualify
+headings by name so the two sequences do not collide.
 
 ---
 
@@ -114,8 +112,20 @@ This is a profile of:
 
 ...that specifies how to use a **Transaction Token (Txn-Token)**
 (`draft-ietf-oauth-transaction-tokens`) as the `subject_token` in a
-Token Exchange (RFC 8693) request to obtain a JWT Authorization Grant
-for crossing a trust domain boundary.
+Token Exchange (RFC 8693) request to obtain a **Transaction Token JWT
+Authorization Grant (Txn-Token-JAG)** for crossing a trust domain
+boundary.
+
+### Terminology: Txn-Token-JAG
+
+The grant this profile defines is called the **Txn-Token-JAG**
+(introduced in PR #21, September 2026, together with the title change
+to "Transaction Token JWT Authorization Grant Profile ...").  The name
+parallels the ID-JAG of the sibling profile and gives the artifact a
+short, unambiguous label distinct from the generic "JWT Authorization
+Grant" of the base identity-chaining draft.  Use "Txn-Token-JAG" when
+referring to this profile's grant; use "JWT Authorization Grant" only
+for the base-spec concept.
 
 The profile is analogous in structure to:
 
@@ -143,11 +153,10 @@ carries internal context and is not meaningful outside its trust
 domain.
 
 This profile defines how the workload exchanges its Txn-Token at
-**AS-A** (its own trust domain's authorization server) for a **JWT
-Authorization Grant** that AS-A has curated specifically for
-**AS-B** (the partner's authorization server).  Only the JWT
-Authorization Grant crosses the trust boundary; the Txn-Token stays
-inside Trust Domain A.
+**AS-A** (its own trust domain's authorization server) for a
+**Txn-Token-JAG** that AS-A has curated specifically for **AS-B** (the
+partner's authorization server).  Only the Txn-Token-JAG crosses the
+trust boundary; the Txn-Token stays inside Trust Domain A.
 
 ### The Canonical Example (use this when explaining the draft)
 
@@ -161,25 +170,32 @@ transaction.  Before storing the message, it must call a partner
 - Protected Resource: `https://api.spamsvc.example/spam-rating`
 - Scope: `spam.rating.read`
 
-This example appears in the Token Exchange request example, the JWT
-Authorization Grant example, and Use Case B in the appendix.  It was
-chosen deliberately because it is a **system-initiated** transaction
-(no OAuth client at the SMTP server), which is the most distinctive
-of the three principal types and the hardest to address with ID-JAG.
+This example appears in the Token Exchange request example, the
+Txn-Token-JAG example, and the System-Initiated use case in the
+appendix.  It was chosen deliberately because it is a
+**system-initiated** transaction (no OAuth client at the SMTP server),
+which is the most distinctive of the common principal types and the
+hardest to address with ID-JAG.
 
-### The Three Initiating Principal Types
+### Initiating Principal Types (Common Examples, Not a Closed Set)
 
-A Txn-Token may represent any of three originating contexts, and
-this profile explicitly handles all three:
+A Txn-Token may represent many originating contexts.  The draft uses
+three common examples throughout; they are illustrative, and the
+Txn-Token spec may define others.  The profile's rules (subject
+mapping, claims transcription) apply regardless of type.
 
 | Type | `sub` example | Txn-Token characteristics |
 |---|---|---|
 | Human user | External OAuth access token → user identity | `rctx` carries client ID, IP |
-| Internal system | SMTP server, messaging gateway | `purp` is primary context carrier |
+| Internal system | SMTP server, messaging gateway | `scope` is primary context carrier |
 | Automated workload | Scheduled job, pipeline | May use SPIFFE URI as `sub` |
 
 The ID-JAG profile handles only the human user type.  This is a key
 differentiator and must be preserved in the Introduction.
+
+Note: earlier drafts used `purp` for the transaction purpose.  The
+Txn-Token spec carries this in `scope`, and the draft was aligned in
+the -01 (old name) cycle.  Use `scope`, not `purp`.
 
 ---
 
@@ -221,15 +237,17 @@ The ID-JAG profile uses `oauth-id-jag+jwt`; this profile uses
 ### 3. New `txn_claims` JWT Claim
 
 **Decision:** Introduce a new claim `txn_claims` (JSON object) in
-the JWT Authorization Grant to carry a curated subset of Txn-Token
-context across the domain boundary.
+the Txn-Token-JAG to carry a curated subset of Txn-Token context
+across the domain boundary.
 
 **Rationale:** The Txn-Token must not be forwarded externally.  But
 AS-B may need some transaction context to apply authorization policy
-(e.g., `purp` to distinguish a `mail-delivery` request from a
+(e.g., `scope` to distinguish a `mail-delivery` request from a
 `spam-report` request; a redacted `rctx` to carry the SMTP envelope
-sender for per-sender policy).  `txn_claims` provides a structured,
-policy-controlled envelope for this.
+sender for per-sender policy; selected `tctx` fields such as a ticker
+symbol the partner needs to fulfil the request).  `txn_claims`
+provides a structured, policy-controlled envelope for this.  See
+Decision #11 for the `tctx` minimization rules.
 
 **Requires IANA registration** of the `txn_claims` JWT claim name.
 
@@ -237,11 +255,11 @@ policy-controlled envelope for this.
 which claims may appear in `txn_claims` and their semantics.  AS-A
 and AS-B must have a shared normative understanding.
 
-### 4. `txn` Claim in the JWT Authorization Grant
+### 4. `txn` Claim in the Txn-Token-JAG
 
 **Decision:** The `txn` claim from the Txn-Token SHOULD be
-transcribed into the JWT Authorization Grant as a SHOULD-level
-requirement.
+transcribed into the Txn-Token-JAG.  (The draft currently states this
+inconsistently — see OQ-9.)
 
 **Rationale:** This preserves end-to-end transaction correlation
 across the trust boundary, which is critical for audit and
@@ -253,15 +271,14 @@ the Privacy Considerations section.
 
 **Decision:** Promoted from SHOULD to MUST for AS-B.
 
-**Rationale:** JWT Authorization Grants are short-lived bearer tokens.
+**Rationale:** Txn-Token-JAGs are short-lived bearer tokens.
 Replay is a real attack vector.  AS-B MUST track presented `jti`
 values within the grant's validity window.  AS-A SHOULD set lifetimes
 of ≤60 seconds (≤300 seconds as an outer bound).
 
-### 6. `client_id` Not Required in the JWT Authorization Grant
+### 6. `client_id` Not Required in the Txn-Token-JAG
 
-**Decision:** No `client_id` claim in this profile's JWT
-Authorization Grant.
+**Decision:** No `client_id` claim in this profile's Txn-Token-JAG.
 
 **Rationale:** The ID-JAG profile requires `client_id` because the
 client (the wiki app) has a pre-registered relationship with AS-B
@@ -301,21 +318,19 @@ short-lived, transaction-scoped design.
 ### 9. Sender Constraining
 
 **Decision:** AS-B SHOULD issue sender-constrained access tokens
-(DPoP or mTLS).  The `cnf` claim in the JWT Authorization Grant
-conveys the Requesting Workload's key to AS-B.
+(DPoP or mTLS).  The `cnf` claim in the Txn-Token-JAG conveys the
+Requesting Workload's key to AS-B.
 
 **Rationale:** Follows Appendix B.3 of the base identity-chaining
 draft (the authorization-server-as-client topology).  AS-A must
 verify proof of possession of the Requesting Workload's public key
 before embedding it in the grant.
 
----
-
 ### 10. Symmetric Domain Isolation — No Grant-to-Foreign-TTS / No Downstream Txn-Token Re-Minting
 
 **Decision:** This profile deliberately stops at obtaining an access token so
 the Requesting Workload can call a partner Protected Resource.  It does NOT
-present the JWT Authorization Grant to Trust Domain B's Transaction Token
+present the Txn-Token-JAG to Trust Domain B's Transaction Token
 Service, and it does NOT define a mechanism for AS-A's grant to cause a native
 Txn-Token to be minted in Trust Domain B.
 
@@ -334,6 +349,66 @@ isolation on both sides: no Domain-A-held credential ever reaches Domain B's
 TTS.  The full comparison and WG review text are kept as a local working note
 in `reviews/draft-liu-review-response.md` (git-ignored, not distributed).
 
+Domain B *may* still mint its own Txn-Token for the inbound call — but from the
+access token, at its own perimeter, by its own policy (see Decision #12).
+
+### 11. `tctx` May Cross Only in Minimized Form
+
+**Decision:** `tctx` MAY be transcribed into `txn_claims`, but only the
+individual fields Trust Domain B needs to authorize or perform the
+transaction.  Other parameters of the same transaction, internal
+authorization-model artifacts (policy/entitlement identifiers), and
+classifications computed about the Initiating Principal MUST be omitted.  A
+dedicated Security Considerations subsection (Transaction Context
+Minimization) and a Privacy Considerations bullet cover the disclosure and
+correlation risks.
+
+**Rationale:** Some partner calls cannot be completed without transaction
+parameters (e.g., the market-data provider needs the ticker).  But `tctx` is
+the claim most likely to expose Trust Domain A's internal processing and
+customer data, and even with a pairwise `sub`, transaction details can
+re-identify the principal by correlation with data AS-B already holds.  Which
+fields may be transcribed is deployment-specific and left to the Cross-Domain
+Trust Agreement.  (Issue #18, PR #22, October 2026.)
+
+### 12. Recursive Chaining with Pairwise Trust
+
+**Decision:** Trust Domain A / B are roles, not positions.  The profile MAY
+be applied recursively: Domain B's perimeter MAY exchange the inbound access
+token for its own Txn-Token, and a workload in Domain B then applies this
+profile unchanged toward Domain C.  Each crossing is self-contained and
+governed only by the Cross-Domain Trust Agreement between the two domains
+directly involved.  Whether `txn` is carried forward across further hops is a
+deployment decision; deployments wanting end-to-end correlation SHOULD specify
+it in their agreements, and deployments wanting to limit linkability SHOULD
+use independent transaction identifiers per domain.
+
+**Rationale:** Keeps trust strictly pairwise — no AS needs a relationship
+with domains further upstream — and is consistent with Decision #10: no
+Txn-Token ever leaves its domain at any hop.  The Security Considerations note
+that claims in a Txn-Token-JAG may derive from context the issuer itself
+received from upstream.  (Added August 2026.)
+
+### 13. Additional Claims Permitted in the Txn-Token-JAG
+
+**Decision:** The claim list is not closed.  A Txn-Token-JAG MAY carry
+additional registered or deployment-specific claims; recipients ignore claims
+they do not understand, per RFC 7519 Section 4.
+
+**Rationale:** Consistent with the general preference against accidental
+closed enumerations, and with JWT processing norms.  (Issue #4, PR #23,
+October 2026.)
+
+### 14. Motivating Dependency: WIMSE AIMS
+
+**Decision:** The Abstract cites the AI Identity Management System draft
+(`draft-ietf-wimse-aims`) as a dependent use: AI agents act as workloads that
+carry authorization context in Txn-Tokens, and AIMS directs cross-domain
+access through identity chaining or a profile of it such as this one.
+
+**Rationale:** Demonstrates concrete demand from agentic deployments.
+(Issue #6, PR #24, October 2026.)
+
 ---
 
 ## Reference Specifications (with version notes)
@@ -344,7 +419,8 @@ in `reviews/draft-liu-review-response.md` (git-ignored, not distributed).
 | draft-ietf-oauth-transaction-tokens | -08 | Normative. Check for newer versions. |
 | draft-ietf-oauth-identity-assertion-authz-grant | -03 (April 2026) | Informative. WG-adopted; replaces individual draft-parecki-* versions. The old individual draft (`draft-parecki-oauth-identity-assertion-authz-grant`) is superseded and must NOT be cited. |
 | draft-ietf-wimse-arch | -07 | Informative. Referenced for SPIFFE URI / workload identity context. |
-| draft-ietf-wimse-workload-creds | -00 | Informative. Referenced for workload credential model. |
+| draft-ietf-wimse-workload-creds | -00 | Informative. Listed in the YAML header but not currently cited in the body. |
+| draft-ietf-wimse-aims | latest (bare reference) | Informative. Cited in the Abstract as a dependent use (Decision #14). No explicit metadata block in the YAML header, so the build fetches it from bib.ietf.org. |
 | RFC 8693 | — | Token Exchange. Normative. |
 | RFC 7523 | — | JWT Profile for OAuth 2.0 Authorization Grants. Normative. |
 | RFC 8707 | — | Resource Indicators. Normative. Critical for `resource` parameter semantics. |
@@ -369,26 +445,29 @@ domain boundaries present a significant risk.  The WG may push for
 MUST.
 
 **Suggested resolution:** Consider making sender-constraining MUST for
-the access token issued by AS-B, while leaving the JWT Authorization
-Grant as bearer (it is short-lived and single-use).
+the access token issued by AS-B, while leaving the Txn-Token-JAG as
+bearer (it is short-lived and single-use).
 
 ### OQ-2: RAR / `authorization_details` Integration
 
 The ID-JAG profile supports `authorization_details` (RFC 9396) in
 the grant.  This profile does not yet define how RAR
 `authorization_details` from a Txn-Token would be transcribed into
-the JWT Authorization Grant.
+the Txn-Token-JAG.  The Relationship appendix says a future revision
+MAY define it.
 
 **Suggested resolution:** Define a `txn_claims.authorization_details`
-sub-claim, or allow top-level `authorization_details` in the JWT
-Authorization Grant following the same minimization rules as scope.
-Needs discussion with the OAuth WG.
+sub-claim, or allow top-level `authorization_details` in the
+Txn-Token-JAG following the same minimization rules as scope.  Now
+that Decision #13 permits additional claims, a top-level claim would
+not be blocked by the claim list.  Needs discussion with the OAuth WG.
 
 ### OQ-3: SPIFFE URI Subject Mapping
 
-The draft states that AS-A "SHOULD apply the SPIFFE URI translation
-rules defined in the Cross-Domain Trust Agreement" but does not define
-any normative SPIFFE URI mapping algorithm.
+Subject Identifier Mapping defers all mapping rules to the Cross-Domain
+Trust Agreement (which MUST cover every Initiating Principal type that
+may appear).  No SPIFFE URI mapping algorithm is defined or
+recommended.
 
 **Suggested resolution:** Either (a) define a RECOMMENDED mapping
 algorithm (e.g., strip the trust domain prefix and use the path
@@ -397,9 +476,12 @@ Coordinate with the WIMSE WG.
 
 ### OQ-4: Human User Sub Mapping — Pairwise vs. Opaque
 
-For human-user-initiated transactions, the draft allows `email`,
-"a stable pairwise identifier," or "another identifier agreed in the
-Cross-Domain Trust Agreement."  This is underspecified.
+For human-user-initiated transactions, the normative text defers the
+mapping entirely to the Cross-Domain Trust Agreement.  The only
+guidance is non-normative (the user-initiated use case mentions "the
+user's email address or a pairwise identifier") plus the permission
+for `email` in `txn_claims` as a supplementary identifier.  This is
+underspecified for interoperability.
 
 **Suggested resolution:** Consider defining a RECOMMENDED default
 (e.g., email, given its widespread cross-domain recognizability) and
@@ -409,13 +491,16 @@ PPID-style hash of `iss + sub + audience`).
 ### OQ-5: `txn_claims` Schema Registration
 
 The draft registers the `txn_claims` claim name with IANA but does
-not register a schema or enumerate permitted sub-claims beyond
-informal guidance in the Claims Transcription section.
+not register a schema.  Claims Minimization gives per-claim rules for
+`scope`, `rctx`, `tctx`, internal call chain claims, and
+supplementary identity claims, and says the Cross-Domain Trust
+Agreement SHOULD define the permitted set.
 
 **Suggested resolution:** Either (a) define a small set of RECOMMENDED
-`txn_claims` sub-claims (`purp`, `rctx`) as normative, with IANA
+`txn_claims` sub-claims (`scope`, `rctx`, `tctx`) as normative, with IANA
 registration for each, or (b) explicitly state that the sub-claim
 set is deployment-defined via the Cross-Domain Trust Agreement.
+The draft currently leans toward (b).
 
 ### OQ-6: Txn-Token `aud` Claim — TTS vs. AS-A
 
@@ -441,26 +526,35 @@ AS-A can be statically configured with the mapping from resource
 server hostname to AS-B issuer URL as part of the Cross-Domain Trust
 Agreement.
 
-### OQ-8: Document Naming (RESOLVED 2026-08)
+### OQ-8: Document Naming (RESOLVED)
 
-**No longer an open question.**  This item originally called for the
-`oauth` element to be *removed* from the document name, on the grounds
-that individual IETF drafts do not carry the working group name in the
-author prefix.
-
-That position was reversed in August 2026.  The document was renamed
-to `draft-fletcher-oauth-transaction-token-chaining-profile` (branch
-`rename_spec`) because **including `oauth` is what causes the draft to
-be assigned to the OAuth working group.**  The general convention is
-real, but the WG-assignment behaviour takes precedence here.
-
-That name was then shortened to
+Resolved: the name is settled.  It was renamed to include `oauth` in
+August 2026 for WG assignment, then shortened to
 `draft-fletcher-oauth-txn-token-chaining-profile` in September 2026
-(branch `shorten_spec_name`) to fit the Datatracker's 50-character
-limit on draft names.
+for the Datatracker's 50-character limit.  See the Naming section at
+the top of this file.  Do not reopen this.
 
-The name is now settled; see the Naming section at the top of this
-file.  Do not reopen this or "correct" the name back.
+### OQ-9: `txn` Claim — SHOULD or MUST?
+
+The draft is internally inconsistent.  JWT Claims Requirements lists
+`txn` under "The following claims SHOULD be present", while Mandatory
+Transcriptions says "AS-A MUST include the `txn` claim".  Decision #4
+records SHOULD.  The recursive-chaining text (Chaining Across Multiple Trust Domains) and the Privacy
+Considerations (operators weigh auditability against linkability)
+also assume `txn` can be omitted or replaced.
+
+**Suggested resolution:** Keep SHOULD (consistent with Decision #4 and
+the linkability guidance) and move the `txn` requirement out of
+Mandatory Transcriptions, stating it once.
+
+### OQ-10: `typ` Value vs. the Txn-Token-JAG Name
+
+The grant was renamed Txn-Token-JAG (PR #21), but its `typ` is still
+`txn-chain+jwt`.  The sibling uses `oauth-id-jag+jwt`.
+
+**Suggested resolution:** Decide before IANA registration whether to
+align (e.g. `oauth-txn-jag+jwt`) or keep `txn-chain+jwt`.  Changing it
+later breaks implementations.
 
 ---
 
@@ -470,7 +564,8 @@ When explaining to the OAuth WG how this profile differs from the
 ID-JAG profile, lead with these points in order:
 
 1. **Subject token type**: Txn-Token vs. ID Token / SAML assertion.
-2. **Principal scope**: all three initiating types vs. human-user only.
+2. **Principal scope**: any Initiating Principal (user, system,
+   workload, ...) vs. human-user only.
 3. **Trust basis**: bilateral Cross-Domain Trust Agreement vs.
    shared IdP SSO trust.
 4. **`client_id`**: not required here vs. REQUIRED in ID-JAG.
@@ -497,3 +592,10 @@ implement both.
 | 2026-09 | Document renamed to `draft-fletcher-oauth-txn-token-chaining-profile` (47 characters) to fit the Datatracker's 50-character limit on draft names |
 | 2026-09 | Document History corrected while preparing the rename: headings relabelled to the "changes after version NN" convention, and the -02 entry backfilled (it had shipped with no history entry of its own) |
 | 2026-09 | Decided to republish under the new name as -00 rather than continuing the sequence at -03, relying on the Datatracker Replaces relationship to link back to `draft-fletcher-transaction-token-chaining-profile` |
+| 2026-09-10 | `draft-fletcher-oauth-txn-token-chaining-profile-00` published (PR #19) |
+| 2026-09 | Title changed to "Transaction Token JWT Authorization Grant Profile ..." and the grant named "Txn-Token-JAG" throughout (PR #21) |
+| 2026-10 | `tctx` transcription made explicit with minimization rules, plus new Security and Privacy Considerations text (issue #18, PR #22) |
+| 2026-10 | Additional claims explicitly permitted in the Txn-Token-JAG (issue #4, PR #23) |
+| 2026-10 | WIMSE AIMS draft cited in the Abstract as a dependent use (issue #6, PR #24) |
+| 2026-10-26 | `draft-fletcher-oauth-txn-token-chaining-profile-01` published |
+| 2026-11 | DESIGN-NOTES cleanup: `purp` → `scope`, Txn-Token-JAG terminology, Decisions #11–#14 recorded, OQ-3/4/5 refreshed against current text, OQ-9 (`txn` SHOULD/MUST) and OQ-10 (`typ` value) opened |

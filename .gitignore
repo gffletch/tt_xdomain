@@ -13,11 +13,12 @@
 /.venv/
 /.vscode/
 /*-[0-9][0-9].xml
+/decks/
 /lib
 /node_modules/
 /reviews/
 /versioned/
-# Local entries, not from i-d-template: /reviews/, CLAUDE.md, resume. setup-gitignore merges and re-sorts, so they survive but scatter; also mirrored in .git/info/exclude.
+# Local entries, not from i-d-template: /decks/, /reviews/, CLAUDE.md, resume. setup-gitignore merges and re-sorts, so they survive but scatter; also mirrored in .git/info/exclude.
 archive.json
 CLAUDE.md
 draft-fletcher-oauth-txn-token-chaining-profile.xml
